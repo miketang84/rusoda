@@ -1,0 +1,19 @@
+[package]
+name = "daogo"
+version = "0.1.0"
+authors = ["Daogang Tang <daogangtang@live.com>"]
+edition = "2018"
+
+[dependencies]
+
+[dependencies.rustorm]
+git = "https://github.com/ivanceras/rustorm"
+features = ["with-postgres"]
+
+[dependencies.rustorm_dao]
+git = "https://github.com/ivanceras/rustorm"
+
+[dependencies.rustorm_codegen]
+#git = "https://github.com/ivanceras/rustorm"
+path = "../../sappworks/rustorm/codegen"
+
