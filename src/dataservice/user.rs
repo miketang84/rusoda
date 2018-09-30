@@ -4,6 +4,8 @@ use crate::db;
 use crate::model::Ruser;
 use crate::model::{for_insert, for_retrieve};
 use crate::util::{random_string, sha3_256_encode};
+use redis::Commands;
+use chrono::{DateTime, Utc};
 
 use log::info;
 
@@ -57,7 +59,7 @@ impl UserSignUp {
                         //section.insert();
 
                         // set user cookies to redis to keep login session
-                        //set_session(user.account.to_owned());
+                        set_session(&user.account).unwrap();
 
                         Ok(user.to_owned())
                     },
@@ -71,17 +73,15 @@ impl UserSignUp {
 }
 
 
-/*
-pub fn set_session(account: String) -> Result<String, String> {
+pub fn set_session(account: &str) -> Result<String, String> {
     let redis = db::get_redis();
     let cookie = sha3_256_encode(&random_string(8));
-    redis.hset(&cookie, "login_time", Utc::now().timestamp());
-    redis.hset(&cookie, "account", account);
-    redis.expire(&cookie, 24 * 3600);
+    let _: () = redis.hset(&cookie, "login_time", Utc::now().timestamp()).unwrap();
+    let _: () = redis.hset(&cookie, "account", account).unwrap();
+    let _: () = redis.expire(&cookie, 24 * 3600).unwrap();
 
     Ok(cookie)
 }
-*/
 
 
 
