@@ -8,24 +8,26 @@ use chrono::{DateTime, Utc};
 use rustorm_dao::{
     ToColumnNames,
     ToTableName,
-    FromDao
+    FromDao,
+    ToDao
 };
 
 /// import procedure macros
 use rustorm_codegen::{
     ToColumnNames,
     ToTableName,
-    FromDao
+    FromDao,
+    ToDao
 };
 
 
 ///
-/// Model: User
+/// Model: Ruser
 /// Db table: ruser
 ///
 
-#[derive(Debug, FromDao, ToColumnNames, ToTableName)]
-pub struct User {
+#[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
+pub struct Ruser {
     
     pub id: Uuid,
     
@@ -180,5 +182,47 @@ pub struct UserNotify {
     
     pub notify_type: String,
 }
+
+// ================================================================
+
+
+// Submodule for insert data to db
+// these structs MUST keep the same names with above models
+// every table has only one new inserting case,
+// but many retreiving cases.
+//
+pub mod for_insert {
+    use super::*;
+
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct Ruser {
+        pub account: String,
+        pub password: String,
+        pub salt: String,
+        pub nickname: String,
+        pub github: Option<String>,
+    }
+
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct Section {
+        pub title: String,
+        pub description: String,
+        pub stype: i32,
+        pub suser: Option<Uuid>,
+    }
+}
+
+
+// Submodule for retrieve data from db
+// these structs DON'T need to keep the same names with above models
+// every table has only one new inserting case,
+// but many retrieving cases.
+//
+pub mod for_retrieve {
+
+
+}
+
+
 
 
