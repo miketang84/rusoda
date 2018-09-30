@@ -1,36 +1,22 @@
 
-/// 
-use rustorm_dao::{
-    ToColumnNames,
-    ToTableName,
-    FromDao
-};
+mod db;
+mod model;
 
-/// import procedure macros
-use rustorm_codegen::{
-    ToColumnNames,
-    ToTableName,
-    FromDao
-};
+use self::model::User;
 
-use rustorm::{Pool, DbError};
+use log::info;
 
-#[derive(Debug, FromDao, ToColumnNames, ToTableName)]
-struct Actor {
-    salt: String,
-    account: String,
-}
+use rustorm::DbError;
 
 fn main(){
-    let db_url = "postgres://postgres:123@localhost/forustm";
-    let mut pool = Pool::new();
-    let em = pool.em(db_url).unwrap();
+    env_logger::init();
+
+    let em = db::get_db();
     let sql = "SELECT * FROM ruser LIMIT 10";
-    let actors: Result<Vec<Actor>, DbError> = em.execute_sql_with_return(sql, &[]);
-    println!("Actor: {:#?}", actors);
-    let actors = actors.unwrap();
-    assert_eq!(actors.len(), 1);
-    for actor in actors {
-        println!("actor: {:?}", actor);
+    let users: Result<Vec<User>, DbError> = em.execute_sql_with_return(sql, &[]);
+    let users = users.unwrap();
+    assert_eq!(users.len(), 1);
+    for user in users {
+        info!("user: {:?}", user);
     }
 }
