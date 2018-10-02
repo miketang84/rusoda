@@ -83,38 +83,43 @@ impl UserSignUp {
 }
 
 
-pub struct UserChangePassword {
-    pub old_password: String,
-    pub new_password: String,
-}
-
-impl UserChangePassword {
-
-
-}
-
-
 pub struct UserEdit {
+    pub account: String,
     pub nickname: String,
-    pub say: Option<String>,
-    pub avatar: Option<String>,
-    pub wx_openid: Option<String>,
+    pub avatar: String,
+    pub say: String,
 }
 
 impl UserEdit {
     
-    pub fn edit(cookie: &str) {
+    pub fn edit(&self, cookie: &str) -> Result<Ruser, String> {
         let em = db::get_db();
         let redis = db::get_redis();
         let account: String = redis.hget(cookie, "account").unwrap();
+
         // update new info by account
+        // XXX: abstract
+        // for automately serialization, we need procedure macros like serde
+        let update_str = String::from("nickname='") + &self.nickname + "'"
+                            + ",avatar='" + &self.avatar + "'"
+                            + ",say='" + &self.say + "'";
 
+        let sql = format!(
+            "update {a} set {b} 
+            where account='{c}'",
+            a = "ruser",
+            b = update_str,
+            c = self.account);
 
-
-
+        match db_update!(em, sql, Ruser) {
+            Some(user) => {
+                Ok(user.to_owned())
+            },
+            None => {
+                Err("User doesn't exist.".into())
+            }
+        }
     }
-
-
 
 }
 
@@ -127,7 +132,7 @@ pub struct UserLogin {
 
 impl UserLogin {
 
-    pub fn verify(&self, max_age: &Option<usize>) -> Result<String, String> {
+    pub fn verify_login(&self, max_age: &Option<usize>) -> Result<String, String> {
 
         let em = db::get_db();
 
@@ -143,12 +148,14 @@ impl UserLogin {
         // check if the same name account exists already 
         match db_find!(em, sql, Ruser) {
             Some(user) => {
+                // check calulation equality
                 if user.password == sha3_256_encode(&format!("{}{}", self.password, user.salt)) {
                     let ttl = match *max_age {
                         Some(t) => t * 3600,
                         None => 24 * 60 * 60,
                     };
-
+                    
+                    // store session
                     set_session(&self.account, ttl)
 
                 } else {
@@ -163,14 +170,17 @@ impl UserLogin {
 
     }
 
-
-    pub fn login() {
-    
-   
-    } 
-
 }
 
+pub struct UserChangePassword {
+    pub old_password: String,
+    pub new_password: String,
+}
+
+impl UserChangePassword {
+
+
+}
 
 
 

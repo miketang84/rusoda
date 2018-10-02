@@ -21,3 +21,11 @@ macro_rules! db_insert {
         vec_ret.pop()
     })
 }
+
+#[macro_export]
+macro_rules! db_update {
+    ($em:expr, $sql:expr, $tykey:ty) => ({
+        let mut vec_ret = $em.execute_sql_with_return(&$sql, &[]).unwrap_or(Vec::<$tykey>::new()); 
+        vec_ret.pop()
+    })
+}
