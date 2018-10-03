@@ -17,7 +17,7 @@ macro_rules! db_filter {
 #[macro_export]
 macro_rules! db_insert {
     ($em:expr, $instance:expr, $tykey:ty) => ({
-        let mut vec_ret = $em.insert(&[&$instance]).unwrap_or(Vec::<$tykey>::new()); 
+        let mut vec_ret = $em.insert(&[$instance]).unwrap_or(Vec::<$tykey>::new()); 
         vec_ret.pop()
     })
 }

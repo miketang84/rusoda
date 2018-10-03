@@ -57,16 +57,16 @@ impl UserSignUp {
             },
             None => {
                 // it's a new user, insert it
-                match db_insert!(em, new_user, Ruser) {
+                match db_insert!(em, &new_user, Ruser) {
                     Some(user) => {
                         // generate a corresponding section to this user as his blog section
-                        //let section = for_insert::Section {
-                        //    title: user.nickname,
-                        //    description: format!("{}'s blog", user.nickname),
-                        //    suser: Some(user.id),
-                        //    stype: 1,
-                        //};
-                        //section.insert();
+                        let section = for_insert::Section {
+                            title: user.nickname.to_owned(),
+                            description: format!("{}'s blog", user.nickname),
+                            stype: 1,
+                            suser: Some(user.id.to_owned()),
+                        };
+                        section.insert();
 
                         // set user cookies to redis to keep login session
                         set_session(&user.account, 24*3600).unwrap();
@@ -84,7 +84,6 @@ impl UserSignUp {
 
 
 pub struct UserEdit {
-    pub account: String,
     pub nickname: String,
     pub avatar: String,
     pub say: String,
@@ -109,7 +108,7 @@ impl UserEdit {
             where account='{c}'",
             a = "ruser",
             b = update_str,
-            c = self.account);
+            c = account);
 
         match db_update!(em, sql, Ruser) {
             Some(user) => {

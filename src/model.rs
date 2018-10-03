@@ -62,7 +62,7 @@ pub struct Ruser {
 /// Model: Section
 /// DB table: section
 ///
-#[derive(Debug, FromDao, ToColumnNames, ToTableName)]
+#[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
 pub struct Section {
     
     pub id: Uuid,
