@@ -37,4 +37,10 @@ macro_rules! db_update {
     })
 }
 
+#[macro_export]
+macro_rules! db_delete {
+    ($em:expr, $rest_clause:expr, $tykey:ty) => ({
+        let _: () = $em.update($instance, $rest_clause).unwrap_or(Vec::<$tykey>::new()); 
+    })
+}
 
