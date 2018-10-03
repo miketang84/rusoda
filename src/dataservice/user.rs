@@ -41,8 +41,9 @@ impl UserSignUp {
             github: None,
         };
 
+        let rest_clause = format!("WHERE account='{}'", new_user.account); 
         // check if the same name account exists already 
-        match db_select!(em, "", "", &format!("WHERE account='{}'", new_user.account), Ruser).first() {
+        match db_select!(em, "", "", &rest_clause, Ruser).first() {
             Some(_) => {
                 // exist already, return Error
                 Err(format!("user {} exists.", new_user.account))
@@ -106,20 +107,11 @@ pub struct UserLogin {
 impl UserLogin {
 
     pub fn verify_login(&self, max_age: &Option<usize>) -> Result<String, String> {
-
         let em = db::get_db();
 
-        let sql = format!(
-            "SELECT {a} FROM {b} 
-            where status=0
-            and account='{c}' 
-            LIMIT 1",
-            a = "*",
-            b = "ruser",
-            c = self.account);
-        
+        let rest_clause = format!("WHERE status=0 and account='{}'", self.account); 
         // check if the same name account exists already 
-        match db_find!(em, sql, Ruser) {
+        match db_select!(em, "", "", &rest_clause, Ruser).first() {
             Some(user) => {
                 // check calulation equality
                 if user.password == sha3_256_encode(&format!("{}{}", self.password, user.salt)) {
