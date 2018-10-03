@@ -191,7 +191,7 @@ pub struct UserNotify {
 // every table has only one new inserting case,
 // but many retreiving cases.
 //
-pub mod for_insert {
+pub mod for_write {
     use super::*;
 
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
@@ -201,6 +201,13 @@ pub mod for_insert {
         pub salt: String,
         pub nickname: String,
         pub github: Option<String>,
+    }
+
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct UserEdit {
+        pub nickname: String,
+        pub avatar: String,
+        pub say: String,
     }
 
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
@@ -218,7 +225,7 @@ pub mod for_insert {
 // every table has only one new inserting case,
 // but many retrieving cases.
 //
-pub mod for_retrieve {
+pub mod for_read {
 
 
 }

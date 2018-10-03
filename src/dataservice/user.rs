@@ -2,7 +2,7 @@
 use rustorm::DbError;
 use crate::db;
 use crate::model::Ruser;
-use crate::model::{for_insert, for_retrieve};
+use crate::model::{for_write, for_read};
 use crate::util::{random_string, sha3_256_encode};
 use redis::Commands;
 use chrono::{DateTime, Utc};
@@ -33,7 +33,7 @@ impl UserSignUp {
         let em = db::get_db();
         let salt = random_string(6);
 
-        let new_user = for_insert::Ruser {
+        let new_user = for_write::Ruser {
             account: self.account.to_owned(),
             password: sha3_256_encode(&format!("{}{}", self.password, salt)),
             salt: salt,
@@ -41,16 +41,8 @@ impl UserSignUp {
             github: None,
         };
 
-        let sql = format!(
-            "SELECT {a} FROM {b} 
-            where account='{c}' 
-            LIMIT 1",
-            a = "account",
-            b = "ruser",
-            c = new_user.account);
-
         // check if the same name account exists already 
-        match db_find!(em, sql, Ruser) {
+        match db_select!(em, "", "", &format!("WHERE account='{}'", new_user.account), Ruser).first() {
             Some(_) => {
                 // exist already, return Error
                 Err(format!("user {} exists.", new_user.account))
@@ -60,7 +52,7 @@ impl UserSignUp {
                 match db_insert!(em, &new_user, Ruser) {
                     Some(user) => {
                         // generate a corresponding section to this user as his blog section
-                        let section = for_insert::Section {
+                        let section = for_write::Section {
                             title: user.nickname.to_owned(),
                             description: format!("{}'s blog", user.nickname),
                             stype: 1,
@@ -83,13 +75,8 @@ impl UserSignUp {
 }
 
 
-pub struct UserEdit {
-    pub nickname: String,
-    pub avatar: String,
-    pub say: String,
-}
 
-impl UserEdit {
+impl for_write::UserEdit {
     
     pub fn edit(&self, cookie: &str) -> Result<Ruser, String> {
         let em = db::get_db();
@@ -97,20 +84,7 @@ impl UserEdit {
         let account: String = redis.hget(cookie, "account").unwrap();
 
         // update new info by account
-        // XXX: abstract
-        // for automately serialization, we need procedure macros like serde
-        let update_str = String::from("nickname='") + &self.nickname + "'"
-                            + ",avatar='" + &self.avatar + "'"
-                            + ",say='" + &self.say + "'";
-
-        let sql = format!(
-            "update {a} set {b} 
-            where account='{c}'",
-            a = "ruser",
-            b = update_str,
-            c = account);
-
-        match db_update!(em, sql, Ruser) {
+        match db_update!(em, self, &format!("WHERE account={}", account), Ruser) {
             Some(user) => {
                 Ok(user.to_owned())
             },

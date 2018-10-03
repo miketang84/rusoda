@@ -2,7 +2,7 @@
 use rustorm::DbError;
 use crate::db;
 use crate::model::Section;
-use crate::model::{for_insert, for_retrieve};
+use crate::model::{for_write, for_read};
 use crate::util::{random_string, sha3_256_encode};
 
 
@@ -15,7 +15,7 @@ pub struct SectionNew {
 // impl some methods on request params structure
 impl SectionNew {
     pub fn create(&self) -> Result<Section, String> {
-        let new_section = for_insert::Section {
+        let new_section = for_write::Section {
             title: self.title.to_owned(),
             description: self.description.to_owned(),
             stype: 0,
@@ -29,7 +29,7 @@ impl SectionNew {
 
 
 // here, we impl some methods for for_insert::Section
-impl for_insert::Section {
+impl for_write::Section {
     pub fn insert(&self) -> Result<Section, String>{
         let em = db::get_db();
         match db_insert!(em, self, Section) {
