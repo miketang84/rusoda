@@ -15,7 +15,7 @@ pub struct SectionNew {
 // impl some methods on request params structure
 impl SectionNew {
     pub fn create(&self) -> Result<Section, String> {
-        let new_section = for_write::Section {
+        let new_section = for_write::SectionCreate {
             title: self.title.to_owned(),
             description: self.description.to_owned(),
             stype: 0,
@@ -29,7 +29,7 @@ impl SectionNew {
 
 
 // here, we impl some methods for for_insert::Section
-impl for_write::Section {
+impl for_write::SectionCreate {
     pub fn insert(&self) -> Result<Section, String>{
         let em = db::get_db();
         match db_insert!(em, self, Section) {

@@ -186,16 +186,17 @@ pub struct UserNotify {
 // ================================================================
 
 
-// Submodule for insert data to db
-// these structs MUST keep the same names with above models
+// Submodule for write data to db
+// these structs DON'T need to keep the same names with above models
 // every table has only one new inserting case,
 // but many retreiving cases.
 //
 pub mod for_write {
     use super::*;
 
+    /// User DMO - Data modification object
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
-    pub struct Ruser {
+    pub struct UserCreate {
         pub account: String,
         pub password: String,
         pub salt: String,
@@ -211,12 +212,68 @@ pub mod for_write {
     }
 
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
-    pub struct Section {
+    pub struct UserDelete {
+
+    }
+
+    /// Section DMO
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct SectionCreate {
         pub title: String,
         pub description: String,
         pub stype: i32,
         pub suser: Option<Uuid>,
     }
+
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct SectionEdit {
+
+    }
+
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct SectionDelete {
+
+    }
+
+
+    /// Article DMO
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct ArticleCreate {
+
+    }
+
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct ArticleEdit {
+
+    }
+
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct ArticleDelete {
+
+    }
+
+    /// Comment DMO
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct CommentCreate {
+
+    }
+
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct CommentEdit {
+
+    }
+
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct CommentDelete {
+
+    }
+
+    /// ArticleStats DMO
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct ArticleStatsCreate {
+
+    }
+
 }
 
 

@@ -33,7 +33,7 @@ impl UserSignUp {
         let em = db::get_db();
         let salt = random_string(6);
 
-        let new_user = for_write::Ruser {
+        let new_user = for_write::UserCreate {
             account: self.account.to_owned(),
             password: sha3_256_encode(&format!("{}{}", self.password, salt)),
             salt: salt,
@@ -53,7 +53,7 @@ impl UserSignUp {
                 match db_insert!(em, &new_user, Ruser) {
                     Some(user) => {
                         // generate a corresponding section to this user as his blog section
-                        let section = for_write::Section {
+                        let section = for_write::SectionCreate {
                             title: user.nickname.to_owned(),
                             description: format!("{}'s blog", user.nickname),
                             stype: 1,
