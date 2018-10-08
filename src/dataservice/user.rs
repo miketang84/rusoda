@@ -43,7 +43,7 @@ impl UserSignUp {
 
         let rest_clause = format!("WHERE account='{}'", new_user.account); 
         // check if the same name account exists already 
-        match db_select!(em, "", "", &rest_clause, Ruser).first() {
+        match db_find!(em, "", "", &rest_clause, Ruser) {
             Some(_) => {
                 // exist already, return Error
                 Err(format!("user {} exists.", new_user.account))
@@ -79,13 +79,14 @@ impl UserSignUp {
 
 impl for_write::UserEdit {
     
-    pub fn edit(&self, cookie: &str) -> Result<Ruser, String> {
+    pub fn update(&self, cookie: &str) -> Result<Ruser, String> {
         let em = db::get_db();
         let redis = db::get_redis();
         let account: String = redis.hget(cookie, "account").unwrap();
 
         // update new info by account
-        match db_update!(em, self, &format!("WHERE account={}", account), Ruser) {
+        let clause = format!("WHERE account={}", account); 
+        match db_update!(em, self, &clause, Ruser) {
             Some(user) => {
                 Ok(user.to_owned())
             },
@@ -111,7 +112,7 @@ impl UserLogin {
 
         let rest_clause = format!("WHERE status=0 and account='{}'", self.account); 
         // check if the same name account exists already 
-        match db_select!(em, "", "", &rest_clause, Ruser).first() {
+        match db_find!(em, "", "", &rest_clause, Ruser) {
             Some(user) => {
                 // check calulation equality
                 if user.password == sha3_256_encode(&format!("{}{}", self.password, user.salt)) {
@@ -150,10 +151,23 @@ impl UserChangePassword {
 
 
 impl Ruser {
-
-    pub fn sign_out(cookies: &str) -> Result<(), String> {
+    pub fn get_user_by_cookie(cookie: &str) -> Result<Ruser, String>{
         let redis = db::get_redis();
-        let _: () = redis.del(cookies).unwrap();
+        let account: String = redis.hget(cookie, "account").unwrap();
+    
+        let clause = format!("where account={}", account);
+        match db_find!("", "", &clause, Ruser) {
+            Some(user) => {
+                Ok(user)
+            },
+            None => Err("no this user")
+        }
+    }
+
+
+    pub fn sign_out(cookie: &str) -> Result<(), String> {
+        let redis = db::get_redis();
+        let _: () = redis.del(cookie).unwrap();
 
         Ok(())
     }

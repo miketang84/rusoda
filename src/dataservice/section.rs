@@ -45,6 +45,26 @@ impl for_write::SectionCreate {
 
 // impl retrieving methods on this model, return various views of Section
 impl Section {
+    pub fn section_by_id(id: Uuid) -> Result<Section, String> {
+        let em = db::get_db();
+        let clause = format!("where id='{}'", id);
+        match db_find!(em, "", "", &clause, Section) {
+            Some(sec) => {
+                Ok(sec.to_owned())
+            },
+            None => {
+                Err("Insert section error.".to_string())
+            }
+        }
+    }
+
+    pub fn section_by_ids(ids: Vec<Uuid>) -> Vec<Section> {
+        let em = db::get_db();
+        let clause = format!("where id in ({})", ids.join(", "));
+        let sections = db_select!(em, "", "", &clause, Section);
+
+        sections
+    }
 
 
 }
