@@ -13,16 +13,16 @@ redis = "0.9"
 
 [dependencies.rustorm]
 #git = "https://github.com/ivanceras/rustorm"
-path = "../../sappworks/rustorm"
+path = "../rustorm"
 features = ["with-postgres"]
 
 [dependencies.rustorm_dao]
 #git = "https://github.com/ivanceras/rustorm"
-path = "../../sappworks/rustorm/dao"
+path = "../rustorm/dao"
 
 [dependencies.rustorm_codegen]
 #git = "https://github.com/ivanceras/rustorm"
-path = "../../sappworks/rustorm/codegen"
+path = "../rustorm/codegen"
 
 [dependencies.uuid]
 features = ["serde", "v4"]

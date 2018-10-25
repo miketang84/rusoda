@@ -41,8 +41,8 @@ impl UserSignUp {
             github: None,
         };
 
-        let rest_clause = format!("WHERE account='{}'", new_user.account); 
-        // check if the same name account exists already 
+        let rest_clause = format!("WHERE account='{}'", new_user.account);
+        // check if the same name account exists already
         match db_find!(em, "", "", &rest_clause, Ruser) {
             Some(_) => {
                 // exist already, return Error
@@ -78,14 +78,14 @@ impl UserSignUp {
 
 
 impl for_write::UserEdit {
-    
+
     pub fn update(&self, cookie: &str) -> Result<Ruser, String> {
         let em = db::get_db();
         let redis = db::get_redis();
         let account: String = redis.hget(cookie, "account").unwrap();
 
         // update new info by account
-        let clause = format!("WHERE account={}", account); 
+        let clause = format!("WHERE account={}", account);
         match db_update!(em, self, &clause, Ruser) {
             Some(user) => {
                 Ok(user.to_owned())
@@ -110,8 +110,8 @@ impl UserLogin {
     pub fn verify_login(&self, max_age: &Option<usize>) -> Result<String, String> {
         let em = db::get_db();
 
-        let rest_clause = format!("WHERE status=0 and account='{}'", self.account); 
-        // check if the same name account exists already 
+        let rest_clause = format!("WHERE status=0 and account='{}'", self.account);
+        // check if the same name account exists already
         match db_find!(em, "", "", &rest_clause, Ruser) {
             Some(user) => {
                 // check calulation equality
@@ -120,7 +120,7 @@ impl UserLogin {
                         Some(t) => t * 3600,
                         None => 24 * 60 * 60,
                     };
-                    
+
                     // store session
                     set_session(&self.account, ttl)
 
@@ -151,16 +151,17 @@ impl UserChangePassword {
 
 
 impl Ruser {
-    pub fn get_user_by_cookie(cookie: &str) -> Result<Ruser, String>{
+    pub fn get_user_by_cookie(cookie: &str) -> Result<Ruser, String> {
+        let em = db::get_db();
         let redis = db::get_redis();
         let account: String = redis.hget(cookie, "account").unwrap();
-    
+
         let clause = format!("where account={}", account);
-        match db_find!("", "", &clause, Ruser) {
+        match db_find!(em, "", "", &clause, Ruser) {
             Some(user) => {
                 Ok(user)
             },
-            None => Err("no this user")
+            None => Err("no this user".to_string())
         }
     }
 

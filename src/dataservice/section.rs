@@ -5,6 +5,7 @@ use crate::model::Section;
 use crate::model::{for_write, for_read};
 use crate::util::{random_string, sha3_256_encode};
 
+use uuid::Uuid;
 
 // here to define struct to accept request params
 pub struct SectionNew {
@@ -60,7 +61,8 @@ impl Section {
 
     pub fn section_by_ids(ids: Vec<Uuid>) -> Vec<Section> {
         let em = db::get_db();
-        let clause = format!("where id in ({})", ids.join(", "));
+        let ids_str = ids.iter().map(|u| u.to_string()).collect::<Vec<String>>().join(", ");
+        let clause = format!("where id in ({})", ids_str);
         let sections = db_select!(em, "", "", &clause, Section);
 
         sections
