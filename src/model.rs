@@ -28,68 +28,68 @@ use rustorm_codegen::{
 
 #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
 pub struct Ruser {
-    
+
     pub id: Uuid,
-    
+
     // use email defaultly
     pub account: String,
-    
+
     pub password: String,
-    
+
     pub salt: String,
-    
+
     pub nickname: String,
-    
+
     pub avatar: Option<String>,
-    
+
     pub wx_openid: Option<String>,
-    
+
     pub say: Option<String>,
-   
+
     // user signup time
     pub signup_time: DateTime<Utc>,
-    
+
     // user role: member => 2, manager => 1, admin => 0
     pub role: i16,
-    
+
     // user status: 0 normal, 1 frozen, 2 deleted
     pub status: i16,
-    
+
     pub github: Option<String>,
 }
 
-/// 
+///
 /// Model: Section
 /// DB table: section
 ///
 #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
 pub struct Section {
-    
+
     pub id: Uuid,
-    
+
     pub title: String,
-    
+
     pub description: String,
-    
+
     // use stype to separate forum section and user blog section
     // 0 section, 1 user blog
     pub stype: i32,
-   
+
     // if stype==1, record the binding user to section
     pub suser: Option<Uuid>,
-    
+
     pub created_time: DateTime<Utc>,
-    
+
     // 0 normal, 1 frozen, 2 deleted
-    pub status: i16, 
+    pub status: i16,
 }
 
-/// 
+///
 /// Model: Article
 /// DB table: article
 ///
 
-#[derive(Debug, FromDao, ToColumnNames, ToTableName)]
+#[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
 pub struct Article {
 
     pub id: Uuid,
@@ -103,67 +103,67 @@ pub struct Article {
     pub section_id: Uuid,
 
     pub author_id: Uuid,
-    
+
     pub tags: String,
-    
+
     // used to planet order ranking: 0 section, 1 user blog
     pub stype: i32,
 
     pub created_time: DateTime<Utc>,
-    
+
     // 0 normal, 1 frozen, 2 deleted
     pub status: i16,
 
 }
 
 
-/// 
+///
 /// Model: Comment
 /// DB table: comment
 ///
 
-#[derive(Debug, FromDao, ToColumnNames, ToTableName)]
+#[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
 pub struct Comment {
-    
+
     pub id: Uuid,
-    
+
     pub content: String,
-    
+
     pub article_id: Uuid,
-    
+
     pub author_id: Uuid,
-    
+
     pub created_time: DateTime<Utc>,
-    
+
     // 0 normal, 1 frozen, 2 deleted
     pub status: i16,
 
 }
 
 
-/// 
+///
 /// Model: ArticleStats
 /// DB table: article_stats
 ///
 
-#[derive(Debug, FromDao, ToColumnNames, ToTableName)]
+#[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
 pub struct ArticleStats {
-    
+
     pub id: Uuid,
-    
+
     pub article_id: Uuid,
-    
+
     pub created_time: DateTime<Utc>,
-    
+
     pub ruser_id: Option<Uuid>,
-    
+
     pub user_agent: Option<String>,
-    
+
     pub visitor_ip: Option<String>,
 }
 
 
-/// 
+///
 /// Model: UserNotify
 /// DB: redis
 /// a cached user notifications queue
@@ -171,15 +171,15 @@ pub struct ArticleStats {
 
 #[derive(Debug)]
 pub struct UserNotify {
-    
+
     pub user_id: Uuid,
-    
+
     pub send_user_name: String,
-    
+
     pub article_id: Uuid,
-    
+
     pub article_title: String,
-    
+
     pub notify_type: String,
 }
 
@@ -206,6 +206,7 @@ pub mod for_write {
 
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct UserEdit {
+        pub id: Uuid,
         pub nickname: String,
         pub avatar: String,
         pub say: String,
@@ -213,7 +214,7 @@ pub mod for_write {
 
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct UserDelete {
-
+        pub id: Uuid
     }
 
     /// Section DMO
@@ -227,29 +228,44 @@ pub mod for_write {
 
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct SectionEdit {
-
+        pub id: Uuid,
+        pub title: String,
+        pub description: String,
     }
 
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct SectionDelete {
-
+        pub id: Uuid,
     }
 
 
     /// Article DMO
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct ArticleCreate {
-
+        pub title: String,
+        pub raw_content: String,
+        pub content: String,
+        pub section_id: Uuid,
+        pub author_id: Uuid,
+        pub tags: String,
+        pub stype: i32,
+        pub created_time: DateTime<Utc>,
+        pub status: i16,
     }
 
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct ArticleEdit {
-
+        pub id: Uuid,
+        pub title: String,
+        pub raw_content: String,
+        pub content: String,
+        pub tags: String,
+        pub status: i16,
     }
 
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct ArticleDelete {
-
+        pub id: Uuid,
     }
 
     /// Comment DMO

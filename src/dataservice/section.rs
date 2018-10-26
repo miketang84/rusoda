@@ -31,7 +31,7 @@ impl SectionNew {
 
 // here, we impl some methods for for_insert::Section
 impl for_write::SectionCreate {
-    pub fn insert(&self) -> Result<Section, String>{
+    pub fn insert(&self) -> Result<Section, String> {
         let em = db::get_db();
         match db_insert!(em, self, Section) {
             Some(sec) => {

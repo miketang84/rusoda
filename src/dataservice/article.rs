@@ -4,7 +4,6 @@ use crate::db;
 use crate::model::Article;
 use crate::model::{for_write, for_read};
 
-
 // here, we impl some methods for for_insert::Section
 impl for_write::ArticleCreate {
     pub fn insert(&self) -> Result<Article, String>{
