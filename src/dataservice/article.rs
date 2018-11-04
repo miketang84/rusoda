@@ -3,9 +3,17 @@ use rustorm::DbError;
 use crate::db;
 use crate::model::Article;
 use crate::model::{for_write, for_read};
+use uuid::Uuid;
+
+use self::for_write::{
+    ArticleCreate,
+    ArticleEdit,
+    ArticleDelete
+};
+
 
 // here, we impl some methods for for_insert::Section
-impl for_write::ArticleCreate {
+impl ArticleCreate {
     pub fn insert(&self) -> Result<Article, String>{
         let em = db::get_db();
         match db_insert!(em, self, Article) {
@@ -19,7 +27,7 @@ impl for_write::ArticleCreate {
     }
 }
 
-impl for_write::ArticleEdit {
+impl ArticleEdit {
     pub fn update(&self) -> Result<Article, String>{
         let em = db::get_db();
         let clause = format!("where id={}", self.id);
@@ -35,7 +43,7 @@ impl for_write::ArticleEdit {
     }
 }
 
-impl for_write::ArticleDelete    {
+impl ArticleDelete    {
     pub fn delete(&self) -> Result<Article, String>{
         let em = db::get_db();
         let clause = format!("where id={}", self.id);

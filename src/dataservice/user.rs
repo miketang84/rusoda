@@ -10,6 +10,7 @@ use chrono::{DateTime, Utc};
 use log::info;
 
 
+
 pub fn set_session(account: &str, ttl: usize) -> Result<String, String> {
     let redis = db::get_redis();
     let cookie = sha3_256_encode(&random_string(8));
@@ -21,19 +22,40 @@ pub fn set_session(account: &str, ttl: usize) -> Result<String, String> {
 }
 
 
-// this struct is defined for request params
+
+/// ===== Struct Area =====
+// these structs are defined for request params
 pub struct UserSignUp {
     pub account: String,
     pub password: String,
     pub nickname: String,
 }
 
+pub struct UserLogin {
+    account: String,
+    password: String,
+}
+
+use self::for_write::{
+    UserCreate,
+    UserEdit,
+
+    SectionCreate,
+};
+
+pub struct UserChangePassword {
+    pub old_password: String,
+    pub new_password: String,
+}
+
+/// ===== Implementation Area =====
+///
 impl UserSignUp {
     pub fn sign_up_with_email (&self) -> Result<Ruser, String>{
         let em = db::get_db();
         let salt = random_string(6);
 
-        let new_user = for_write::UserCreate {
+        let new_user = UserCreate {
             account: self.account.to_owned(),
             password: sha3_256_encode(&format!("{}{}", self.password, salt)),
             salt: salt,
@@ -53,7 +75,7 @@ impl UserSignUp {
                 match db_insert!(em, &new_user, Ruser) {
                     Some(user) => {
                         // generate a corresponding section to this user as his blog section
-                        let section = for_write::SectionCreate {
+                        let section = SectionCreate {
                             title: user.nickname.to_owned(),
                             description: format!("{}'s blog", user.nickname),
                             stype: 1,
@@ -73,36 +95,6 @@ impl UserSignUp {
             }
         }
     }
-}
-
-
-
-impl for_write::UserEdit {
-
-    pub fn update(&self, cookie: &str) -> Result<Ruser, String> {
-        let em = db::get_db();
-        let redis = db::get_redis();
-        let account: String = redis.hget(cookie, "account").unwrap();
-
-        // update new info by account
-        let clause = format!("WHERE account={}", account);
-        match db_update!(em, self, &clause, Ruser) {
-            Some(user) => {
-                Ok(user.to_owned())
-            },
-            None => {
-                Err("User doesn't exist.".into())
-            }
-        }
-    }
-
-}
-
-
-pub struct UserLogin {
-    account: String,
-    password: String,
-    remember: bool,
 }
 
 impl UserLogin {
@@ -133,21 +125,34 @@ impl UserLogin {
                 Err("User doesn't exist.".into())
             }
         }
-
     }
-
 }
 
-pub struct UserChangePassword {
-    pub old_password: String,
-    pub new_password: String,
+
+impl UserEdit {
+    pub fn update(&self, cookie: &str) -> Result<Ruser, String> {
+        let em = db::get_db();
+        let redis = db::get_redis();
+        let account: String = redis.hget(cookie, "account").unwrap();
+
+        // update new info by account
+        let clause = format!("WHERE account={}", account);
+        match db_update!(em, self, &clause, Ruser) {
+            Some(user) => {
+                Ok(user.to_owned())
+            },
+            None => {
+                Err("User doesn't exist.".into())
+            }
+        }
+    }
 }
+
 
 impl UserChangePassword {
 
 
 }
-
 
 
 impl Ruser {
@@ -165,7 +170,6 @@ impl Ruser {
         }
     }
 
-
     pub fn sign_out(cookie: &str) -> Result<(), String> {
         let redis = db::get_redis();
         let _: () = redis.del(cookie).unwrap();
@@ -174,6 +178,8 @@ impl Ruser {
     }
 
 }
+
+
 
 
 

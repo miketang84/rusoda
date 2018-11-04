@@ -1,18 +1,42 @@
 use sapper::{
-    Result as SapperResult, 
-    Error as SapperError, 
     Request, 
     Response, 
-    SapperModule,
-    SapperRouter};
+    Result as SapperResult, 
+    Error as SapperError, 
+    Module as SapperModule,
+    Router as SapperRouter};
 use sapper_std::{JsonParams, SessionVal};
 use serde_json;
 
 pub struct ArticleApi;
 
-impl User {
+impl ArticleApi {
 
+    pub fn article_create(req: &mut Request) -> SapperResult<Response> {
+
+    }
+
+    pub fn article_edit(req: &mut Request) -> SapperResult<Response> {
+
+    }
+
+    pub fn article_delete(req: &mut Request) -> SapperResult<Response> {
+
+    }
+
+    pub fn article_get_by_id(req: &mut Request) -> SapperResult<Response> {
+
+    }
+
+    pub fn article_paging(req: &mut Request) -> SapperResult<Response> {
+
+    }
+
+    pub fn article_paging_by_section(req: &mut Request) -> SapperResult<Response> {
+
+    }
 }
+
 
 impl SapperModule for ArticleApi {
     fn before(&self, req: &mut Request) -> SapperResult<()> {
@@ -23,7 +47,7 @@ impl SapperModule for ArticleApi {
     }
 
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {
-        router.post("/article/new", Self::article_new);
+        router.post("/article/create", Self::article_create);
         router.post("/article/edit", Self::article_edit);
         router.post("/article/delete", Self::article_delete);
 

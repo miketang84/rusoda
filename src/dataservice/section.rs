@@ -7,16 +7,24 @@ use crate::util::{random_string, sha3_256_encode};
 
 use uuid::Uuid;
 
-// here to define struct to accept request params
+
+
 pub struct SectionNew {
     pub title: String,
     pub description: String,
 }
 
+use self::for_write::{
+    SectionCreate,
+    SectionEdit,
+    SectionDelete
+};
+
+
 // impl some methods on request params structure
 impl SectionNew {
     pub fn create(&self) -> Result<Section, String> {
-        let new_section = for_write::SectionCreate {
+        let new_section = SectionCreate {
             title: self.title.to_owned(),
             description: self.description.to_owned(),
             stype: 0,
@@ -30,7 +38,7 @@ impl SectionNew {
 
 
 // here, we impl some methods for for_insert::Section
-impl for_write::SectionCreate {
+impl SectionCreate {
     pub fn insert(&self) -> Result<Section, String> {
         let em = db::get_db();
         match db_insert!(em, self, Section) {
@@ -39,6 +47,37 @@ impl for_write::SectionCreate {
             },
             None => {
                 Err("Insert section error.".to_string())
+            }
+        }
+    }
+}
+
+impl SectionEdit {
+    pub fn update(&self) -> Result<Section, String>{
+        let em = db::get_db();
+        let clause = format!("where id={}", self.id);
+        // here, will overide the id field, that's for tidy code yet
+        match db_update!(em, self, &clause, Section) {
+            Some(sec) => {
+                Ok(sec.to_owned())
+            },
+            None => {
+                Err("Update section error.".to_string())
+            }
+        }
+    }
+}
+
+impl SectionDelete    {
+    pub fn delete(&self) -> Result<Section, String>{
+        let em = db::get_db();
+        let clause = format!("where id={}", self.id);
+        match db_delete!(em, &clause, Section) {
+            Some(sec) => {
+                Ok(sec.to_owned())
+            },
+            None => {
+                Err("Delete section error.".to_string())
             }
         }
     }

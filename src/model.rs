@@ -249,7 +249,8 @@ pub mod for_write {
         pub author_id: Uuid,
         pub tags: String,
         pub stype: i32,
-        pub created_time: DateTime<Utc>,
+        // created_time, auto created by db
+        // pub created_time: DateTime<Utc>,
         pub status: i16,
     }
 
@@ -271,17 +272,26 @@ pub mod for_write {
     /// Comment DMO
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct CommentCreate {
-
+        pub content: String,
+        pub article_id: Uuid,
+        pub author_id: Uuid,
+        pub status: i16,
     }
 
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct CommentEdit {
-
+        pub id: Uuid,
+        pub content: String,
     }
 
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct CommentDelete {
+        pub id: Uuid,
+    }
 
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct CommentFreeze {
+        pub id: Uuid,
     }
 
     /// ArticleStats DMO

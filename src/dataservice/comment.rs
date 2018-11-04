@@ -3,10 +3,17 @@ use rustorm::DbError;
 use crate::db;
 use crate::model::Comment;
 use crate::model::{for_write, for_read};
+use uuid::Uuid;
+
+use self::for_write::{
+    CommentCreate,
+    CommentEdit,
+    CommentDelete
+};
 
 
 // here, we impl some methods for for_insert::Section
-impl for_write::CommentCreate {
+impl CommentCreate {
     pub fn insert(&self) -> Result<Comment, String>{
         let em = db::get_db();
         match db_insert!(em, self, Comment) {
@@ -20,7 +27,7 @@ impl for_write::CommentCreate {
     }
 }
 
-impl for_write::CommentEdit {
+impl CommentEdit {
     pub fn update(&self) -> Result<Comment, String>{
         let em = db::get_db();
         let clause = format!("where id={}", self.id);
@@ -36,7 +43,7 @@ impl for_write::CommentEdit {
     }
 }
 
-impl for_write::CommentDelete    {
+impl CommentDelete    {
     pub fn delete(&self) -> Result<Comment, String>{
         let em = db::get_db();
         let clause = format!("where id={}", self.id);
