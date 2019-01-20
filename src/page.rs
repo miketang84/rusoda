@@ -1,3 +1,9 @@
+#[macro_use] mod helper_macros;
+mod db;
+mod model;
+mod dataservice;
+mod util;
+
 
 // include page modules
 mod index;
@@ -18,7 +24,7 @@ impl SapperSmock for WebPage {
         // init web instance state
         let mut web = init_web_instance(req);
         req.ext_mut().insert::<WebContext>(web);
-    
+
         Ok(())
     }
 

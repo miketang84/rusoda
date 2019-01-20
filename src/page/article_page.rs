@@ -14,14 +14,17 @@ impl ArticlePage {
 
     pub fn article_create_page(req: &mut Request) -> SapperResult<Response> {
 
+        res_html!("article_create_page.html", web)
     }
 
     pub fn article_edit_page(req: &mut Request) -> SapperResult<Response> {
 
+        res_html!("article_edit_page.html", web)
     }
     
     pub fn article_detail_page(req: &mut Request) -> SapperResult<Response> {
 
+        res_html!("article_detail_page.html", web)
     }
 
 }
