@@ -23,7 +23,7 @@ pub fn set_session(account: &str, ttl: usize) -> Result<String, String> {
 
 
 
-/// ===== Struct Area =====
+/// ===== Struct Definition =====
 // these structs are defined for request params
 pub struct UserSignUp {
     pub account: String,
@@ -36,17 +36,17 @@ pub struct UserLogin {
     password: String,
 }
 
-use self::for_write::{
-    UserCreate,
-    UserEdit,
-
-    SectionCreate,
-};
-
 pub struct UserChangePassword {
     pub old_password: String,
     pub new_password: String,
 }
+
+use self::for_write::{
+    UserCreate,
+    UserEdit,
+    SectionCreate,
+};
+
 
 /// ===== Implementation Area =====
 ///

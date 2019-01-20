@@ -8,18 +8,23 @@ use sapper::{
 use sapper_std::{
     JsonParams,
     SessionVal,
-    res_html
+    render
 };
-use serde_json;
+use crate::serde_json;
+
+use crate::db;
+// introduce macros
+use sapper_std::res_html;
+use crate::AppWebContext;
 
 pub struct IndexPage;
 
 impl IndexPage {
 
     pub fn index(req: &mut Request) -> SapperResult<Response> {
-        let mut web = req.ext().get::<WebContent>().unwrap();
-        let redis_conn = get_redis!();
-        let db_conn = get_db!();
+        let mut web = req.ext().get::<AppWebContext>().unwrap();
+        let db_conn = db::get_db();
+        let redis_conn = db::get_redis();
 
         // get latest 10 articles and digests
         // let latest_articles = ....

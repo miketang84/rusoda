@@ -8,7 +8,6 @@ use crate::util::{random_string, sha3_256_encode};
 use uuid::Uuid;
 
 
-
 pub struct SectionNew {
     pub title: String,
     pub description: String,

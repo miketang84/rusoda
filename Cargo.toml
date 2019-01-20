@@ -10,33 +10,18 @@ env_logger = "0.5"
 rand = "^0.3.17"
 tiny-keccak = "^1.3.1"
 redis = "0.9"
+sapper = {git = "https://github.com/sappworks/sapper", branch = "dev"}
+sapper_std = {git = "https://github.com/sappworks/sapper_std", branch = "dev"}
+rustorm = {path = "../rustorm", features = ["with-postgres"]}
+rustorm_dao = {path = "../rustorm/dao"}
+rustorm_codegen = {path = "../rustorm/codegen"}
+uuid = {features = ["serde", "v4"], version = "0.5.1"}
+chrono = {features = ["serde"], version = "0.4"}
+serde = "*"
+serde_json = "*"
+serde_derive = "*"
 
-[dependencies]
-sapper_std = {git = "https://github.com/sappworks/sapper_std"}
-
-[dependencies.sapper]
-git = "https://github.com/sappworks/sapper"
-branch = "dev"
-
-[dependencies.rustorm]
-#git = "https://github.com/ivanceras/rustorm"
-path = "../rustorm"
-features = ["with-postgres"]
-
-[dependencies.rustorm_dao]
-#git = "https://github.com/ivanceras/rustorm"
-path = "../rustorm/dao"
-
-[dependencies.rustorm_codegen]
-#git = "https://github.com/ivanceras/rustorm"
-path = "../rustorm/codegen"
-
-[dependencies.uuid]
-features = ["serde", "v4"]
-version = "0.5.1"
-
-[dependencies.chrono]
-features = ["serde"]
-version = "0.4"
-
+[[bin]]
+name = "page_bin"
+path = "src/page_bin.rs"
 
