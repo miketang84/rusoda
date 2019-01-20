@@ -41,6 +41,7 @@ impl ArticlePage {
 impl SapperModule for ArticlePage {
     fn before(&self, req: &mut Request) -> SapperResult<()> {
 
+        Ok(())
     }
 
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {

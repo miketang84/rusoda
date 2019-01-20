@@ -29,6 +29,7 @@ impl CommentPage {
 impl SapperModule for CommentPage {
     fn before(&self, req: &mut Request) -> SapperResult<()> {
 
+        Ok(())
     }
 
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {

@@ -44,7 +44,8 @@ impl IndexPage {
 
 impl SapperModule for IndexPage {
     fn before(&self, req: &mut Request) -> SapperResult<()> {
-
+        
+        Ok(())
     }
 
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {

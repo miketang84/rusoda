@@ -41,7 +41,7 @@ impl SectionPage {
 impl SapperModule for SectionPage {
     fn before(&self, req: &mut Request) -> SapperResult<()> {
         
-
+        Ok(())
     }
 
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {
