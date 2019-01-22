@@ -5,309 +5,128 @@
 {% endblock title %}
 
 {% block content %}
-    <!--<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/default.min.css">-->
-    <link rel="stylesheet" href="/css/gruvbox-light.css">
-    <script src="/js/highlight.pack.js"></script>
+<!--<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/default.min.css">-->
+<link rel="stylesheet" href="/css/gruvbox-light.css">
+<script src="/js/highlight.pack.js"></script>
 
-    <div class="meta"
-            {% if user %}
-         data-role="{{ user.role }}"
+<div class="article_detail detail">
+    <div class="">
+        {% if article.stype == 0 %}
+            <a data-node-type="parent" href="/section/{{ article.section_id }}" class="return">&lt; 返回版块</a>
+        {% else %}
+            <a data-node-type="parent" href="/blogsection/{{ author.id }}" class="return">&lt; 返回博客</a>
+        {% endif %}
+        <div>
+            <h3><a href="">{{ article.title }}</a></h3>
+        </div>
+        <p class="vice-title">
+            {% if article.stype == 0 %}
+                <!--<a href="/user/{{ author.id }}">{{ author.nickname }}</a>-->
+                <a href="/blogsection/{{ author.id }}">{{ author.nickname }}</a>
             {% else %}
-         data-role="-1"
+                <a href="/blogsection/{{ author.id }}">{{ author.nickname }}</a>
             {% endif %}
-         data-id="{{ article.id }}"
-         data-author-id="{{ author.id }}"
-         data-page-size="{{ page_size }}"
-         style="display: none;"></div>
+            发表于 <span class="article_created_time"></span>
 
-    <div class="detail">
-        <div class="border">
-            <div class="underline padding-rectangle">
-                {% if article.stype == 0 %}
-                    <a data-node-type="parent" href="/section/{{ article.section_id }}" class="return">&lt; 返回版块</a>
-                {% else %}
-                    <a data-node-type="parent" href="/blogsection/{{ author.id }}" class="return">&lt; 返回博客</a>
+            {% if user %}
+                {% if user.role <= 1 or user.id == article.author_id %}
+                    <a class="edit" href="#">编辑</a>
                 {% endif %}
-                <div>
-                    <h3><span onclick="window.location.reload();" style="cursor: pointer;"
-                              title="刷新">{{ article.title }}</span></h3>
-                </div>
-                <p class="vice-title">
-                    {% if article.stype == 0 %}
-                        <!--<a href="/user/{{ author.id }}">{{ author.nickname }}</a>-->
-                        <a href="/blogsection/{{ author.id }}">{{ author.nickname }}</a>
-                    {% else %}
-                        <a href="/blogsection/{{ author.id }}">{{ author.nickname }}</a>
-                    {% endif %}
-                    发表于 <span class="article_created_time"></span>
+            {% endif %}
+        </p>
+        <p>
+            <!-- <small>标签：{{ article.tags }}</small> -->
+            {% if article.tags %}
+                <div id="tags"></div>
+            {% endif %}
+        </p>
+    </div>
 
-                    {% if user %}
-                        {% if user.role <= 1 or user.id == article.author_id %}
-                            <a class="edit" href="#">编辑</a>
-                        {% endif %}
-                    {% endif %}
-                </p>
-                <p>
-                    <!-- <small>标签：{{ article.tags }}</small> -->
-                    {% if article.tags %}
-                        <div id="tags"></div>
-                    {% endif %}
-                </p>
-            </div>
-            <div class="detail padding-square">
-                <div class="title">
-                    <div class="detail-body">
-                        {{ article.content | safe }}
-                    </div>
-                </div>
-            </div>
-
-            <div id="comments" class="padding-rectangle topline">
-                <div class="margin-bottom">
-                    <h3>评论区
-                        <button class="right new-comment">发表新回复</button>
-                    </h3>
-                </div>
-
-                {% if comments | length == 0 %}
-                    <p class="useless">还没有评论</p>
-                {% else %}
-                    {% for comment in comments %}
-                        <div class="item border">
-                            <div class="comment-title padding-rectangle">
-                                {% if comment.author_id == author.id %}
-                                    作者
-                                {% endif %}
-                                <a class="author-id" href="/blog/{{ comment.author_id }}">
-                                    {{ comment.nickname }}
-                                </a>
-                                <span class="created-time">{{ comment.created_time }}</span>
-                                {% if user %}
-                                    {% if user.role <= 1 or user.id == comment.author_id %}
-                                        <a class="delete" data-id="{{ comment.id }}"
-                                           data-author-id="{{ comment.author_id }}" href="#">删除</a>
-                                    {% endif %}
-                                    <a class="reply" data-id="{{ comment.id }}"
-                                       data-author-id="{{ comment.author_id }}" data-nickname="{{ comment.nickname }}"
-                                       href="#">回复</a>
-                                {% endif %}
-                            </div>
-                            <div class="comment-content padding-rectangle">
-                                {{ comment.content | safe }}
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-
-                <div class="template item border" style="display: none;">
-                    <div class="comment-title padding-rectangle">
-                        <a class="author-id"></a> <span class="created-time"></span>
-                        <a class="delete" data-id="" data-author-id="" href="#" style="display: none;">删除</a>
-                        <a class="reply" data-id="" data-author-id="" href="#" style="display: none;">回复</a>
-                    </div>
-                    <div class="comment-content padding-rectangle"></div>
-                </div>
-            </div>
-
-            <div style="width: 100%; height: 25px;" class="padding-square margin-bottom">
-                <div class="paginator right">
-                    {% for _ in range(end=max_page) %}
-                        {% if loop.index < 5 or loop.index > max_page - 3 %}
-                            <a data-node-type="brother" href="/article/{{ article.id }}?page={{ loop.index }}"
-                                    {% if loop.index==page %} class="paging" {% endif %}>
-                                {{ loop.index }}
-                            </a>
-                        {% elif loop.index == 5 %}
-                            <span>.....</span>
-                        {% endif %}
-                    {% endfor %}
-                    共 {{ total }} 评论, 共 {{ max_page }} 页
-                </div>
-            </div>
-
-            <div id="new-comment" class="padding-rectangle topline" style="display: none;">
-                <div>
-                    <h3>添加新评论</h3>
-                    <p class="hint" style="display: none"></p>
-                    <textarea name="content" placeholder="有何高见？"></textarea>
-                    <br> <br>
-                    <button name="submit" data-api="/api/v1/comment/new">Biu！发送！</button>
-                </div>
+    <div class="">
+        <div class="title">
+            <div class="detail-body">
+                {{ article.content | safe }}
             </div>
         </div>
     </div>
 
-    <script type="application/javascript">
-        "use strict";
+    <div id="comments" class="">
+        <div class="margin-bottom">
+            <h3>评论区
+                <button class="right new-comment">发表新回复</button>
+            </h3>
+        </div>
 
-        function hightlight($doms) {
-            $doms.each(function (i, block) {
-                hljs.highlightBlock(block);
-            });
-        }
+        {% if comments | length == 0 %}
+            <p class="useless">还没有评论</p>
+        {% else %}
+            {% for comment in comments %}
+            <div class="item border">
+                <div class="comment-title padding-rectangle">
+                    {% if comment.author_id == author.id %}
+                        作者
+                    {% endif %}
+                    <a class="author-id" href="/blog/{{ comment.author_id }}">
+                        {{ comment.nickname }}
+                    </a>
+                    <span class="created-time">{{ comment.created_time }}</span>
+                    {% if user %}
+                        {% if user.role <= 1 or user.id == comment.author_id %}
+                            <a class="delete" data-id="{{ comment.id }}"
+                                data-author-id="{{ comment.author_id }}" href="#">删除</a>
+                        {% endif %}
+                        <a class="reply" data-id="{{ comment.id }}"
+                            data-author-id="{{ comment.author_id }}" data-nickname="{{ comment.nickname }}"
+                            href="#">回复</a>
+                    {% endif %}
+                </div>
+                <div class="comment-content padding-rectangle">
+                    {{ comment.content | safe }}
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
 
-        hightlight($("pre code"));
+        <div class="template item border" style="display: none;">
+            <div class="comment-title padding-rectangle">
+                <a class="author-id"></a> <span class="created-time"></span>
+                <a class="delete" data-id="" data-author-id="" href="#" style="display: none;">删除</a>
+                <a class="reply" data-id="" data-author-id="" href="#" style="display: none;">回复</a>
+            </div>
+            <div class="comment-content padding-rectangle"></div>
+        </div>
+    </div>
 
-        var tag = new Tag("tags");
-        tag.tagValue = "{{ article.tags }}";
-        tag.initView();
+    <div class="padding-square paginator_part">
+        <div class="paginator right">
+            {% for _ in range(end = paginator.max_page) %}
+            <a href="/article/{{ article.id }}?page={{ loop.index }}"
+                    {% if loop.index==paginator.current_page %} class="paging" {% endif %}>
+                {{ loop.index }}
+            </a>
+            {% endfor %}
+            共 {{ paginator.total }} 评论, 共 {{ paginator.total_page }} 页
+        </div>
+    </div>
 
-        // format article date
-        var datetime_str = "{{ article.created_time }}";
-        $('.article_created_time').text(new Date(datetime_str).LocalFormat());
-        var mbody = $('#comments');
-        mbody.find('.comment-title').each(function (i) {
-            var that = $(this);
-            that.find('.created-time').text(
-                new Date(that.find('.created-time').text()).LocalFormat()
-            );
+    <div id="new-comment" class="padding-rectangle topline" style="display: none;">
+        <div>
+            <h3>添加新评论</h3>
+            <p class="hint" style="display: none"></p>
+            <textarea name="content" placeholder="有何高见？"></textarea>
+            <br> <br>
+            <button name="submit" data-api="/api/v1/comment/new">Biu！发送！</button>
+        </div>
+    </div>
+</div>
+
+<script type="application/javascript">
+    function hightlight($doms) {
+        $doms.each(function (i, block) {
+            hljs.highlightBlock(block);
         });
+    }
 
-        function getArticleID() {
-            return window.location.pathname.split('/')[2];
-        }
-
-        function deleteComment(commentID, authorID, callback) {
-            $.ajax({
-                type: "POST",
-                url: "/api/v1/comment/delete",
-                contentType: 'application/json; charset=utf-8',
-                dataType: "json",
-                data: JSON.stringify({
-                    comment_id: commentID,
-                    author_id: authorID
-                }),
-                success: function (response) {
-                    if (callback !== undefined) {
-                        callback(response);
-                    }
-                }
-            })
-        }
-
-        function listenDeleteClick() {
-            $("a.delete").on("click", function (e) {
-                e.preventDefault();
-                var $this = $(this);
-
-                var commentID = $this.data("id");
-                var authorID = $this.data("author-id");
-
-                if (!confirm("确认删除？")) return;
-
-                deleteComment(commentID, authorID, function (response) {
-                    if (response.status === true) {
-                        alert("删除成功");
-                        $this.closest("div.item").remove();
-                    } else {
-                        alert("删除失败");
-                    }
-                });
-            });
-        }
-
-        function listenReplyClick() {
-            $("a.reply").on("click", function (e) {
-                e.preventDefault();
-                var $this = $(this);
-
-                var nickname = $this.data("nickname");
-                // comment author id
-                var replyUserId = $this.data("author-id");
-
-                /* @current aaa @xx bbb @xx cc */
-                var originText = "@" + nickname + " "
-                    + $this.closest(".item").find(".comment-content").text().trim();
-                var replies = originText.split('@');
-                var history = replies.map(function (rpl, index) {
-                    return ("@" + rpl).trim().split("\n").map(function (line) {
-                        return "> ".repeat(index) + line;
-                    }).join("\n");
-                });
-                history.shift();
-                var markdown = "\n\n" + history.join("\n");
-
-                $(".hint").text("正在回复 @" + nickname).show();
-                $("div#new-comment")
-                    .show()
-                    .find("textarea")
-                    .data("markdown", markdown)
-                    .data("reply-user-id", replyUserId)
-                    .focus();
-            });
-        }
-
-        function addListeners() {
-            listenDeleteClick();
-            listenReplyClick();
-        }
-
-        function submit() {
-            var $textarea = $("textarea[name='content']");
-            var content = $textarea.val();
-
-            if (content.trim().length === 0) {
-                alert("请输入评论内容！");
-                return;
-            }
-
-            var markdown = $textarea.data("markdown");
-            if (markdown !== undefined && markdown.indexOf("@") > -1) {
-                content += markdown;
-                // clear reply hidden text
-                $textarea.data("markdown", "");
-            }
-            var replyData = {
-                content: content,
-                article_id: getArticleID()
-            };
-            var replyUserId = $textarea.data("reply-user-id");
-            if (replyUserId && replyUserId.length) {
-                replyData['reply_user_id'] = replyUserId;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: $("button[name='submit']").data("api"),
-                contentType: 'application/json; charset=utf-8',
-                dataType: "json",
-                data: JSON.stringify(replyData),
-                success: function (response) {
-                    if (response.status === true) {
-                        window.location.reload();
-                    } else {
-                        alert("发射失败...???");
-                    }
-                }
-            })
-        }
-
-
-        $(function () {
-            // new comment
-            $("button.new-comment").on("click", function () {
-                function run_if_logged_in() {
-                    // show DOM
-                    $("div#new-comment").show();
-                    $("textarea[name='content']").focus();
-                    // hide reply hint
-                    $(".hint").text("").hide();
-                }
-
-                checkLoggedIn(run_if_logged_in);
-            });
-
-            // new article button event
-            $("button[name='submit']").on("click", submit);
-
-            // edit article
-            $(".edit").on("click", function () {
-                var uri = '/user/article/edit?id=' + $('.meta').data("id");
-                window.location.href = uri;
-            });
-
-            addListeners();
-            ctrlEnterThen($('textarea'), submit);
-        });
-    </script>
+    hightlight($("pre code"));
+</script>
 {% endblock content %}
