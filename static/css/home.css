@@ -1,0 +1,113 @@
+.text-danger {
+    color: red
+}
+
+img.avatar {
+    max-height: 300px;
+    max-width: 300px;
+    border-radius: 5px;
+}
+
+img.round-avatar {
+    border-radius: 50%;
+}
+
+.navigation, .information, .modify, .change_password {
+    margin-top: 30px;
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.navigation {
+    width: 100%;
+}
+
+.navigation ul {
+    display: inline-block;
+    border-radius: 5px;
+    list-style-type: none;
+    margin: 0;
+    padding: 5px 0;
+    font-size: 20px;
+    width: 100%;
+    color: #337ab7;
+}
+
+.navigation ul li {
+    float: left;
+}
+
+.navigation ul a {
+    display: block;
+    text-align: center;
+    padding: 10px 20px;
+    text-decoration: none;
+}
+
+.navigation ul a:hover {
+    cursor: pointer;
+    background-color: #eee;
+    color: #111;
+}
+
+.navigation ul a.active {
+    border-bottom: solid gray 2px;
+}
+
+.information {
+    display: block;
+    width: 66.66666667%;
+}
+
+.module {
+    background: #fbf1c7;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    margin-left: 15px;
+}
+
+.modify, .change_password {
+    width: 66.66666667%;
+    float: left;
+    display: none;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+input, textarea {
+    display: block;
+    padding-left: 10px;
+    width: 96%;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+input {
+    height: 34px;
+}
+
+#footer {
+    position: relative;
+    width: 100%;
+    float: left;
+}

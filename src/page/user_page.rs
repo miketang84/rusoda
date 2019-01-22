@@ -57,6 +57,8 @@ impl SapperModule for UserPage {
         router.get("/p/user/modifypwd", Self::user_modifypwd_page);
         router.get("/p/user", Self::user_detail_page);
 
+        router.get("/p/user/__admin_login__", Self::user_admin_login);
+
         Ok(())
     }
 }

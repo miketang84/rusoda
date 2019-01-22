@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Rust语言中文社区-首页
+{% endblock title %}
+
+{% block content %}
+<div class="body-content">
+    {% if notice.title and notice.desc %}
+    <div class="notice">
+        <p class="title">{{ notice.title }}</p>
+        <p class="desc">{{ notice.desc }}</p>
+    </div>
+    {% endif %}
+
+    <div class="article-list-section">
+        <div class="article-list-head head">
+            <span>最新帖子</span>
+        </div>
+        {% if articles_length  == 0 %}
+        <p>这里还没有内容哦……</p>
+        {% else %}
+        <div class="article-list-container container">
+            <ul>
+            {% for article in articles %}
+                <li>
+                    <a href="/article/{{ article.id }}">{{ article.title }}</a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        <div style="clear:both;"></div>
+    </div>
+
+    <!-- Member Blog Planet Space -->
+    <div class="planet-space-section">
+        <div class="planet-space-head head">
+            <span>博客星球</span>
+        </div>
+        {% if blogs_length == 0 %}
+        <p>这里还没有内容哦……</p>
+        {% else %}
+        <div class="planet-space-container container">
+            <ul>
+            {% for blog in blogs %}
+                <li>
+                    <a href="/blog/{{ blog.id }}">{{ blog.author_name }}：{{ blog.title }}</a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        <div style="clear:both;"></div>
+    </div>
+
+    <div class="category-list-section">
+        {% if categories_length  == 0 %}
+        <p>这里还没有内容哦……</p>
+        {% else %}
+        <div class="category-list-container container">
+            <ul>
+            {% for cate in categories %}
+                <li>
+                    <a href="/section/{{ cate.id }}">{{ cate.title }}</a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        <div style="clear:both;"></div>
+
+    </div>
+</div>
+{% endblock content %}

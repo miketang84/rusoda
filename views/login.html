@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}
+    登录 - Rust语言中文社区
+{% endblock title %}
+
+{% block script %}
+    <script src="/js/login.js"></script>
+{% endblock script %}
+
+{% block content %}
+<div class="content-area">
+    <h4>登录</h4>
+    <div id="login_form">
+        <b>Login</b>
+        <br>
+        <br>
+        <form>
+            <table border="0">
+                <tbody>
+                <tr>
+                    <td>Account:</td>
+                    <td><input type="text" name="account" value="" size="20" autofocus="autofocus"
+                                placeholder="Email" id="login_account"></td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td><input type="password" name="password" value="" size="20" placeholder="Password"
+                                id="login_password"></td>
+                </tr>
+                </tbody>
+            </table>
+            <label class="checkbox remember">
+                <input type="checkbox" name="remember" class=""/> Remember 90 day
+            </label>
+            <input type="button" class="btn btn-success pull-right" id="login" value="Login "/>
+        </form>
+    </div>
+</div>
+{% endblock content %}
