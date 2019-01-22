@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+    创建新版块
+{% endblock title %}
+
+{% block content %}
+    <div id="new-section" class="">
+        <b>创建新版块</b>
+        <br>
+        <form>
+            <table border="0">
+                <tbody>
+                <tr>
+                    <td>
+                        <input type="text" size="20" autofocus="autofocus" placeholder="版块名称" id="title">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" size="20" placeholder="版块描述" id="description">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <br>
+            <input type="submit" id="submit" value="创建"/>
+        </form>
+    </div>
+
+{% endblock content %}

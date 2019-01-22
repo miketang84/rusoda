@@ -72,7 +72,7 @@ pub struct Section {
     pub description: String,
 
     // use stype to separate forum section and user blog section
-    // 0 section, 1 user blog
+    // 0 section, 1 user blog section
     pub stype: i32,
 
     // if stype==1, record the binding user to section
@@ -126,6 +126,8 @@ pub struct Article {
 pub struct Comment {
 
     pub id: Uuid,
+
+    pub raw_content: String,
 
     pub content: String,
 

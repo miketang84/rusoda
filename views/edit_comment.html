@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+    编辑评论 - Rust语言中文社区
+{% endblock title %}
+
+{% block content %}
+
+    <div class="body-content">
+        <h3>
+            编辑评论
+        </h3>
+	<p>帖子：<span>{{article.title}}</span></p>
+        <form class="">
+		<input type="hidden" name="article_id" value="{{article.id}}">
+		<input type="hidden" name="id" value="{{comment.id}}">
+                <br> 
+		<textarea name="raw_content" placeholder="支持 Markdown 哦，快来试试吧" autofocus>{{comment.raw_content}}</textarea>
+                <br> 
+                <input type="submit" name="submit">Biu！发送！</input>
+        </form>
+    </div>
+
+{% endblock content %}

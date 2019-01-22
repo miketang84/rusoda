@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}
+    编辑帖子 - Rust语言中文社区
+{% endblock title %}
+
+{% block content %}
+
+    <div class="body-content">
+        <h3>
+            编辑帖子
+        </h3>
+        <form class="">
+		版块：<select name="section_id">
+			{% for section in sections do %}
+			{% if article.section_id == section.id do %}
+			<option value ="{{section.id}}" selected>{{section.title}}</option>
+			{% else %}
+			<option value ="{{section.id}}">{{section.title}}</option>
+			{% endif %}
+			{% endfor %}
+		</select>
+
+		<input class="input" type="text" name="title" placeholder="这里输入标题" value="{{article.title}}">
+                <br> 
+		<input class="input" type="text" name="tags" placeholder="这里输入标签 以英文逗号分隔" value="{{article.tags}}">
+                <br> 
+		<textarea name="raw-content" placeholder="支持 Markdown 哦，快来试试吧" autofocus>{{article.raw_content}}</textarea>
+                <br> 
+                <input type="submit" name="submit">Biu！发送！</input>
+        </form>
+    </div>
+
+{% endblock content %}

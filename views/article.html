@@ -51,9 +51,9 @@
     </div>
 
     <div id="comments" class="">
-        <div class="margin-bottom">
+        <div class="">
             <h3>评论区
-                <button class="right new-comment">发表新回复</button>
+                <a class="right new-comment" href="/p/comment/new">发表新评论</a>
             </h3>
         </div>
 
@@ -62,7 +62,7 @@
         {% else %}
             {% for comment in comments %}
             <div class="item border">
-                <div class="comment-title padding-rectangle">
+                <div class="comment-title">
                     {% if comment.author_id == author.id %}
                         作者
                     {% endif %}
