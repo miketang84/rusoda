@@ -1,11 +1,11 @@
 
 use rustorm::DbError;
 use crate::db;
-use crate::model::Article;
-use crate::model::{for_write, for_read};
 use uuid::Uuid;
+use crate::model::{for_write, for_read};
 
-use self::for_write::{
+pub use crate::model::Article;
+pub use self::for_write::{
     ArticleCreate,
     ArticleEdit,
     ArticleDelete

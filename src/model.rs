@@ -82,6 +82,9 @@ pub struct Section {
 
     // 0 normal, 1 frozen, 2 deleted
     pub status: i16,
+    // for order, if smaller than zero, doesn't display it
+    // for blog section, it defaults -1.0
+    pub weight: f32
 }
 
 ///
@@ -259,11 +262,11 @@ pub mod for_write {
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct ArticleEdit {
         pub id: Uuid,
+        pub section_id: Uuid,
         pub title: String,
         pub raw_content: String,
         pub content: String,
         pub tags: String,
-        pub status: i16,
     }
 
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]

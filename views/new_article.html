@@ -5,26 +5,27 @@
 {% endblock title %}
 
 {% block content %}
-
-    <div class="body-content">
-        <h3>
-            新建帖子
-        </h3>
-        <form class="">
-		版块：<select name="section">
-			{% for section in sections do %}
-			<option value ="{{section.id}}">{{section.title}}</option>
-			{% endfor %}
-		</select>
-
-                <input class="input" type="text" name="title" placeholder="这里输入标题">
-                <br> 
-                <input class="input" type="text" name="tags" placeholder="这里输入标签 以英文逗号分隔">
-                <br> 
-                <textarea name="raw-content" placeholder="支持 Markdown 哦，快来试试吧" autofocus></textarea>
-                <br> 
-                <input type="submit" name="submit">Biu！发送！</input>
-        </form>
-    </div>
-
+<div class="body-content">
+    <h3>
+        新建帖子
+    </h3>
+    <form class="" action="/s/article/create" method="post">
+        版块：
+        <select name="section_id">
+            {% for section in sections do %}
+            <option value ="{{section.id}}">{{section.title}}</option>
+            {% endfor %}
+        </select>
+        <input type="hidden" name="prev_uri" value="{{prev_uri}}">
+        <input type="hidden" name="from" value="form">
+        <input type="hidden" name="stype" value="0">
+        <input type="text" name="title" placeholder="这里输入标题">
+        <br> 
+        <input type="text" name="tags" placeholder="这里输入标签 以英文逗号分隔">
+        <br> 
+        <textarea name="raw_content" placeholder="支持 Markdown 哦，快来试试吧" autofocus></textarea>
+        <br> 
+        <input type="submit" name="submit">Biu！发送！</input>
+    </form>
+</div>
 {% endblock content %}

@@ -106,5 +106,12 @@ impl Section {
         sections
     }
 
+    pub fn normal_sections() -> Vec<Section> {
+        let em = db::get_db();
+        let clause = "where stype=0";
+        let sections = db_select!(em, "", "", "where stype=0", Section);
+
+        sections
+    }
 
 }

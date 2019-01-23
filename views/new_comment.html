@@ -6,29 +6,27 @@
 
 {% block content %}
 
-    <div class="body-content">
-        <h3>
-            新评论
-        </h3>
+<div class="body-content">
+	<h3>
+		新评论
+	</h3>
 	<p>帖子：<span>{{article.title}}</span></p>
-	{% if reply_comment %}
-	<p>回复：<span>{{reply_comment.author_name}}</span>
-		<div>
-			{{reply_comment.content | safe}}
-		</div>
-	
-	</p>
-	{% endif %}
-        <form class="">
+	<form class="">
 		<input type="hidden" name="article_id" value="{{article.id}}">
 		{% if reply_comment %}
 		<input type="hidden" name="reply_comment_id" value="{{reply_comment.id}}">
 		{% endif %}
-                <br> 
-		<textarea name="raw_content" placeholder="支持 Markdown 哦，快来试试吧" autofocus></textarea>
-                <br> 
-                <input type="submit" name="submit">Biu！发送！</input>
-        </form>
-    </div>
+		<br> 
+		<textarea name="raw_content" placeholder="支持 Markdown 哦，快来试试吧" autofocus>
+		{% if reply_comment %}
+		@{{reply_comment.author_name}}：{{reply_comment.short_raw_content}}...
+		{% endif %}
+		
+		
+		</textarea>
+		<br> 
+		<input type="submit" name="submit">Biu！发送！</input>
+	</form>
+</div>
 
 {% endblock content %}

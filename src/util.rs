@@ -2,6 +2,8 @@
 use std::fmt::Write;
 use rand::{thread_rng, Rng};
 use tiny_keccak::Keccak;
+use ammonia::clean;
+use comrak::{markdown_to_html, ComrakOptions};
 
 #[inline]
 pub fn random_string(limit: usize) -> String {
@@ -22,4 +24,14 @@ pub fn sha3_256_encode(s: &str) -> String {
     hex
 }
 
-
+#[inline]
+pub fn markdown_render(md: &str) -> String {
+    let option = ComrakOptions {
+        ext_strikethrough: true,
+        ext_table: true,
+        ext_tasklist: true,
+        ext_superscript: true,
+        ..ComrakOptions::default()
+    };
+    clean(&markdown_to_html(md, &option))
+}

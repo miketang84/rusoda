@@ -13,6 +13,12 @@ pub struct ArticleApi;
 impl ArticleApi {
 
     pub fn article_create(req: &mut Request) -> SapperResult<Response> {
+        let params = get_form_params!(req);
+        let section_id = t_param!(params, "section_id");
+        let title = t_param!(params, "title");
+        let tags = t_param!(params, "tags");
+        let raw_content = t_param!(params, "raw_content");
+
 
     }
 
