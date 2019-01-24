@@ -40,7 +40,13 @@ impl ArticlePage {
 
     pub fn article_edit_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = req.ext().get::<AppWebContext>().unwrap();
-        
+        let params = get_query_params!(req);
+        let id = t_param_parse!(params, "id", Uuid);
+
+        let sections = Section::normal_sections();
+
+        // get article object
+
 
         res_html!("edit_article.html", web)
     }
@@ -106,7 +112,7 @@ impl ArticlePage {
 
         article_edit.update();
 
-        res_redirect!(prev_uri)
+        res_redirect!("/p/article?id=".to_string() + id)
     }
 
 }

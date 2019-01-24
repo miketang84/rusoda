@@ -1,5 +1,5 @@
 [package]
-name = "dagou"
+name = "rusota"
 version = "0.1.0"
 authors = ["Daogang Tang <daogangtang@live.com>"]
 edition = "2018"
