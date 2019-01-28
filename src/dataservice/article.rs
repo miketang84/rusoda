@@ -62,7 +62,7 @@ impl ArticleDelete    {
 // impl retrieving methods on this model, return various views of Section
 impl Article {
     // NOTICE: no self here
-    pub fn article_get_by_id(id: Uuid) -> Result<Article, String> {
+    pub fn get_by_id(id: Uuid) -> Result<Article, String> {
         let em = db::get_db();
         let clause = format!("where id={}", id);
         match db_find!(em, "", "", &clause, Article) {
@@ -75,7 +75,7 @@ impl Article {
         }
     }
 
-    pub fn article_paging(page: usize, page_size: usize) -> Vec<Article> {
+    pub fn paging(page: usize, page_size: usize) -> Vec<Article> {
         let em = db::get_db();
         let clause = format!("order by created_time desc limit {} offset {}", page_size, page_size*page);
         let articles = db_select!(em, "", "", &clause, Article);
@@ -83,7 +83,7 @@ impl Article {
         articles
     }
 
-    pub fn article_paging_by_section(section_id: Uuid, page: usize, page_size: usize) -> Vec<Article> {
+    pub fn paging_by_section(section_id: Uuid, page: usize, page_size: usize) -> Vec<Article> {
         let em = db::get_db();
         let clause = format!("where section_id={} order by created_time desc limit {} offset {}", section_id, page_size, page_size*page);
         let articles = db_select!(em, "", "", &clause, Article);

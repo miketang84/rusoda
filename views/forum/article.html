@@ -6,51 +6,44 @@
 
 {% block content %}
 <!--<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/default.min.css">-->
-<link rel="stylesheet" href="/css/gruvbox-light.css">
+<!-- <link rel="stylesheet" href="/css/gruvbox-light.css"> -->
 <script src="/js/highlight.pack.js"></script>
 
 <div class="article_detail detail">
     <div class="">
         {% if article.stype == 0 %}
-            <a data-node-type="parent" href="/section/{{ article.section_id }}" class="return">&lt; 返回版块</a>
+            <a data-node-type="parent" href="/p/section/?id={{ article.section_id }}" class="return">&lt; 返回版块</a>
         {% else %}
-            <a data-node-type="parent" href="/blogsection/{{ author.id }}" class="return">&lt; 返回博客</a>
+            <a data-node-type="parent" href="/p/blogsection/?author_id={{ author.id }}" class="return">&lt; 返回博客</a>
         {% endif %}
         <div>
-            <h3><a href="">{{ article.title }}</a></h3>
+            <h3><a href="/p/article?id={{article.id}}">{{ article.title }}</a></h3>
         </div>
         <p class="vice-title">
-            {% if article.stype == 0 %}
-                <!--<a href="/user/{{ author.id }}">{{ author.nickname }}</a>-->
-                <a href="/blogsection/{{ author.id }}">{{ author.nickname }}</a>
-            {% else %}
-                <a href="/blogsection/{{ author.id }}">{{ author.nickname }}</a>
-            {% endif %}
+            <a href="/p/blogsection/?author_id={{ author.id }}">{{ author.nickname }}</a>
+
             发表于 <span class="article_created_time"></span>
 
             {% if user %}
                 {% if user.role <= 1 or user.id == article.author_id %}
-                    <a class="edit" href="#">编辑</a>
+                    <a class="edit" href="/p/article/edit?id={{article.id}}">编辑</a>
                 {% endif %}
             {% endif %}
         </p>
         <p>
-            <!-- <small>标签：{{ article.tags }}</small> -->
             {% if article.tags %}
-                <div id="tags"></div>
+            <small>标签：{{ article.tags }}</small>
             {% endif %}
         </p>
     </div>
 
-    <div class="">
-        <div class="title">
-            <div class="detail-body">
-                {{ article.content | safe }}
-            </div>
-        </div>
+
+    <div class="detail-body">
+        {{ article.content | safe }}
     </div>
 
-    <div id="comments" class="">
+
+    <div class="comments">
         <div class="">
             <h3>评论区
                 <a class="right new-comment" href="/p/comment/new">发表新评论</a>
@@ -61,61 +54,39 @@
             <p class="useless">还没有评论</p>
         {% else %}
             {% for comment in comments %}
-            <div class="item border">
+            <div class="item">
                 <div class="comment-title">
                     {% if comment.author_id == author.id %}
                         作者
                     {% endif %}
-                    <a class="author-id" href="/blog/{{ comment.author_id }}">
+                    <a class="author-name" href="/p/blogsection/{{ comment.author_id }}">
                         {{ comment.nickname }}
                     </a>
                     <span class="created-time">{{ comment.created_time }}</span>
                     {% if user %}
                         {% if user.role <= 1 or user.id == comment.author_id %}
-                            <a class="delete" data-id="{{ comment.id }}"
-                                data-author-id="{{ comment.author_id }}" href="#">删除</a>
+                            <a class="delete" href="/p/comment/delete?id={{comment.id}}">删除</a>
                         {% endif %}
-                        <a class="reply" data-id="{{ comment.id }}"
-                            data-author-id="{{ comment.author_id }}" data-nickname="{{ comment.nickname }}"
-                            href="#">回复</a>
+                        <a class="reply" href="/p/comment/new?reply_id={{comment.id}}&article_id={{article.id}}">回复</a>
                     {% endif %}
                 </div>
-                <div class="comment-content padding-rectangle">
+                <div class="comment-content">
                     {{ comment.content | safe }}
                 </div>
             </div>
             {% endfor %}
         {% endif %}
-
-        <div class="template item border" style="display: none;">
-            <div class="comment-title padding-rectangle">
-                <a class="author-id"></a> <span class="created-time"></span>
-                <a class="delete" data-id="" data-author-id="" href="#" style="display: none;">删除</a>
-                <a class="reply" data-id="" data-author-id="" href="#" style="display: none;">回复</a>
-            </div>
-            <div class="comment-content padding-rectangle"></div>
-        </div>
     </div>
 
-    <div class="padding-square paginator_part">
-        <div class="paginator right">
-            {% for _ in range(end = paginator.max_page) %}
-            <a href="/article/{{ article.id }}?page={{ loop.index }}"
-                    {% if loop.index==paginator.current_page %} class="paging" {% endif %}>
+    <div class="comment_paginator_part">
+        <div class="comment_paginator right">
+            {% for _ in range(end = comment_paginator.total_page) %}
+            <a href="/p/article/?id={{article.id}}&comment_page={{loop.index}}"
+                    {% if loop.index==comment_paginator.current_page %} class="current_page" {% endif %}>
                 {{ loop.index }}
             </a>
             {% endfor %}
-            共 {{ paginator.total }} 评论, 共 {{ paginator.total_page }} 页
-        </div>
-    </div>
-
-    <div id="new-comment" class="padding-rectangle topline" style="display: none;">
-        <div>
-            <h3>添加新评论</h3>
-            <p class="hint" style="display: none"></p>
-            <textarea name="content" placeholder="有何高见？"></textarea>
-            <br> <br>
-            <button name="submit" data-api="/api/v1/comment/new">Biu！发送！</button>
+            共 {{ comment_paginator.total_comments }} 评论, 共 {{ comment_paginator.total_page }} 页
         </div>
     </div>
 </div>

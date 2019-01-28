@@ -16,6 +16,13 @@ use crate::AppWebContext;
 use crate::dataservice::article::ArticleCreate;
 use crate::util::markdown_render;
 
+static NUMBER_PER_PAGE: i32 = 50;
+struct CommentPaginator {
+    total_comments: i32,
+    total_page: i32,
+    current_page: i32
+}
+
 pub struct ArticlePage;
 
 impl ArticlePage {
@@ -35,7 +42,7 @@ impl ArticlePage {
         //web.add("from", from);
 
 
-        res_html!("new_article.html", web)
+        res_html!("forum/new_article.html", web)
     }
 
     pub fn article_edit_page(req: &mut Request) -> SapperResult<Response> {
@@ -43,16 +50,46 @@ impl ArticlePage {
         let params = get_query_params!(req);
         let id = t_param_parse!(params, "id", Uuid);
 
+        // get article object
+        let article = Article::get_by_id(id);
+        if article.is_none() {
+            return res_400!(format!("no this artile: {}", id);
+        }
+
         let sections = Section::normal_sections();
 
-        // get article object
+        web.add("sections", &sections);
+        web.add("article", &article);
 
-
-        res_html!("edit_article.html", web)
+        res_html!("forum/edit_article.html", web)
     }
     
     pub fn article_detail_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = req.ext().get::<AppWebContext>().unwrap();
+
+        let params = get_query_params!(req);
+        let id = t_param_parse!(params, "id", Uuid);
+        let comment_page = t_param_parse_default!(params, "comment_page", i32, 1);
+
+        let article = Article::get_by_id(id);
+        if article.is_none() {
+            return res_400!(format!("no this artile: {}", id);
+        }
+
+        // retrieve comments belongs to this article, and calculate its paginator
+        let total_comments = Comment::get_comments_count_belong_to_article(id);
+        let total_page = math.floor(total_comments / NUMBER_PER_PAGE) + 1;
+
+        let comment_paginator = CommentPaginator {
+            total_comments,
+            total_page,
+            current_page: comment_page
+        }
+
+        let comments = Comment::get_comments_paging_belong_to_article(id, comment_page);
+
+        // search a method to do count and do 
+
 
         res_html!("article.html", web)
     }
@@ -84,7 +121,8 @@ impl ArticlePage {
             status: 0,
         }
 
-        article_create.insert();
+        let result = article_create.insert();
+        info!("article insert result {:?}", result);
 
         res_redirect!(prev_uri)
     }
@@ -110,7 +148,8 @@ impl ArticlePage {
             content,
         }
 
-        article_edit.update();
+        let result = article_edit.update();
+        info!("article update result {:?}", result);
 
         res_redirect!("/p/article?id=".to_string() + id)
     }
