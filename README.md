@@ -1,3 +1,3 @@
 
-Dagou is a cms system written in Rust.
+Rusoda is a forum/blog/portal/cms integrated system written in Rust.
 
