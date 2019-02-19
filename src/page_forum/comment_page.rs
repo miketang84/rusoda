@@ -20,7 +20,7 @@ impl CommentPage {
     pub fn comment_edit_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = req.ext().get::<AppWebContext>().unwrap();
 
-        res_html!("index.html", web)
+        res_html!("forum/index.html", web)
     }
 
 }

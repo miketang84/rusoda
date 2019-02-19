@@ -21,25 +21,25 @@ impl UserPage {
     pub fn user_register_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = req.ext().get::<AppWebContext>().unwrap();
 
-        res_html!("user_register_page.html", web)
+        res_html!("forum/user_register_page.html", web)
     }
 
     pub fn user_login_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = req.ext().get::<AppWebContext>().unwrap();
 
-        res_html!("user_login_page.html", web)
+        res_html!("forum/user_login_page.html", web)
     }
 
     pub fn user_modifypwd_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = req.ext().get::<AppWebContext>().unwrap();
 
-        res_html!("user_modifypwd_page.html", web)
+        res_html!("forum/user_modifypwd_page.html", web)
     }
 
     pub fn user_detail_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = req.ext().get::<AppWebContext>().unwrap();
 
-        res_html!("user_detail_page.html", web)
+        res_html!("forum/user_detail_page.html", web)
     }
 }
 

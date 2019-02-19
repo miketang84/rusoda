@@ -36,7 +36,7 @@ impl IndexPage {
         // let 
 
 
-        res_html!("index.html", web)
+        res_html!("forum/index.html", web)
     }
 
 }

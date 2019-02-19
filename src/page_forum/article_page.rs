@@ -91,7 +91,7 @@ impl ArticlePage {
         // search a method to do count and do 
 
 
-        res_html!("article.html", web)
+        res_html!("forum/article.html", web)
     }
 
 

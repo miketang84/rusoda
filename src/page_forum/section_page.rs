@@ -20,19 +20,19 @@ impl SectionPage {
     pub fn section_create_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = req.ext().get::<AppWebContext>().unwrap();
 
-        res_html!("index.html", web)
+        res_html!("forum/index.html", web)
     }
 
     pub fn section_edit_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = req.ext().get::<AppWebContext>().unwrap();
 
-        res_html!("index.html", web)
+        res_html!("forum/index.html", web)
     }
     
     pub fn section_detail_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = req.ext().get::<AppWebContext>().unwrap();
 
-        res_html!("index.html", web)
+        res_html!("forum/index.html", web)
     }
 
 }
