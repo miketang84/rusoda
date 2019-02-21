@@ -73,7 +73,7 @@ impl ArticlePage {
 
         let article = Article::get_by_id(id);
         if article.is_none() {
-            return res_400!(format!("no this artile: {}", id);
+            return res_400!(format!("no this artile: {}", id));
         }
 
         // retrieve comments belongs to this article, and calculate its paginator

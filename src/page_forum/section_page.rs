@@ -18,22 +18,23 @@ pub struct SectionPage;
 impl SectionPage {
 
     pub fn section_create_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = req_ext_entity!(AppWebContext).unwrap();
+        let mut web = reqext_entity!(req, AppWebContext).unwrap();
 
         res_html!("forum/new_section.html", web)
     }
 
     pub fn section_edit_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = req_ext_entity!(AppWebContext).unwrap();
+        let mut web = reqext_entity!(req, AppWebContext).unwrap();
 
         res_html!("forum/edit_section.html", web)
     }
     
     pub fn section_detail_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = req_ext_entity!(AppWebContext).unwrap();
+        let mut web = reqext_entity!(req, AppWebContext).unwrap();
 
         let params = get_form_params!(req);
         let section_id = t_param!(params, "id", Uuid);
+        let current_page = t_param_parse_default!(params, "current_page", i32, 1);
 
         let section_result = Section::section_by_id(section_id);
         if section_result.is_err() {
@@ -47,7 +48,7 @@ impl SectionPage {
         }
         let is_myown_blog = false;
         let is_admin = false;
-        match req_ext_entity!(req, AppUser) {
+        match reqext_entity!(req, AppUser) {
             Some(user) => {
                 if section.suser == Some(user.id) {
                     is_myown_blog = true;
@@ -58,20 +59,22 @@ impl SectionPage {
             },
             None => {}
         }
-        
-        let current_page
-        let total_page
-        let total_item
 
+        let total_item = Section::get_articles_count_belong_to_this(section.id);
+        let total_page = math.floor(total_item / NUMBER_PER_PAGE) + 1;
 
-        let articles
+        let articles = Section::get_articles_paging_belong_to_this(section.id, current_page);
 
-
+        web.add("section", &section);
+        web.add("is_a_blog", &is_a_blog);
+        web.add("is_myown_blog", &is_myown_blog);
+        web.add("is_admin", &is_admin);
+        web.add("total_item", &section);
+        web.add("total_page", &section);
+        web.add("current_page", &current_page);
 
         res_html!("forum/section.html", web)
     }
-
-
 
 
 
@@ -124,7 +127,7 @@ impl SapperModule for SectionPage {
     fn before(&self, req: &mut Request) -> SapperResult<()> {
         let (path, _) = req.uri();
         if path.starts_with("/s/") {
-            match req_ext_entity!(req, AppUser) {
+            match reqext_entity!(req, AppUser) {
                 Some(ref user) => {
                     if user.role >= 9 {
                         // pass, nothing need to do here
