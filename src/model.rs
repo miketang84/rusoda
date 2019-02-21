@@ -315,6 +315,21 @@ pub mod for_write {
 //
 pub mod for_read {
 
+    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
+    pub struct RuserPublic {
+        pub id: Uuid,
+        pub account: String,
+        pub nickname: String,
+        pub avatar: Option<String>,
+        pub wx_openid: Option<String>,
+        pub say: Option<String>,
+        pub signup_time: DateTime<Utc>,
+        pub role: i16,
+        pub status: i16,
+        pub github: Option<String>,
+    }
+
+
 
 }
 

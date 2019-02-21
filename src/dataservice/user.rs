@@ -41,17 +41,20 @@ pub struct UserChangePassword {
     pub new_password: String,
 }
 
-use self::for_write::{
+pub use self::for_write::{
     UserCreate,
     UserEdit,
     SectionCreate,
 };
 
+pub use self::for_read::{
+    RuserPublic,
+};
 
 /// ===== Implementation Area =====
 ///
 impl UserSignUp {
-    pub fn sign_up_with_email (&self) -> Result<Ruser, String>{
+    pub fn sign_up_with_email (&self) -> Result<String, String>{
         let em = db::get_db();
         let salt = random_string(6);
 
@@ -83,10 +86,10 @@ impl UserSignUp {
                         };
                         section.insert();
 
+                        Ok("register success.")
+                        //let ttl = 60*24*3600;
                         // set user cookies to redis to keep login session
-                        set_session(&user.account, 24*3600).unwrap();
-
-                        Ok(user.to_owned())
+                        //set_session(&user.account, ttl)
                     },
                     None => {
                         unreachable!();
@@ -99,7 +102,7 @@ impl UserSignUp {
 
 impl UserLogin {
 
-    pub fn verify_login(&self, max_age: &Option<usize>) -> Result<String, String> {
+    pub fn verify_login(&self) -> Result<String, String> {
         let em = db::get_db();
 
         let rest_clause = format!("WHERE status=0 and account='{}'", self.account);
@@ -108,10 +111,7 @@ impl UserLogin {
             Some(user) => {
                 // check calulation equality
                 if user.password == sha3_256_encode(&format!("{}{}", self.password, user.salt)) {
-                    let ttl = match *max_age {
-                        Some(t) => t * 3600,
-                        None => 24 * 60 * 60,
-                    };
+                    let ttl = 60*24*3600;
 
                     // store session
                     set_session(&self.account, ttl)
@@ -155,19 +155,26 @@ impl UserChangePassword {
 }
 
 
-impl Ruser {
-    pub fn get_user_by_cookie(cookie: &str) -> Result<Ruser, String> {
+impl RuserPublic {
+    pub fn get_user_by_cookie(cookie: &str) -> Result<RuserPublic, String> {
         let em = db::get_db();
         let redis = db::get_redis();
         let account: String = redis.hget(cookie, "account").unwrap();
-
-        let clause = format!("where account={}", account);
-        match db_find!(em, "", "", &clause, Ruser) {
-            Some(user) => {
-                Ok(user)
+        match redis.hget(cookie, "account") {
+            Ok(account) => {
+                let clause = format!("where account={}", account);
+                match db_find!(em, "", "", &clause, RuserPublic) {
+                    Some(user) => {
+                        Ok(user)
+                    },
+                    None => Err("no this user".to_string())
+                }
             },
-            None => Err("no this user".to_string())
+            Err(_) => {
+                Err("no cookie cached".to_string())
+            }
         }
+       
     }
 
     pub fn sign_out(cookie: &str) -> Result<(), String> {
@@ -178,21 +185,4 @@ impl Ruser {
     }
 
 }
-
-
-
-
-
-
-pub fn test () {
-    let em = db::get_db();
-    let sql = "SELECT * FROM ruser LIMIT 10";
-    let users: Result<Vec<Ruser>, DbError> = em.execute_sql_with_return(sql, &[]);
-    let users = users.unwrap();
-    assert_eq!(users.len(), 1);
-    for user in users {
-        info!("user: {:?}", user);
-    }
-}
-
 

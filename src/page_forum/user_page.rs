@@ -14,33 +14,80 @@ use crate::db;
 use sapper_std::res_html;
 use crate::AppWebContext;
 
+use dataservice::user::{
+    UserLogin,
+    UserSignUp
+};
+
+
 pub struct UserPage;
 
 impl UserPage {
 
-    pub fn user_register_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = req.ext().get::<AppWebContext>().unwrap();
+    pub fn page_login_with3rd(req: &mut Request) -> SapperResult<Response> {
+        let mut web = req_ext_entity!(AppWebContext).unwrap();
 
-        res_html!("forum/user_register_page.html", web)
+        res_html!("forum/login_with3rd.html", web)
     }
 
-    pub fn user_login_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = req.ext().get::<AppWebContext>().unwrap();
+    pub fn page_login_with_admin(req: &mut Request) -> SapperResult<Response> {
+        let mut web = req_ext_entity!(AppWebContext).unwrap();
 
-        res_html!("forum/user_login_page.html", web)
+        res_html!("forum/login_with_admin.html", web)
     }
 
-    pub fn user_modifypwd_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = req.ext().get::<AppWebContext>().unwrap();
+    pub fn user_register(req: &mut Request) -> SapperResult<Response> {
 
-        res_html!("forum/user_modifypwd_page.html", web)
+        let params = get_form_params!(req);
+        let account = t_param!(params, "account");
+        let password = t_param!(params, "password");
+        let nickname = t_param!(params, "nickname");
+
+        let user_signup = UserSignUp {
+            account,
+            password,
+            nickname
+        };
+
+        // use dataservice logic
+        let _ = user_signup.sign_up_with_email();
+
+        // redirect to login with account and password
+        res_redirect!("/p/user/login_with_admin")
     }
 
-    pub fn user_detail_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = req.ext().get::<AppWebContext>().unwrap();
+    pub fn user_login(req: &mut Request) -> SapperResult<Response> {
 
-        res_html!("forum/user_detail_page.html", web)
+        let params = get_form_params!(req);
+        let account = t_param!(params, "account");
+        let password = t_param!(params, "password");
+
+        let user_login = UserLogin {
+            account,
+            password
+        };
+
+        // use dataservice logic
+        let cookie = user_login.verify_login().unwrap();
+
+        let mut response = Response::new();
+        let _ = set_cookie(
+            &mut response,
+            "rusoda_session".to_string(),
+            cookie,
+            None,
+            Some("/".to_string()),
+            None,
+            Some(60*24*3600),
+        );
+
+        // redirect to index
+        set_response_redirect!("/");
+
+        Ok(response)
     }
+
+
 }
 
 
@@ -51,13 +98,11 @@ impl SapperModule for UserPage {
     }
 
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {
+        router.get("/p/user/login_with3rd", Self::page_login_with3rd);
+        router.get("/p/user/login_with_admin", Self::page_login_with_admin);
 
-        router.get("/p/user/register", Self::user_register_page);
-        router.get("/p/user/login", Self::user_login_page);
-        router.get("/p/user/modifypwd", Self::user_modifypwd_page);
-        router.get("/p/user", Self::user_detail_page);
-
-        router.get("/p/user/__admin_login__", Self::user_admin_login);
+        router.post("/s/user/register", Self::user_register);
+        router.post("/s/user/login", Self::user_login);
 
         Ok(())
     }

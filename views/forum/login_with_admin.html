@@ -5,7 +5,6 @@
 {% endblock title %}
 
 {% block script %}
-    <script src="/js/login.js"></script>
 {% endblock script %}
 
 {% block content %}
@@ -15,8 +14,8 @@
         <b>Login</b>
         <br>
         <br>
-        <form>
-            <table border="0">
+        <form action="/s/user/login" method="post">
+            <table>
                 <tbody>
                 <tr>
                     <td>Account:</td>
@@ -30,10 +29,7 @@
                 </tr>
                 </tbody>
             </table>
-            <label class="checkbox remember">
-                <input type="checkbox" name="remember" class=""/> Remember 90 day
-            </label>
-            <input type="button" class="btn btn-success pull-right" id="login" value="Login "/>
+            <input type="submit" id="login" value="Login"/>
         </form>
     </div>
 </div>

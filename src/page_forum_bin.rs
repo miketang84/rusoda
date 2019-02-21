@@ -7,7 +7,10 @@ use sapper::{
     Response,
     Key
 };
-use sapper_std::WebContext;
+use sapper_std::{
+    WebContext,
+    SessionVal
+};
 
 use serde;
 use serde_json;
@@ -33,18 +36,38 @@ impl Key for AppWebContext {
     type Value = WebContext;
 }   
 
+pub struct AppUser;
+impl Key for AppUser { 
+    type Value = WebContext;
+}   
 
 
 // define global smock
-struct WebPage;
+struct PageForum;
 
 impl SapperSmock for WebPage {
     fn before(&self, req: &mut Request) -> SapperResult<()> {
         // define cookie prefix
-        sapper_std::init(req, Some("forustm_session"))?;
+        sapper_std::init(req, Some("rusoda_session"))?;
         // init web instance state
         let mut web = WebContext::new();
+        // we can add something to web
+
+        // insert it to req
         req.ext_mut().insert::<AppWebContext>(web);
+
+        match req.ext().get::<SessionVal>() {
+            Some(cookie) => {
+                // using this cookie to retreive user instance
+                match RuserPublic::get_user_by_cookie(&cookie) {
+                    Ok(user) => {
+                        req.ext_mut().insert::<AppUser>(user);
+                    },
+                    Err(_) => {}
+                }
+            },
+            None => {}
+        }
 
         Ok(())
     }
@@ -61,7 +84,7 @@ fn main () {
     let mut app = SapperApp::new();
     app.address(addr)
         .port(port)
-        .with_smock(Box::new(WebPage))
+        .with_smock(Box::new(PageForum))
         .add_module(Box::new(page::index_page::IndexPage))
         .add_module(Box::new(page::user_page::UserPage))
         .add_module(Box::new(page::section_page::SectionPage))
