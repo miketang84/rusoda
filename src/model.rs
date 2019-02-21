@@ -49,7 +49,7 @@ pub struct Ruser {
     // user signup time
     pub signup_time: DateTime<Utc>,
 
-    // user role: member => 2, manager => 1, admin => 0
+    // user role: member => 0, admin => 9
     pub role: i16,
 
     // user status: 0 normal, 1 frozen, 2 deleted

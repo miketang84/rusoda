@@ -5,28 +5,17 @@
 {% endblock title %}
 
 {% block content %}
-    <div id="edit-section" class="">
-        <b>编辑版块</b>
+<div id="edit-section" class="">
+    <b>编辑版块</b>
+    <br>
+    <form action="/s/section/edit" method="post">
+        <input type="hidden" name="id" value="{{section.id}}">
         <br>
-        <form>
-	    <input type="hidden" name="id" value="{{section.id}}">
-            <table border="0">
-                <tbody>
-                <tr>
-                    <td>
-			    <input type="text" size="20" autofocus="autofocus" placeholder="版块名称" name="title" value="{{section.title}}">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-			    <input type="text" size="20" placeholder="版块描述" name="description" value="{{section.description}}">
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <br>
-            <input type="submit" id="submit" value="提交"/>
-        </form>
-    </div>
-
+        <input type="text" size="20" autofocus="autofocus" placeholder="版块名称" name="title" value="{{section.title}}">
+        <br>
+        <input type="text" size="20" placeholder="版块描述" name="description" value="{{section.description}}">
+        <br>
+        <input type="submit" id="submit" value="提交"/>
+    </form>
+</div>
 {% endblock content %}

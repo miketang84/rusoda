@@ -92,7 +92,7 @@ impl Section {
                 Ok(sec.to_owned())
             },
             None => {
-                Err("Insert section error.".to_string())
+                Err("get section error.".to_string())
             }
         }
     }
