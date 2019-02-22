@@ -36,7 +36,7 @@ impl SectionPage {
         let section_id = t_param!(params, "id", Uuid);
         let current_page = t_param_parse_default!(params, "current_page", i32, 1);
 
-        let section_result = Section::section_by_id(section_id);
+        let section_result = Section::get_by_id(section_id);
         if section_result.is_err() {
             return res_404!("Not Found");
         }

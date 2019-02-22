@@ -13,7 +13,7 @@ pub struct SectionNew {
     pub description: String,
 }
 
-use self::for_write::{
+pub use crate::model::for_write::{
     SectionCreate,
     SectionEdit,
     SectionDelete
@@ -84,7 +84,7 @@ impl SectionDelete    {
 
 // impl retrieving methods on this model, return various views of Section
 impl Section {
-    pub fn section_by_id(id: Uuid) -> Result<Section, String> {
+    pub fn get_by_id(id: Uuid) -> Result<Section, String> {
         let em = db::get_db();
         let clause = format!("where id='{}'", id);
         match db_find!(em, "", "", &clause, Section) {
@@ -97,7 +97,7 @@ impl Section {
         }
     }
 
-    pub fn section_by_ids(ids: Vec<Uuid>) -> Vec<Section> {
+    pub fn get_by_ids(ids: Vec<Uuid>) -> Vec<Section> {
         let em = db::get_db();
         let ids_str = ids.iter().map(|u| u.to_string()).collect::<Vec<String>>().join(", ");
         let clause = format!("where id in ({})", ids_str);

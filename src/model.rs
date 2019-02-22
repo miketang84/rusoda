@@ -222,6 +222,7 @@ pub mod for_write {
         pub id: Uuid
     }
 
+
     /// Section DMO
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct SectionCreate {
@@ -318,7 +319,7 @@ pub mod for_write {
 pub mod for_read {
 
     #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
-    pub struct RuserPublic {
+    pub struct RuserWithoutPwd {
         pub id: Uuid,
         pub account: String,
         pub nickname: String,

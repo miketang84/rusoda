@@ -2,7 +2,6 @@
 use rustorm::DbError;
 use crate::db;
 use crate::model::Ruser;
-use crate::model::{for_write, for_read};
 use crate::util::{random_string, sha3_256_encode};
 use redis::Commands;
 use chrono::{DateTime, Utc};
@@ -41,15 +40,17 @@ pub struct UserChangePassword {
     pub new_password: String,
 }
 
-pub use self::for_write::{
+pub use crate::model::for_write {
     UserCreate,
     UserEdit,
     SectionCreate,
 };
 
-pub use self::for_read::{
-    RuserPublic,
+pub use crate::model::for_read {
+    RuserWithoutPwd,
 };
+
+pub use self::Ruser;
 
 /// ===== Implementation Area =====
 ///
@@ -155,15 +156,15 @@ impl UserChangePassword {
 }
 
 
-impl RuserPublic {
-    pub fn get_user_by_cookie(cookie: &str) -> Result<RuserPublic, String> {
+impl Ruser {
+    pub fn get_user_by_cookie(cookie: &str) -> Result<RuserWithoutPwd, String> {
         let em = db::get_db();
         let redis = db::get_redis();
         let account: String = redis.hget(cookie, "account").unwrap();
         match redis.hget(cookie, "account") {
             Ok(account) => {
                 let clause = format!("where account={}", account);
-                match db_find!(em, "", "", &clause, RuserPublic) {
+                match db_find!(em, "", "", &clause, RuserWithoutPwd) {
                     Some(user) => {
                         Ok(user)
                     },

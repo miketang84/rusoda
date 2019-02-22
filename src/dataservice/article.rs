@@ -5,7 +5,7 @@ use uuid::Uuid;
 use crate::model::{for_write, for_read};
 
 pub use crate::model::Article;
-pub use self::for_write::{
+pub use crate::model::for_write::{
     ArticleCreate,
     ArticleEdit,
     ArticleDelete
