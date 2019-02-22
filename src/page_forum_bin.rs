@@ -20,15 +20,11 @@ mod db;
 mod model;
 mod dataservice;
 mod util;
+mod middleware;
 
 
 // include page modules
-mod page;
-//mod index_page;
-//mod user_page;
-//mod section_page;
-//mod article_page;
-//mod comment_page;
+mod page_forum;
 
 
 pub struct AppWebContext;
@@ -85,11 +81,11 @@ fn main () {
     app.address(addr)
         .port(port)
         .with_smock(Box::new(PageForum))
-        .add_module(Box::new(page::index_page::IndexPage))
-        .add_module(Box::new(page::user_page::UserPage))
-        .add_module(Box::new(page::section_page::SectionPage))
-        .add_module(Box::new(page::article_page::ArticlePage))
-        .add_module(Box::new(page::comment_page::CommentPage))
+        .add_module(Box::new(page_forum::index_page::IndexPage))
+        .add_module(Box::new(page_forum::user_page::UserPage))
+        .add_module(Box::new(page_forum::section_page::SectionPage))
+        .add_module(Box::new(page_forum::article_page::ArticlePage))
+        .add_module(Box::new(page_forum::comment_page::CommentPage))
         .static_file_service(true);
 
     println!("Start listen on http://{}:{}", addr, port);

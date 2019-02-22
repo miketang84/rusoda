@@ -125,31 +125,23 @@ impl SectionPage {
 
 impl SapperModule for SectionPage {
     fn before(&self, req: &mut Request) -> SapperResult<()> {
-        let (path, _) = req.uri();
-        if path.starts_with("/s/") {
-            match reqext_entity!(req, AppUser) {
-                Some(ref user) => {
-                    if user.role >= 9 {
-                        // pass, nothing need to do here
-                    }
-                    else {
-                        return res_400!("No permissions.")
-                    }
-                },
-                None => {
-                    return res_400!("No permissions.")
-                }
+        match permission_need_be_admin(req) {
+            Ok(_) => {
+                // pass, nothing need to do here
+            },
+            Err(info) => {
+                return res_400!(info)
             }
         }
-
+        
         Ok(())
     }
 
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {
+        router.get("/section", Self::section_detail_page);
+
         router.get("/p/section/create", Self::section_create_page);
         router.get("/p/section/edit", Self::section_edit_page);
-        router.get("/p/section", Self::section_detail_page);
-
         router.post("/s/section/create", Self::section_create);
         router.post("/s/section/edit", Self::section_edit);
 

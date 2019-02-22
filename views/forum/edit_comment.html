@@ -10,7 +10,7 @@
         编辑评论
     </h3>
     <p>帖子：<span>{{article.title}}</span></p>
-    <form class="">
+    <form class="" action="/s/comment/edit" method="post">
         <input type="hidden" name="article_id" value="{{article.id}}">
         <input type="hidden" name="id" value="{{comment.id}}">
         <br> 

@@ -77,6 +77,19 @@ impl Comment {
 
         comments
     }
+
+    pub fn get_by_id(id: Uuid) -> Result<Comment, String> {
+        let em = db::get_db();
+        let clause = format!("where id={}", id);
+        match db_find!(em, "", "", &clause, Comment) {
+            Some(comment) => {
+                Ok(comment.to_owned())
+            },
+            None => {
+                Err("get comment error.".to_string())
+            }
+        }
+    }
 }
 
 

@@ -277,6 +277,7 @@ pub mod for_write {
     /// Comment DMO
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct CommentCreate {
+        pub raw_content: String,
         pub content: String,
         pub article_id: Uuid,
         pub author_id: Uuid,
@@ -286,6 +287,7 @@ pub mod for_write {
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct CommentEdit {
         pub id: Uuid,
+        pub raw_content: String,
         pub content: String,
     }
 

@@ -159,15 +159,23 @@ impl ArticlePage {
 
 impl SapperModule for ArticlePage {
     fn before(&self, req: &mut Request) -> SapperResult<()> {
+        match permission_need_login(req) {
+            Ok(_) => {
+                // pass, nothing need to do here
+            },
+            Err(info) => {
+                return res_400!(info)
+            }
+        }
 
         Ok(())
     }
 
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {
+        router.get("/article", Self::article_detail_page);
+
         router.get("/p/article/create", Self::article_create_page);
         router.get("/p/article/edit", Self::article_edit_page);
-        router.get("/p/article", Self::article_detail_page);
-
         router.post("/s/article/create", Self::article_create);
         router.post("/s/article/edit", Self::article_edit);
 
