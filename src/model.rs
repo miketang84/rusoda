@@ -109,7 +109,7 @@ pub struct Article {
 
     pub tags: String,
 
-    // used to planet order ranking: 0 section, 1 user blog
+    // used to planet order ranking: 0 forum article, 1 user blog article
     pub stype: i32,
 
     pub created_time: DateTime<Utc>,
@@ -339,7 +339,23 @@ pub mod for_read {
         pub created_time: DateTime<Utc>,
         pub section_title: String,      // left join from section
         pub author_name: String,        // left join from ruser
+    }
 
+    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
+    pub struct BlogArticleForList {
+        pub id: Uuid,
+        pub title: String,
+        pub created_time: DateTime<Utc>,
+        pub author_name: String,        // left join from ruser
+    }
+
+    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
+    pub struct CommentWithAuthorName {
+        pub id: Uuid,
+        pub content: String,
+        pub author_id: Uuid,
+        pub created_time: DateTime<Utc>,
+        pub author_name: String,        // left join from ruser
     }
 
 

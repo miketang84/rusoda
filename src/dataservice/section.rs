@@ -115,4 +115,23 @@ impl Section {
         sections
     }
 
+     pub fn get_articles_paging_belong_to_this(section_id: Uuid, current_page: usize) -> Vec<ArticleForList> {
+        let em = db::get_db();
+
+        let offset = NUMBER_PER_PAGE * (current_page - 1);
+
+        let clause = format!("where section_id={} order by created_time desc limit {} offset {}", section_id, NUMBER_PER_PAGE, offset);
+        let articles = db_select!(em, "", "", &clause, ArticleForList);
+
+        articles
+    }
+
+    pub fn get_articles_count_belong_to_this(section_id: Uuid) -> i32 {
+        let em = db::get_db();
+        let clause = format!("where section_id={}", section_id);
+        let count = db_find!(em, "count(*)", "", &clause, Article);
+
+        count
+    }
+
 }

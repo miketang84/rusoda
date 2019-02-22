@@ -61,22 +61,6 @@ impl CommentDelete    {
 
 // impl retrieving methods on this model, return various views of Section
 impl Comment {
-    // NOTICE: no self here
-    pub fn get_comments_paging_belong_to_article(article_id: Uuid) -> Vec<Comment> {
-        let em = db::get_db();
-        let clause = format!("where article_id={} order by created_time desc", article_id);
-        let comments = db_select!(em, "", "", &clause, Comment);
-
-        comments
-    }
-
-    pub fn get_comments_count_belong_to_article(article_id: Uuid) -> i32 {
-        let em = db::get_db();
-        let clause = format!("where article_id={} order by created_time desc", article_id);
-        let comments = db_select!(em, "", "", &clause, Comment);
-
-        comments
-    }
 
     pub fn get_by_id(id: Uuid) -> Result<Comment, String> {
         let em = db::get_db();

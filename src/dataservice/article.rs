@@ -94,12 +94,43 @@ impl Article {
     pub fn get_latest_articles(size: u32) -> Vec<ArticleForList> {
         let em = db::get_db();
         // need to alias names
-        let head_clause = "id, title, created_time, section.title as section_title, ruser.nickname as author_name"
-        let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id"
-        let rest_clause = format!("ORDER BY created_time DESC LIMIT {}", size);
+        let head_clause = "article.id, article.title, article.created_time, section.title as section_title, ruser.nickname as author_name";
+        let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id";
+        let rest_clause = format!("WHERE article.stype = 0 ORDER BY created_time DESC LIMIT {}", size);
         let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList);
 
         articles
+    }
+
+    pub fn get_latest_articles(size: u32) -> Vec<BlogArticleForList> {
+        let em = db::get_db();
+        // need to alias names
+        let head_clause = "article.id, article.title, article.created_time, ruser.nickname as author_name";
+        let from_clause = "FROM article LEFT JOIN ruser ON article.author_id = ruser.id";
+        let rest_clause = format!("WHERE article.stype = 1 ORDER BY created_time DESC LIMIT {}", size);
+        let blog_articles = db_select!(em, head_clause, from_clause, &rest_clause, BlogArticleForList);
+
+        blog_articles
+    }
+
+    pub fn get_comments_paging_belong_to_this(article_id: Uuid, current_page: usize) -> Vec<CommentWithAuthorName> {
+        let em = db::get_db();
+
+        let offset = NUMBER_PER_PAGE * (current_page - 1);
+        let head_clause = "comment.id, comment.title, comment.author_id, comment.created_time, ruser.nickname";
+        let from_clause = "FROM comment LEFT JOIN ruser ON comment.author_id = ruser.id";
+        let clause = format!("where article_id={} order by created_time desc limit {} offset {}", article_id, NUMBER_PER_PAGE, offset);
+        let comments = db_select!(em, head_clause, from_clause, &clause, CommentWithAuthorName);
+
+        comments
+    }
+
+    pub fn get_comments_count_belong_to_this(article_id: Uuid) -> i32 {
+        let em = db::get_db();
+        let clause = format!("where article_id={}", article_id);
+        let count = db_find!(em, "count(*)", "", &clause, Comment);
+
+        count
     }
 
 }
