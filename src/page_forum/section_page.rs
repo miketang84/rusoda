@@ -42,12 +42,13 @@ impl SectionPage {
         }
         
         let section = section_result.unwrap();
-        let is_a_blog = false;
+        let mut is_a_blog = false;
         if section.stype == 1 {
             is_a_blog = true;
         }
-        let is_myown_blog = false;
-        let is_admin = false;
+        let mut is_myown_blog = false;
+        let mut is_admin = false;
+        let mut is_login = false;
         match reqext_entity!(req, AppUser) {
             Some(user) => {
                 if section.suser == Some(user.id) {
@@ -56,6 +57,10 @@ impl SectionPage {
                 if user.role >= 9 {
                     is_admin = true;
                 }
+
+                is_login = true;
+                web.add("is_login", &is_login);
+                web.add("user", &user);
             },
             None => {}
         }

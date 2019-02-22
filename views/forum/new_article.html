@@ -12,8 +12,12 @@
     <form class="" action="/s/article/create" method="post">
         版块：
         <select name="section_id">
-            {% for section in sections do %}
+            {% for section in sections %}
+            {% if section_id == section.id %}
+            <option value ="{{section.id}}" selected>{{section.title}}</option>
+            {% else %}
             <option value ="{{section.id}}">{{section.title}}</option>
+            {% endif %}
             {% endfor %}
         </select>
         <input type="hidden" name="prev_uri" value="{{prev_uri}}">

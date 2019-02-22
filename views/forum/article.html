@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    {{ res.title }} - Rust语言中文社区
+    {{ article.title }} - Rust语言中文社区
 {% endblock title %}
 
 {% block content %}
@@ -12,22 +12,20 @@
 <div class="article_detail detail">
     <div class="">
         {% if article.stype == 0 %}
-            <a data-node-type="parent" href="/p/section/?id={{ article.section_id }}" class="return">&lt; 返回版块</a>
+            <a href="/section?id={{ article.section_id }}" class="return">&lt; 返回版块</a>
         {% else %}
-            <a data-node-type="parent" href="/p/blogsection/?author_id={{ author.id }}" class="return">&lt; 返回博客</a>
+            <a href="/blog?author_id={{ author.id }}" class="return">&lt; 返回博客</a>
         {% endif %}
         <div>
-            <h3><a href="/p/article?id={{article.id}}">{{ article.title }}</a></h3>
+            <h3><a href="/article?id={{article.id}}">{{ article.title }}</a></h3>
         </div>
         <p class="vice-title">
-            <a href="/p/blogsection/?author_id={{ author.id }}">{{ author.nickname }}</a>
+            <a href="/blog?author_id={{ author.id }}">{{ author.nickname }}</a>
 
-            发表于 <span class="article_created_time"></span>
+            发表于 <span class="article_created_time">xxx</span>
 
-            {% if user %}
-                {% if user.role <= 1 or user.id == article.author_id %}
-                    <a class="edit" href="/p/article/edit?id={{article.id}}">编辑</a>
-                {% endif %}
+            {% if is_author or is_admin %}
+            <a class="edit" href="/p/article/edit?id={{article.id}}">编辑</a>
             {% endif %}
         </p>
         <p>
@@ -37,11 +35,9 @@
         </p>
     </div>
 
-
     <div class="detail-body">
         {{ article.content | safe }}
     </div>
-
 
     <div class="comments">
         <div class="">
@@ -59,15 +55,15 @@
                     {% if comment.author_id == author.id %}
                         作者
                     {% endif %}
-                    <a class="author-name" href="/p/blogsection/{{ comment.author_id }}">
+                    <a class="author-name" href="/blog?author_id={{ comment.author_id }}">
                         {{ comment.nickname }}
                     </a>
                     <span class="created-time">{{ comment.created_time }}</span>
-                    {% if user %}
-                        {% if user.role <= 1 or user.id == comment.author_id %}
-                            <a class="delete" href="/p/comment/delete?id={{comment.id}}">删除</a>
-                        {% endif %}
-                        <a class="reply" href="/p/comment/new?reply_id={{comment.id}}&article_id={{article.id}}">回复</a>
+                    {% if is_login and user.id == comment.author_id %}
+                    <a class="delete" href="/p/comment/delete?id={{comment.id}}">删除</a>
+                    {% endif %}
+                    {% if is_login %}
+                    <a class="reply" href="/p/comment/new?reply_comment_id={{comment.id}}&article_id={{article.id}}">回复</a>
                     {% endif %}
                 </div>
                 <div class="comment-content">
@@ -80,13 +76,13 @@
 
     <div class="comment_paginator_part">
         <div class="comment_paginator right">
-            {% for _ in range(end = comment_paginator.total_page) %}
-            <a href="/p/article/?id={{article.id}}&comment_page={{loop.index}}"
-                    {% if loop.index==comment_paginator.current_page %} class="current_page" {% endif %}>
+            {% for _ in range(end = total_page) %}
+            <a href="/article?id={{article.id}}&current_page={{loop.index}}"
+                    {% if loop.index==current_page %} class="current_page" {% endif %}>
                 {{ loop.index }}
             </a>
             {% endfor %}
-            共 {{ comment_paginator.total_comments }} 评论, 共 {{ comment_paginator.total_page }} 页
+            共 {{ total_item }} 条评论, 共 {{ total_page }} 页
         </div>
     </div>
 </div>

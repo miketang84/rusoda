@@ -13,7 +13,11 @@ use crate::db;
 use sapper_std::res_html;
 use crate::AppWebContext;
 
-use crate::dataservice::article::ArticleCreate;
+use crate::dataservice::article::{
+    ArticleCreate,
+    ArticleEdit
+};
+
 use crate::util::markdown_render;
 
 static NUMBER_PER_PAGE: i32 = 50;
@@ -28,17 +32,15 @@ pub struct ArticlePage;
 impl ArticlePage {
 
     pub fn article_create_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = req.ext().get::<AppWebContext>().unwrap();
+        let mut web = reqext_entity!(req, AppWebContext).unwrap();
         let params = get_query_params!(req);
         let section_id = t_param!(params, "section_id");
-        let prev_uri = t_param!(params, "prev_uri");
         //let from = t_param!(params, "from");
 
         let sections = Section::normal_sections();
 
         web.add("section_id", section_id);
         web.add("sections", &sections);
-        web.add("prev_uri", prev_uri);
         //web.add("from", from);
 
 
@@ -46,13 +48,13 @@ impl ArticlePage {
     }
 
     pub fn article_edit_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = req.ext().get::<AppWebContext>().unwrap();
+        let mut web = reqext_entity!(req, AppWebContext).unwrap();
         let params = get_query_params!(req);
         let id = t_param_parse!(params, "id", Uuid);
 
         // get article object
         let article = Article::get_by_id(id);
-        if article.is_none() {
+        if article.is_err() {
             return res_400!(format!("no this artile: {}", id);
         }
 
@@ -65,30 +67,53 @@ impl ArticlePage {
     }
     
     pub fn article_detail_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = req.ext().get::<AppWebContext>().unwrap();
-
         let params = get_query_params!(req);
         let id = t_param_parse!(params, "id", Uuid);
-        let comment_page = t_param_parse_default!(params, "comment_page", i32, 1);
+        let current_page = t_param_parse_default!(params, "current_page", i32, 1);
 
-        let article = Article::get_by_id(id);
-        if article.is_none() {
+        let article_r = Article::get_by_id(id);
+        if article_r.is_err() {
             return res_400!(format!("no this artile: {}", id));
+        }
+        let article = article_r.unwrap();
+
+        let mut author = Ruser::get_by_id(article.author_id);
+        if author.is_err() {
+            return res_400!(format!("no this author: {}", article.author_id));
+        }
+
+        let mut is_author = false;
+        let mut is_admin = false;
+        let mut is_login = false;
+        match reqext_entity!(req, AppUser) {
+            Some(user) => {
+                if article.author_id == user.id) {
+                    is_author = true;
+                }
+                if user.role >= 9 {
+                    is_admin = true;
+                }
+
+                is_login = true;
+                web.add("is_login", &is_login);
+                web.add("user", &user);
+            },
+            None => {}
         }
 
         // retrieve comments belongs to this article, and calculate its paginator
-        let total_comments = Comment::get_comments_count_belong_to_article(id);
+        let total_item = Article::get_comments_count_belong_to_this(id);
         let total_page = math.floor(total_comments / NUMBER_PER_PAGE) + 1;
+        let comments = Article::get_comments_paging_belong_to_this(id, current_page);
 
-        let comment_paginator = CommentPaginator {
-            total_comments,
-            total_page,
-            current_page: comment_page
-        }
-
-        let comments = Comment::get_comments_paging_belong_to_article(id, comment_page);
-
-        // search a method to do count and do 
+        web.add("article", &article);
+        web.add("author", &author);
+        web.add("comments", &comments);
+        web.add("current_page", &current_page);
+        web.add("total_item", &total_item);
+        web.add("total_page", &total_page);
+        web.add("is_author", &is_author);
+        web.add("is_admin", &is_admin);
 
 
         res_html!("forum/article.html", web)
@@ -98,17 +123,16 @@ impl ArticlePage {
 
 
     pub fn article_create(req: &mut Request) -> SapperResult<Response> {
-        let mut user = req.ext().get::<AppUser>().unwrap();
-
         let params = get_form_params!(req);
         let section_id = t_param_parse!(params, "section_id", Uuid);
         let title = t_param!(params, "title");
         let tags = t_param!(params, "tags");
         let raw_content = t_param!(params, "raw_content");
         let stype = t_param_parse_default!(params, "stype", i32, 0);
-        let prev_uri = t_param_default!(params, "prev_uri", "/");
 
         let content = markdown_render(raw_content);
+
+        let user = reqext_entity!(req, AppUser).unwrap();
 
         let article_create = ArticleCreate {
             title,
@@ -121,14 +145,17 @@ impl ArticlePage {
             status: 0,
         }
 
-        let result = article_create.insert();
-        info!("article insert result {:?}", result);
-
-        res_redirect!(prev_uri)
-    }
+        match article_create.insert() {
+            Ok(article) => {
+                res_redirect!(format!("/article?id={}", article.id))
+            },
+            Err(_) => {
+                res_500!("article create error.")
+            }
+        }  
+     }
 
     pub fn article_edit(req: &mut Request) -> SapperResult<Response> {
-        let mut user = req.ext().get::<AppUser>().unwrap();
 
         let params = get_form_params!(req);
         let id = t_param_parse!(params, "id", Uuid);
@@ -148,12 +175,15 @@ impl ArticlePage {
             content,
         }
 
-        let result = article_edit.update();
-        info!("article update result {:?}", result);
-
-        res_redirect!("/p/article?id=".to_string() + id)
+        match article_edit.update() {
+            Ok(article) => {
+                res_redirect!(format!("/article?id={}", article.id))
+            },
+            Err(_) => {
+                res_500!("article edit error.")
+            }
+        }  
     }
-
 }
 
 

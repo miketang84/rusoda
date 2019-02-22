@@ -19,6 +19,7 @@ pub use crate::model::for_write::{
     SectionDelete
 };
 
+pub use self::Section;
 
 // impl some methods on request params structure
 impl SectionNew {
