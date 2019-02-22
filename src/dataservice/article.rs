@@ -91,6 +91,17 @@ impl Article {
         articles
     }
 
+    pub fn get_latest_articles(size: u32) -> Vec<ArticleForList> {
+        let em = db::get_db();
+        // need to alias names
+        let head_clause = "id, title, created_time, section.title as section_title, ruser.nickname as author_name"
+        let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id"
+        let rest_clause = format!("ORDER BY created_time DESC LIMIT {}", size);
+        let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList);
+
+        articles
+    }
+
 }
 
 

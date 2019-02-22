@@ -332,6 +332,15 @@ pub mod for_read {
         pub github: Option<String>,
     }
 
+    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
+    pub struct ArticleForList {
+        pub id: Uuid,
+        pub title: String,
+        pub created_time: DateTime<Utc>,
+        pub section_title: String,      // left join from section
+        pub author_name: String,        // left join from ruser
+
+    }
 
 
 }

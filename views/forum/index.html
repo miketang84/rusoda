@@ -6,25 +6,22 @@
 
 {% block content %}
 <div class="body-content">
-    {% if notice.title and notice.desc %}
-    <div class="notice">
-        <p class="title">{{ notice.title }}</p>
-        <p class="desc">{{ notice.desc }}</p>
-    </div>
-    {% endif %}
-
     <div class="article-list-section">
         <div class="article-list-head head">
             <span>最新帖子</span>
         </div>
-        {% if articles_length  == 0 %}
+        {% if articles | length  == 0 %}
         <p>这里还没有内容哦……</p>
         {% else %}
         <div class="article-list-container container">
             <ul>
             {% for article in articles %}
                 <li>
-                    <a href="/article/{{ article.id }}">{{ article.title }}</a>
+                    <a href="/article/{{ article.id }}">
+                        [{{article.section_title}}]: 
+                        {{ article.title }}
+                    </a>
+                    <span>{{article.created_time}}</span>
                 </li>
             {% endfor %}
             </ul>
@@ -38,7 +35,7 @@
         <div class="planet-space-head head">
             <span>博客星球</span>
         </div>
-        {% if blogs_length == 0 %}
+        {% if blogs | length == 0 %}
         <p>这里还没有内容哦……</p>
         {% else %}
         <div class="planet-space-container container">
@@ -55,14 +52,14 @@
     </div>
 
     <div class="category-list-section">
-        {% if categories_length  == 0 %}
+        {% if categories | length  == 0 %}
         <p>这里还没有内容哦……</p>
         {% else %}
         <div class="category-list-container container">
             <ul>
             {% for cate in categories %}
                 <li>
-                    <a href="/section/{{ cate.id }}">{{ cate.title }}</a>
+                    <a href="/section?id={{ cate.id }}">{{ cate.title }}</a>
                 </li>
             {% endfor %}
             </ul>

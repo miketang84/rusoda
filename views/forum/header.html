@@ -8,8 +8,13 @@
     </div>
 
     <div class="signpart right">
+        {% if user %}
+        <a href="/blog?author_id={{user.id}}">{{user.nickname}}</a>
+        <a href="/signout">登出</a>
+        {% else %}
         <a href="/login_page">登录</a>
-		<!--<a href="/signout">Sign Out</a>-->
+        {% endif %}
+		
 		<div style="clear:both;"></div>
 	</div>
 	<div style="clear:both;"></div>

@@ -49,14 +49,12 @@ impl SapperSmock for WebPage {
         let mut web = WebContext::new();
         // we can add something to web
 
-        // insert it to req
-        req.ext_mut().insert::<AppWebContext>(web);
-
         match req.ext().get::<SessionVal>() {
             Some(cookie) => {
                 // using this cookie to retreive user instance
-                match RuserPublic::get_user_by_cookie(&cookie) {
+                match Ruser::get_user_by_cookie(&cookie) {
                     Ok(user) => {
+                        web.add("user", &user);
                         req.ext_mut().insert::<AppUser>(user);
                     },
                     Err(_) => {}
@@ -64,6 +62,9 @@ impl SapperSmock for WebPage {
             },
             None => {}
         }
+
+        // insert it to req
+        req.ext_mut().insert::<AppWebContext>(web);
 
         Ok(())
     }

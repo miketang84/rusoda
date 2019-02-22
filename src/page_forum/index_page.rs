@@ -22,19 +22,21 @@ pub struct IndexPage;
 impl IndexPage {
 
     pub fn index(req: &mut Request) -> SapperResult<Response> {
-        let mut web = req.ext().get::<AppWebContext>().unwrap();
+        let mut web = reqext_entity!(req, AppWebContext).unwrap();
         let db_conn = db::get_db();
         let redis_conn = db::get_redis();
 
-        // get latest 10 articles and digests
-        // let latest_articles = ....
-        
+        let articles = Article::get_latest_articles(30);
 
+        let blog_articles = Article::get_latest_blog_articles(20);
 
         // get all configured index displaying sections
         // and latest commented three articles 
-        // let 
+        let sections = Section::get_order_sections();
 
+        web.add("articles", &articles);
+        web.add("blog_articles", &blog_articles);
+        web.add("sections", &sections);
 
         res_html!("forum/index.html", web)
     }
