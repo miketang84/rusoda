@@ -1,3 +1,4 @@
+use sapper::Request;
 use crate::AppUser;
 
 pub permission_need_login(req: &mut Request) -> Result<bool, String> {

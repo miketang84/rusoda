@@ -11,7 +11,6 @@ use crate::serde_json;
 
 use crate::db;
 // introduce macros
-use sapper_std::res_html;
 use crate::AppWebContext;
 
 use dataservice::user::{

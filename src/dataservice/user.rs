@@ -1,5 +1,4 @@
 
-use rustorm::DbError;
 use crate::db;
 use crate::model::Ruser;
 use crate::util::{random_string, sha3_256_encode};
@@ -157,14 +156,13 @@ impl UserChangePassword {
 
 
 impl Ruser {
-    pub fn get_user_by_cookie(cookie: &str) -> Result<RuserWithoutPwd, String> {
+    pub fn get_user_by_cookie(cookie: &str) -> Result<Ruser, String> {
         let em = db::get_db();
         let redis = db::get_redis();
-        let account: String = redis.hget(cookie, "account").unwrap();
         match redis.hget(cookie, "account") {
             Ok(account) => {
                 let clause = format!("where account={}", account);
-                match db_find!(em, "", "", &clause, RuserWithoutPwd) {
+                match db_find!(em, "", "", &clause, Ruser) {
                     Some(user) => {
                         Ok(user)
                     },

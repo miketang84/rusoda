@@ -6,7 +6,7 @@ use redis::Connection as RedisConnection;
 
 
 pub fn get_db() -> EntityManager {
-    let db_url = "postgres://postgres:123@localhost/forustm";
+    let db_url = "postgres://postgres:123@localhost/rusoda";
     let mut pool = Pool::new();
     let em = pool.em(db_url).unwrap();
 

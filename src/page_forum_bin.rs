@@ -1,4 +1,5 @@
 
+#[macro_use] extern crate sapper_std;
 use sapper::{
     App as SapperApp,
     Smock as SapperSmock,
@@ -26,6 +27,7 @@ mod middleware;
 // include page modules
 mod page_forum;
 
+use self::dataservice::user::Ruser;
 
 pub struct AppWebContext;
 impl Key for AppWebContext { 
@@ -34,8 +36,8 @@ impl Key for AppWebContext {
 
 pub struct AppUser;
 impl Key for AppUser { 
-    type Value = WebContext;
-}   
+    type Value = Ruser;
+} 
 
 
 // define global smock
@@ -76,7 +78,7 @@ impl SapperSmock for WebPage {
 }
 
 fn main () {
-    let addr = "0.0.0.0";
+    let addr = "127.0.0.1";
     let port = 8081;
     let mut app = SapperApp::new();
     app.address(addr)
@@ -93,3 +95,4 @@ fn main () {
     app.run_http();
 
 }
+
