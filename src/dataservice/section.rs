@@ -98,6 +98,19 @@ impl Section {
         }
     }
 
+    pub fn get_by_suser(suser_id: Uuid) -> Result<Section, String> {
+        let em = db::get_db();
+        let clause = format!("where suser='{}'", suser_id);
+        match db_find!(em, "", "", &clause, Section) {
+            Some(sec) => {
+                Ok(sec.to_owned())
+            },
+            None => {
+                Err("get section error.".to_string())
+            }
+        }
+    }
+
     pub fn get_by_ids(ids: Vec<Uuid>) -> Vec<Section> {
         let em = db::get_db();
         let ids_str = ids.iter().map(|u| u.to_string()).collect::<Vec<String>>().join(", ");

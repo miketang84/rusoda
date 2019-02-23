@@ -144,6 +144,7 @@ impl SapperModule for SectionPage {
 
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {
         router.get("/section", Self::section_detail_page);
+        router.get("/blog", Self::section_detail_page);
 
         router.get("/p/section/create", Self::section_create_page);
         router.get("/p/section/edit", Self::section_edit_page);

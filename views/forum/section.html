@@ -10,7 +10,7 @@
         <div>
             <h3>{{ section.title }}</h3>
             {% if is_myown_blog %}
-            <a class="right new-article" href="/p/article/create?section_id={{section.id}}">发表新文章</a>
+            <a class="right new-article" href="/p/blogarticle/create">发表新文章</a>
             {% else %}
             <a class="right new-article" href="/p/article/create?section_id={{section.id}}">发表新帖子</a>
             {% endif %}

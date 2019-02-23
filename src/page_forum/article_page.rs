@@ -34,14 +34,12 @@ impl ArticlePage {
     pub fn article_create_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = reqext_entity!(req, AppWebContext).unwrap();
         let params = get_query_params!(req);
-        let section_id = t_param!(params, "section_id");
-        //let from = t_param!(params, "from");
 
+        let section_id = t_param_parse_default!(params, "section_id", Uuid, Uuid::default());
         let sections = Section::normal_sections();
 
-        web.add("section_id", section_id);
+        web.add("section_id", &section_id);
         web.add("sections", &sections);
-        //web.add("from", from);
 
 
         res_html!("forum/new_article.html", web)
@@ -119,19 +117,15 @@ impl ArticlePage {
         res_html!("forum/article.html", web)
     }
 
-
-
-
     pub fn article_create(req: &mut Request) -> SapperResult<Response> {
         let params = get_form_params!(req);
-        let section_id = t_param_parse!(params, "section_id", Uuid);
+        let section_id = t_param_parse_default!(params, "section_id", Uuid, Uuid::default());
         let title = t_param!(params, "title");
         let tags = t_param!(params, "tags");
         let raw_content = t_param!(params, "raw_content");
         let stype = t_param_parse_default!(params, "stype", i32, 0);
 
         let content = markdown_render(raw_content);
-
         let user = reqext_entity!(req, AppUser).unwrap();
 
         let article_create = ArticleCreate {
@@ -184,6 +178,102 @@ impl ArticlePage {
             }
         }  
     }
+
+
+
+    // Blog Area
+    pub fn blog_article_create_page(req: &mut Request) -> SapperResult<Response> {
+        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let params = get_query_params!(req);
+
+        let is_in_blog = true;
+        web.add("is_in_blog", &is_in_blog);
+
+        res_html!("forum/new_article.html", web)
+    }
+
+    pub fn blog_article_edit_page(req: &mut Request) -> SapperResult<Response> {
+        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let params = get_query_params!(req);
+        let id = t_param_parse!(params, "id", Uuid);
+
+        let is_in_blog = true;
+        web.add("is_in_blog", &is_in_blog);
+
+        // get article object
+        let article = Article::get_by_id(id);
+        if article.is_err() {
+            return res_400!(format!("no this artile: {}", id);
+        }
+
+        web.add("article", &article);
+
+        res_html!("forum/edit_article.html", web)
+    }
+
+    pub fn blog_article_create(req: &mut Request) -> SapperResult<Response> {
+        let params = get_form_params!(req);
+
+        let title = t_param!(params, "title");
+        let tags = t_param!(params, "tags");
+        let raw_content = t_param!(params, "raw_content");
+        let stype = t_param_parse_default!(params, "stype", isize, 1);
+        let user = reqext_entity!(req, AppUser).unwrap();
+        let section_id = Section::get_by_suser(user.id).unwrap().id;
+
+        let content = markdown_render(raw_content);
+        let article_create = ArticleCreate {
+            title,
+            tags,
+            section_id,
+            author_id: user.id,
+            raw_content,
+            content,
+            stype,
+            status: 0,
+        }
+
+        match article_create.insert() {
+            Ok(article) => {
+                res_redirect!(format!("/article?id={}", article.id))
+            },
+            Err(_) => {
+                res_500!("article create error.")
+            }
+        }  
+     }
+
+     pub fn blog_article_edit(req: &mut Request) -> SapperResult<Response> {
+
+        let params = get_form_params!(req);
+        let id = t_param_parse!(params, "id", Uuid);
+        let title = t_param!(params, "title");
+        let tags = t_param!(params, "tags");
+        let raw_content = t_param!(params, "raw_content");
+        let user = reqext_entity!(req, AppUser).unwrap();
+        let section_id = Section::get_by_suser(user.id).unwrap().id;
+
+        let content = markdown_render(raw_content);
+
+        let article_edit = ArticleEdit {
+            id,
+            section_id,
+            title,
+            tags,
+            raw_content,
+            content,
+        }
+
+        match article_edit.update() {
+            Ok(article) => {
+                res_redirect!(format!("/article?id={}", article.id))
+            },
+            Err(_) => {
+                res_500!("article edit error.")
+            }
+        }  
+    }
+
 }
 
 
@@ -208,6 +298,11 @@ impl SapperModule for ArticlePage {
         router.get("/p/article/edit", Self::article_edit_page);
         router.post("/s/article/create", Self::article_create);
         router.post("/s/article/edit", Self::article_edit);
+
+        router.get("/p/blogarticle/create", Self::blog_article_create_page);
+        router.get("/p/blogarticle/edit", Self::blog_article_edit_page);
+        router.post("/s/blogarticle/create", Self::blog_article_create);
+        router.post("/s/blogarticle/edit", Self::blog_article_edit);
 
         Ok(())
     }

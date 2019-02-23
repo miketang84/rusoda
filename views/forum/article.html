@@ -14,18 +14,22 @@
         {% if article.stype == 0 %}
             <a href="/section?id={{ article.section_id }}" class="return">&lt; 返回版块</a>
         {% else %}
-            <a href="/blog?author_id={{ author.id }}" class="return">&lt; 返回博客</a>
+            <a href="/blog?id={{ article.section_id }}" class="return">&lt; 返回博客</a>
         {% endif %}
         <div>
             <h3><a href="/article?id={{article.id}}">{{ article.title }}</a></h3>
         </div>
         <p class="vice-title">
-            <a href="/blog?author_id={{ author.id }}">{{ author.nickname }}</a>
+            <a href="/blog?id={{ article.section_id }}">{{ author.nickname }}</a>
 
             发表于 <span class="article_created_time">xxx</span>
 
             {% if is_author or is_admin %}
+            {% if article.stype == 0 %}
             <a class="edit" href="/p/article/edit?id={{article.id}}">编辑</a>
+            {% else %}
+            <a class="edit" href="/p/blogarticle/edit?id={{article.id}}">编辑</a>
+            {% endif %}
             {% endif %}
         </p>
         <p>
@@ -55,7 +59,7 @@
                     {% if comment.author_id == author.id %}
                         作者
                     {% endif %}
-                    <a class="author-name" href="/blog?author_id={{ comment.author_id }}">
+                    <a class="author-name" href="/blog?id={{ article.section_id }}">
                         {{ comment.nickname }}
                     </a>
                     <span class="created-time">{{ comment.created_time }}</span>

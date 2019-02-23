@@ -9,6 +9,10 @@
     <h3>
         新建帖子
     </h3>
+    {% if is_in_blog %}
+    <form class="" action="/s/blogarticle/create" method="post">
+        <input type="hidden" name="stype" value="1">
+    {% else %}
     <form class="" action="/s/article/create" method="post">
         版块：
         <select name="section_id">
@@ -20,9 +24,9 @@
             {% endif %}
             {% endfor %}
         </select>
-        <input type="hidden" name="prev_uri" value="{{prev_uri}}">
-        <input type="hidden" name="from" value="form">
         <input type="hidden" name="stype" value="0">
+    {% endif %}
+        <input type="hidden" name="from" value="form">
         <input type="text" name="title" placeholder="这里输入标题">
         <br> 
         <input type="text" name="tags" placeholder="这里输入标签 以英文逗号分隔">

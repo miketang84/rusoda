@@ -9,6 +9,9 @@
     <h3>
         编辑帖子
     </h3>
+    {% if is_in_blog %}
+    <form class="" action="/s/blogarticle/edit" method="post">
+    {% else %}
     <form class="" action="/s/article/edit" method="post">
     版块：<select name="section_id">
         {% for section in sections do %}
@@ -19,6 +22,7 @@
         {% endif %}
         {% endfor %}
     </select>
+    {% endif %}
     <input type="hidden" name="id" value="{{article.id}}">
     <input class="input" type="text" name="title" placeholder="这里输入标题" value="{{article.title}}">
     <br> 
