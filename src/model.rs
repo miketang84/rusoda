@@ -244,6 +244,12 @@ pub mod for_write {
         pub id: Uuid,
     }
 
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct UpdateSectionWeight {
+        pub id: Uuid,
+        pub weight: f32
+    }
+
 
     /// Article DMO
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]

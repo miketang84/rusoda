@@ -25,6 +25,11 @@ impl SectionPage {
 
     pub fn section_edit_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let section_id = t_param!(params, "id", Uuid);
+
+        let section = Section::get_by_id(section_id).unwrap();
+
+        web.add("section", &section);
 
         res_html!("forum/edit_section.html", web)
     }
@@ -125,6 +130,36 @@ impl SectionPage {
         }  
     }
 
+    pub fn section_rearrange_page(req: &mut Request) -> SapperResult<Response> {
+        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+
+        let sections = Section::forum_sections();
+
+        web.add("sections", &sections);
+
+        res_html!("forum/arrange_sections.html", web)
+    }
+
+
+    pub fn section_rearrange(req: &mut Request) -> SapperResult<Response> {
+        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let order = t_param!(params, "order");
+
+        // print order
+        println!("==> order {:?}", order);
+        // let order_arr = ...
+        let sections = Section::forum_sections();
+        for (index, section) in sections.enumerate() {
+            let update_section_weight = UpdateSectionWeight {
+                id: section.id,
+                weight: order_arr[i]
+            };
+            update_section_weight.update().unwrap();
+        }
+        
+        res_redirect!("/p/section/rearrange")
+    }
+
 }
 
 
@@ -150,6 +185,9 @@ impl SapperModule for SectionPage {
         router.get("/p/section/edit", Self::section_edit_page);
         router.post("/s/section/create", Self::section_create);
         router.post("/s/section/edit", Self::section_edit);
+
+        router.get("/p/section/rearrange", Self::section_rearrange_page);
+        router.post("/s/section/rearrange", Self::section_rearrange);
 
 
         Ok(())

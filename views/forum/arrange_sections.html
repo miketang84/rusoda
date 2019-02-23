@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+    版块排序 - Rust语言中文社区
+{% endblock title %}
+
+{% block content %}
+<div class="body-content">
+    <h3>
+        版块排序
+    </h3>
+
+    <form class="" action="/s/section/rearrange" method="post">
+        {% for section in sections %}
+        {{section.title}} 
+        <input class="input" type="text" name="order" value="{{section.weight}}">
+        <br>
+        {% endif %}
+         
+        <input type="submit" name="submit">提交</input>
+    </form>
+</div>
+{% endblock content %}

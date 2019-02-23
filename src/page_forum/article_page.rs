@@ -36,7 +36,7 @@ impl ArticlePage {
         let params = get_query_params!(req);
 
         let section_id = t_param_parse_default!(params, "section_id", Uuid, Uuid::default());
-        let sections = Section::normal_sections();
+        let sections = Section::forum_sections();
 
         web.add("section_id", &section_id);
         web.add("sections", &sections);
@@ -56,7 +56,7 @@ impl ArticlePage {
             return res_400!(format!("no this artile: {}", id);
         }
 
-        let sections = Section::normal_sections();
+        let sections = Section::forum_sections();
 
         web.add("sections", &sections);
         web.add("article", &article);

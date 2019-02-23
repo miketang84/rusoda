@@ -16,7 +16,8 @@ pub struct SectionNew {
 pub use crate::model::for_write::{
     SectionCreate,
     SectionEdit,
-    SectionDelete
+    SectionDelete,
+    UpdateSectionWeight,
 };
 
 pub use self::Section;
@@ -83,6 +84,22 @@ impl SectionDelete    {
     }
 }
 
+
+impl UpdateSectionWeight {
+    pub fn update(&self) -> Result<Section, String>{
+        let em = db::get_db();
+        let clause = format!("where id={}", self.id);
+        match db_update!(em, self, &clause, Section) {
+            Some(sec) => {
+                Ok(sec.to_owned())
+            },
+            None => {
+                Err("Delete section error.".to_string())
+            }
+        }
+    }
+}
+
 // impl retrieving methods on this model, return various views of Section
 impl Section {
     pub fn get_by_id(id: Uuid) -> Result<Section, String> {
@@ -120,15 +137,23 @@ impl Section {
         sections
     }
 
-    pub fn normal_sections() -> Vec<Section> {
+    pub fn forum_sections() -> Vec<Section> {
         let em = db::get_db();
-        let clause = "where stype=0";
-        let sections = db_select!(em, "", "", "where stype=0", Section);
+        let clause = "where stype=0 order by weight desc";
+        let sections = db_select!(em, "", "",&clause, Section);
 
         sections
     }
 
-     pub fn get_articles_paging_belong_to_this(section_id: Uuid, current_page: usize) -> Vec<ArticleForList> {
+    pub fn forum_sections_orderby_createdtime() -> Vec<Section> {
+        let em = db::get_db();
+        let clause = "where stype=0 order by created_time desc";
+        let sections = db_select!(em, "", "",&clause, Section);
+
+        sections
+    }
+
+    pub fn get_articles_paging_belong_to_this(section_id: Uuid, current_page: usize) -> Vec<ArticleForList> {
         let em = db::get_db();
 
         let offset = NUMBER_PER_PAGE * (current_page - 1);
