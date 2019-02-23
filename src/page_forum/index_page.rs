@@ -17,6 +17,9 @@ use crate::db;
 use sapper_std::res_html;
 use crate::AppWebContext;
 
+use crate::dataservice::article::Article;
+use crate::dataservice::section::Section;
+
 pub struct IndexPage;
 
 impl IndexPage {
@@ -32,7 +35,7 @@ impl IndexPage {
 
         // get all configured index displaying sections
         // and latest commented three articles 
-        let sections = Section::get_order_sections();
+        let sections = Section::forum_sections();
 
         web.add("articles", &articles);
         web.add("blog_articles", &blog_articles);
