@@ -22,6 +22,7 @@ mod model;
 mod dataservice;
 mod util;
 mod middleware;
+mod github_utils;
 
 
 // include page modules

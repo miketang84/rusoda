@@ -8,14 +8,19 @@ use sapper::{
 use sapper_std::{JsonParams, SessionVal, render};
 
 use crate::serde_json;
-
 use crate::db;
+use crate::github_utils::{
+    get_github_token,
+    get_github_user_info
+}
+
 // introduce macros
 use crate::AppWebContext;
 
-use dataservice::user::{
+use crate::dataservice::user::{
     UserLogin,
-    UserSignUp
+    UserSignUp,
+    GithubUserInfo
 };
 
 
