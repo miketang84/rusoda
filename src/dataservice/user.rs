@@ -39,6 +39,11 @@ pub struct UserChangePassword {
     pub new_password: String,
 }
 
+pub struct GithubUserInfo {
+    pub account: String,
+    pub github_address: String,
+}
+
 pub use crate::model::for_write {
     UserCreate,
     UserEdit,
@@ -54,7 +59,7 @@ pub use self::Ruser;
 /// ===== Implementation Area =====
 ///
 impl UserSignUp {
-    pub fn sign_up_with_email (&self) -> Result<String, String>{
+    pub fn sign_up(&self, github_home: Option<String>) -> Result<String, String>{
         let em = db::get_db();
         let salt = random_string(6);
 
@@ -63,7 +68,7 @@ impl UserSignUp {
             password: sha3_256_encode(&format!("{}{}", self.password, salt)),
             salt: salt,
             nickname: self.nickname.to_owned(),
-            github: None,
+            github: github_home,
         };
 
         let rest_clause = format!("WHERE account='{}'", new_user.account);
