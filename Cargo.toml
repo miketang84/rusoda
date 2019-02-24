@@ -20,6 +20,11 @@ chrono = {features = ["serde"], version = "0.4"}
 serde = "*"
 serde_json = "*"
 serde_derive = "*"
+serde_urlencoded = "*"
+ammonia = "^1.0.1"
+hyper-native-tls = "^0.2.4"
+hyper = "^0.10.13"
+comrak = "^0.2.4"
 
 [[bin]]
 name = "page_bin"
