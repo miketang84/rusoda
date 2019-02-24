@@ -147,28 +147,6 @@ pub struct Comment {
 
 
 ///
-/// Model: ArticleStats
-/// DB table: article_stats
-///
-
-#[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
-pub struct ArticleStats {
-
-    pub id: Uuid,
-
-    pub article_id: Uuid,
-
-    pub created_time: DateTime<Utc>,
-
-    pub ruser_id: Option<Uuid>,
-
-    pub user_agent: Option<String>,
-
-    pub visitor_ip: Option<String>,
-}
-
-
-///
 /// Model: UserNotify
 /// DB: redis
 /// a cached user notifications queue
@@ -308,11 +286,6 @@ pub mod for_write {
         pub id: Uuid,
     }
 
-    /// ArticleStats DMO
-    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
-    pub struct ArticleStatsCreate {
-
-    }
 
 }
 
@@ -344,14 +317,6 @@ pub mod for_read {
         pub title: String,
         pub created_time: DateTime<Utc>,
         pub section_title: String,      // left join from section
-        pub author_name: String,        // left join from ruser
-    }
-
-    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
-    pub struct BlogArticleForList {
-        pub id: Uuid,
-        pub title: String,
-        pub created_time: DateTime<Utc>,
         pub author_name: String,        // left join from ruser
     }
 

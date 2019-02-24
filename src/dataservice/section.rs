@@ -10,6 +10,12 @@ pub struct SectionNew {
     pub description: String,
 }
 
+pub struct ArticleWithStats {
+    pub article: ArticleForList,
+    pub viewtimes: usize,
+    pub comment_count: usize
+}
+
 pub use crate::model::for_write::{
     SectionCreate,
     SectionEdit,
@@ -150,15 +156,29 @@ impl Section {
         sections
     }
 
-    pub fn get_articles_paging_belong_to_this(section_id: Uuid, current_page: usize) -> Vec<ArticleForList> {
+    pub fn get_articles_paging_belong_to_this(section_id: Uuid, current_page: usize) -> Vec<ArticleWithStats> {
         let em = db::get_db();
 
         let offset = NUMBER_PER_PAGE * (current_page - 1);
 
         let clause = format!("where section_id={} order by created_time desc limit {} offset {}", section_id, NUMBER_PER_PAGE, offset);
-        let articles = db_select!(em, "", "", &clause, ArticleForList);
+        let articles = db_select!(em, "", "from article", &clause, ArticleForList);
 
-        articles
+        // add view times for each article
+        let article_vec: Vec<ArticleWithStats> = vec![];
+        for article in articles {
+            let viewtimes = Article::get_viewtimes(article.id);
+            let comment_count = Article::get_comments_count_belong_to_this(article.id);
+            let article_with_viewtimes = ArticleWithStats {
+                article,
+                viewtimes,
+                comment_count
+            }
+
+            article_vec.push(article_with_viewtimes);
+        }
+
+        article_vec
     }
 
     pub fn get_articles_count_belong_to_this(section_id: Uuid) -> i32 {

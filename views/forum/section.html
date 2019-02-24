@@ -29,14 +29,14 @@
             <p class="">这里还没有内容哦...</p>
         {% else %}
             <ul class="nodot items">
-                {% for article in articles %}
+                {% for article_with_stats in articles %}
                     <li class="item {% if not loop.last %} underline {% else %} last {% endif %}">
-                        <a href="/p/article?id={{ article.id }}">{{ article.title }}</a>
-                        <span class="show-count">({{ article.view_count }},{{ article.comment_count }})</span>
+                        <a href="/p/article?id={{ article_with_stats.article.id }}">{{ article_with_stats.article.title }}</a>
+                        <span class="show-count">({{ article_with_stats.viewtimes }},{{ article_with_stats.comment_count }})</span>
                         <span class="right">
-                            <span class="tags">{{ article.tags }}</span>
-                            <span class="author">{{ article.author_name }}</span> 
-                            <span class="createdTime">{{ article.created_time }}</span>
+                            <span class="tags">{{ article_with_stats.article.tags }}</span>
+                            <span class="author">{{ article_with_stats.article.author_name }}</span> 
+                            <span class="createdTime">{{ article_with_stats.article.created_time }}</span>
                             {% if is_admin %}
                             <span class="delete">删除</span>
                             <span class="edit">编辑</span>

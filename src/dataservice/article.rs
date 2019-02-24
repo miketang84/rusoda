@@ -1,5 +1,3 @@
-
-use rustorm::DbError;
 use crate::db;
 use uuid::Uuid;
 use crate::model::{for_write, for_read};
@@ -125,12 +123,23 @@ impl Article {
         comments
     }
 
-    pub fn get_comments_count_belong_to_this(article_id: Uuid) -> i32 {
+    pub fn get_comments_count_belong_to_this(article_id: Uuid) -> usize {
         let em = db::get_db();
         let clause = format!("where article_id={}", article_id);
         let count = db_find!(em, "count(*)", "", &clause, Comment);
 
         count
+    }
+
+    pub fn increase_viewtimes(article_id: Uuid) {
+        let redis = db::get_redis();
+        let _: () = redis.hincr("article_stats", article_id.to_string(), 1).unwrap();
+
+    }
+
+    pub fn get_viewtimes(article_id: Uuid) -> usize {
+        let redis = db::get_redis();
+        redis.hget("article_stats", article_id.to_string()).unwrap_or(0)
     }
 
 }

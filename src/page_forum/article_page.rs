@@ -104,6 +104,9 @@ impl ArticlePage {
         let total_page = math.floor(total_comments / NUMBER_PER_PAGE) + 1;
         let comments = Article::get_comments_paging_belong_to_this(id, current_page);
 
+        let viewtimes = Article::get_viewtimes(article.id);
+        Article::increase_viewtimes(article.id);
+
         web.add("article", &article);
         web.add("author", &author);
         web.add("comments", &comments);
@@ -112,7 +115,7 @@ impl ArticlePage {
         web.add("total_page", &total_page);
         web.add("is_author", &is_author);
         web.add("is_admin", &is_admin);
-
+        web.add("viewtimes", &viewtimes);
 
         res_html!("forum/article.html", web)
     }
