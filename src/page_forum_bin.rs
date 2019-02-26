@@ -1,5 +1,4 @@
-
-#[macro_use] extern crate sapper_std;
+//#[macro_use] extern crate sapper_std;
 use sapper::{
     App as SapperApp,
     Smock as SapperSmock,
@@ -8,15 +7,14 @@ use sapper::{
     Response,
     Key
 };
-use sapper_std::{
-    WebContext,
-    SessionVal
-};
+use sapper_std::*;
 
 use serde;
 use serde_json;
 
+
 #[macro_use] mod helper_macros;
+mod constants;
 mod db;
 mod model;
 mod dataservice;
@@ -44,7 +42,7 @@ impl Key for AppUser {
 // define global smock
 struct PageForum;
 
-impl SapperSmock for WebPage {
+impl SapperSmock for PageForum {
     fn before(&self, req: &mut Request) -> SapperResult<()> {
         // define cookie prefix
         sapper_std::init(req, Some("rusoda_session"))?;

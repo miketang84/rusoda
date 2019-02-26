@@ -10,6 +10,7 @@ use hyper::header::ContentType;
 
 use std::thread;
 use std::sync::mpsc;
+use serde_derive::Deserialize;
 
 use crate::dataservice::user::GithubUserInfo;
 

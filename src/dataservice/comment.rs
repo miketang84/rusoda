@@ -1,10 +1,10 @@
 
 use rustorm::DbError;
 use crate::db;
-use crate::model::Comment;
 use crate::model::{for_write, for_read};
 use uuid::Uuid;
 
+pub use crate::model::Comment;
 pub use crate::model::for_write::{
     CommentCreate,
     CommentEdit,

@@ -5,22 +5,30 @@ use sapper::{
     Error as SapperError, 
     Module as SapperModule,
     Router as SapperRouter};
-use sapper_std::{JsonParams, SessionVal, render};
-use crate::serde_json;
+use sapper_std::*;
+use serde_json;
+use uuid::Uuid;
 
 use crate::db;
 // introduce macros
 use sapper_std::res_html;
-use crate::AppWebContext;
+use crate::{
+    AppWebContext,
+    AppUser
+};
 
 use crate::dataservice::article::{
+    Article,
     ArticleCreate,
     ArticleEdit
 };
+use crate::dataservice::section::Section;
+use crate::dataservice::user::Ruser;
 
 use crate::util::markdown_render;
+use crate::middleware::permission_need_login;
 
-static NUMBER_PER_PAGE: i32 = 50;
+use crate::constants::NUMBER_COMMENT_PER_PAGE;
 struct CommentPaginator {
     total_comments: i32,
     total_page: i32,
@@ -53,7 +61,7 @@ impl ArticlePage {
         // get article object
         let article = Article::get_by_id(id);
         if article.is_err() {
-            return res_400!(format!("no this artile: {}", id);
+            return res_400!(format!("no this artile: {}", id));
         }
 
         let sections = Section::forum_sections();
@@ -65,6 +73,8 @@ impl ArticlePage {
     }
     
     pub fn article_detail_page(req: &mut Request) -> SapperResult<Response> {
+        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+
         let params = get_query_params!(req);
         let id = t_param_parse!(params, "id", Uuid);
         let current_page = t_param_parse_default!(params, "current_page", i32, 1);
@@ -85,7 +95,7 @@ impl ArticlePage {
         let mut is_login = false;
         match reqext_entity!(req, AppUser) {
             Some(user) => {
-                if article.author_id == user.id) {
+                if article.author_id == user.id {
                     is_author = true;
                 }
                 if user.role >= 9 {
@@ -101,7 +111,7 @@ impl ArticlePage {
 
         // retrieve comments belongs to this article, and calculate its paginator
         let total_item = Article::get_comments_count_belong_to_this(id);
-        let total_page = math.floor(total_comments / NUMBER_PER_PAGE) + 1;
+        let total_page = (total_item / NUMBER_COMMENT_PER_PAGE) as usize + 1;
         let comments = Article::get_comments_paging_belong_to_this(id, current_page);
 
         let viewtimes = Article::get_viewtimes(article.id);
@@ -140,7 +150,7 @@ impl ArticlePage {
             content,
             stype,
             status: 0,
-        }
+        };
 
         match article_create.insert() {
             Ok(article) => {
@@ -153,7 +163,6 @@ impl ArticlePage {
      }
 
     pub fn article_edit(req: &mut Request) -> SapperResult<Response> {
-
         let params = get_form_params!(req);
         let id = t_param_parse!(params, "id", Uuid);
         let section_id = t_param_parse!(params, "section_id", Uuid);
@@ -170,7 +179,7 @@ impl ArticlePage {
             tags,
             raw_content,
             content,
-        }
+        };
 
         match article_edit.update() {
             Ok(article) => {
@@ -206,7 +215,7 @@ impl ArticlePage {
         // get article object
         let article = Article::get_by_id(id);
         if article.is_err() {
-            return res_400!(format!("no this artile: {}", id);
+            return res_400!(format!("no this artile: {}", id));
         }
 
         web.add("article", &article);
@@ -234,7 +243,7 @@ impl ArticlePage {
             content,
             stype,
             status: 0,
-        }
+        };
 
         match article_create.insert() {
             Ok(article) => {
@@ -265,7 +274,7 @@ impl ArticlePage {
             tags,
             raw_content,
             content,
-        }
+        };
 
         match article_edit.update() {
             Ok(article) => {

@@ -6,8 +6,18 @@ pub use crate::model::Article;
 pub use crate::model::for_write::{
     ArticleCreate,
     ArticleEdit,
-    ArticleDelete
+    ArticleDelete,
 };
+
+use crate::constants::NUMBER_ARTICLE_PER_PAGE;
+
+pub use crate::model::for_read::{
+    ArticleForList,
+    BlogArticleForList,
+    CommentWithAuthorName
+};
+
+use crate::dataservice::comment::Comment;
 
 
 // here, we impl some methods for for_insert::Section
@@ -89,7 +99,7 @@ impl Article {
         articles
     }
 
-    pub fn get_latest_articles(size: u32) -> Vec<ArticleForList> {
+    pub fn get_latest_articles(size: usize) -> Vec<ArticleForList> {
         let em = db::get_db();
         // need to alias names
         let head_clause = "article.id, article.title, article.created_time, section.title as section_title, ruser.nickname as author_name";
@@ -100,7 +110,7 @@ impl Article {
         articles
     }
 
-    pub fn get_latest_articles(size: u32) -> Vec<BlogArticleForList> {
+    pub fn get_latest_blog_articles(size: usize) -> Vec<BlogArticleForList> {
         let em = db::get_db();
         // need to alias names
         let head_clause = "article.id, article.title, article.created_time, ruser.nickname as author_name";
@@ -114,10 +124,10 @@ impl Article {
     pub fn get_comments_paging_belong_to_this(article_id: Uuid, current_page: usize) -> Vec<CommentWithAuthorName> {
         let em = db::get_db();
 
-        let offset = NUMBER_PER_PAGE * (current_page - 1);
+        let offset = NUMBER_ARTICLE_PER_PAGE * (current_page - 1);
         let head_clause = "comment.id, comment.title, comment.author_id, comment.created_time, ruser.nickname";
         let from_clause = "FROM comment LEFT JOIN ruser ON comment.author_id = ruser.id";
-        let clause = format!("where article_id={} order by created_time desc limit {} offset {}", article_id, NUMBER_PER_PAGE, offset);
+        let clause = format!("where article_id={} order by created_time desc limit {} offset {}", article_id, NUMBER_ARTICLE_PER_PAGE, offset);
         let comments = db_select!(em, head_clause, from_clause, &clause, CommentWithAuthorName);
 
         comments

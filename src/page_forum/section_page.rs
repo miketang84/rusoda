@@ -5,13 +5,28 @@ use sapper::{
     Error as SapperError, 
     Module as SapperModule,
     Router as SapperRouter};
-use sapper_std::{JsonParams, SessionVal, render};
+use sapper_std::*;
+use uuid::Uuid;
 use crate::serde_json;
 
 use crate::db;
 // introduce macros
 use sapper_std::res_html;
-use crate::AppWebContext;
+use crate::{
+    AppWebContext,
+    AppUser
+};
+
+use crate::dataservice::section::{
+    Section,
+    SectionNew,
+    SectionEdit,
+    UpdateSectionWeight
+};
+use crate::constants::NUMBER_ARTICLE_PER_PAGE;
+
+use crate::middleware::permission_need_be_admin;
+
 
 pub struct SectionPage;
 
@@ -25,7 +40,8 @@ impl SectionPage {
 
     pub fn section_edit_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = reqext_entity!(req, AppWebContext).unwrap();
-        let section_id = t_param!(params, "id", Uuid);
+        let params = get_query_params!(req);
+        let section_id = t_param_parse!(params, "id", Uuid);
 
         let section = Section::get_by_id(section_id).unwrap();
 
@@ -38,7 +54,7 @@ impl SectionPage {
         let mut web = reqext_entity!(req, AppWebContext).unwrap();
 
         let params = get_form_params!(req);
-        let section_id = t_param!(params, "id", Uuid);
+        let section_id = t_param_parse!(params, "id", Uuid);
         let current_page = t_param_parse_default!(params, "current_page", i32, 1);
 
         let section_result = Section::get_by_id(section_id);
@@ -71,7 +87,7 @@ impl SectionPage {
         }
 
         let total_item = Section::get_articles_count_belong_to_this(section.id);
-        let total_page = math.floor(total_item / NUMBER_PER_PAGE) + 1;
+        let total_page = (total_item / NUMBER_ARTICLE_PER_PAGE) as usize + 1;
 
         let articles = Section::get_articles_paging_belong_to_this(section.id, current_page);
 
@@ -143,13 +159,15 @@ impl SectionPage {
 
     pub fn section_rearrange(req: &mut Request) -> SapperResult<Response> {
         let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let params = get_query_params!(req);
         let order = t_param!(params, "order");
 
         // print order
         println!("==> order {:?}", order);
-        // let order_arr = ...
+        // only for test
+        let order_arr = vec![];
         let sections = Section::forum_sections();
-        for (index, section) in sections.enumerate() {
+        for (i, section) in sections.enumerate() {
             let update_section_weight = UpdateSectionWeight {
                 id: section.id,
                 weight: order_arr[i]

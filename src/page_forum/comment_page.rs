@@ -5,13 +5,28 @@ use sapper::{
     Error as SapperError, 
     Module as SapperModule,
     Router as SapperRouter};
-use sapper_std::{JsonParams, SessionVal, render};
-use crate::serde_json;
+use sapper_std::*;
+use uuid::Uuid;
 
+use crate::serde_json;
 use crate::db;
 // introduce macros
 use sapper_std::res_html;
-use crate::AppWebContext;
+use crate::{
+    AppWebContext,
+    AppUser
+};
+
+use crate::dataservice::article::Article;
+use crate::dataservice::comment::{
+    Comment,
+    CommentCreate,
+    CommentEdit
+};
+
+use crate::util::markdown_render;
+use crate::middleware::permission_need_login;
+
 
 pub struct CommentPage;
 
@@ -27,7 +42,7 @@ impl CommentPage {
                 web.add("article", &article);
                 return res_html!("forum/new_comment.html", web);
             },
-            Err(_) ={
+            Err(_) => {
                 return res_500!("no this article.");
             }
         }
@@ -52,7 +67,7 @@ impl CommentPage {
                     }
                 }
             },
-            Err(_) ={
+            Err(_) => {
                 return res_500!("no this article.");
             }
         }

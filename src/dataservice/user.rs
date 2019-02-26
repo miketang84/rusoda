@@ -1,13 +1,12 @@
 
 use crate::db;
-use crate::model::Ruser;
 use crate::util::{random_string, sha3_256_encode};
 use redis::Commands;
 use chrono::{DateTime, Utc};
 
 use log::info;
 
-
+pub use crate::model::Ruser;
 
 pub fn set_session(account: &str, ttl: usize) -> Result<String, String> {
     let redis = db::get_redis();
@@ -44,17 +43,16 @@ pub struct GithubUserInfo {
     pub github_address: String,
 }
 
-pub use crate::model::for_write {
+pub use crate::model::for_write::{
     UserCreate,
     UserEdit,
     SectionCreate,
 };
 
-pub use crate::model::for_read {
+pub use crate::model::for_read::{
     RuserWithoutPwd,
 };
 
-pub use self::Ruser;
 
 /// ===== Implementation Area =====
 ///

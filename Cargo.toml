@@ -27,6 +27,6 @@ hyper = "^0.10.13"
 comrak = "^0.2.4"
 
 [[bin]]
-name = "page_bin"
-path = "src/page_bin.rs"
+name = "page_forum_bin"
+path = "src/page_forum_bin.rs"
 

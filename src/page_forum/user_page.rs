@@ -5,19 +5,22 @@ use sapper::{
     Error as SapperError, 
     Module as SapperModule,
     Router as SapperRouter};
-use sapper_std::{JsonParams, SessionVal, render};
+use sapper_std::*;
 
 use crate::serde_json;
 use crate::db;
 use crate::github_utils::{
     get_github_token,
     get_github_user_info
-}
+};
+
+use crate::util::random_string;
 
 // introduce macros
 use crate::AppWebContext;
 
 use crate::dataservice::user::{
+    Ruser,
     UserLogin,
     UserSignUp,
     GithubUserInfo
@@ -29,13 +32,13 @@ pub struct UserPage;
 impl UserPage {
 
     pub fn page_login_with3rd(req: &mut Request) -> SapperResult<Response> {
-        let mut web = req_ext_entity!(AppWebContext).unwrap();
+        let mut web = reqext_entity!(req, AppWebContext).unwrap();
 
         res_html!("forum/login_with3rd.html", web)
     }
 
     pub fn page_login_with_admin(req: &mut Request) -> SapperResult<Response> {
-        let mut web = req_ext_entity!(AppWebContext).unwrap();
+        let mut web = reqext_entity!(req, AppWebContext).unwrap();
 
         res_html!("forum/login_with_admin.html", web)
     }
@@ -86,7 +89,7 @@ impl UserPage {
         );
 
         // redirect to index
-        set_response_redirect!("/");
+        set_response_redirect!(response, "/");
 
         Ok(response)
     }
@@ -146,7 +149,7 @@ impl UserPage {
         );
 
         // redirect to index
-        set_response_redirect!("/");
+        set_response_redirect!(response, "/");
 
         Ok(response)
     }

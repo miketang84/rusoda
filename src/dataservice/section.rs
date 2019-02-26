@@ -1,14 +1,20 @@
 use crate::db;
-use crate::model::Section;
 use crate::util::{random_string, sha3_256_encode};
 
 use uuid::Uuid;
 
+pub use crate::model::Section;
+use crate::constants::NUMBER_ARTICLE_PER_PAGE;
 
 pub struct SectionNew {
     pub title: String,
     pub description: String,
 }
+
+use crate::dataservice::article::{
+    Article,
+    ArticleForList
+};
 
 pub struct ArticleWithStats {
     pub article: ArticleForList,
@@ -23,7 +29,6 @@ pub use crate::model::for_write::{
     UpdateSectionWeight,
 };
 
-pub use self::Section;
 
 // impl some methods on request params structure
 impl SectionNew {
@@ -159,9 +164,9 @@ impl Section {
     pub fn get_articles_paging_belong_to_this(section_id: Uuid, current_page: usize) -> Vec<ArticleWithStats> {
         let em = db::get_db();
 
-        let offset = NUMBER_PER_PAGE * (current_page - 1);
+        let offset = NUMBER_ARTICLE_PER_PAGE * (current_page - 1);
 
-        let clause = format!("where section_id={} order by created_time desc limit {} offset {}", section_id, NUMBER_PER_PAGE, offset);
+        let clause = format!("where section_id={} order by created_time desc limit {} offset {}", section_id, NUMBER_ARTICLE_PER_PAGE, offset);
         let articles = db_select!(em, "", "from article", &clause, ArticleForList);
 
         // add view times for each article
@@ -173,7 +178,7 @@ impl Section {
                 article,
                 viewtimes,
                 comment_count
-            }
+            };
 
             article_vec.push(article_with_viewtimes);
         }

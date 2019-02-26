@@ -296,6 +296,7 @@ pub mod for_write {
 // but many retrieving cases.
 //
 pub mod for_read {
+    use super::*;
 
     #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
     pub struct RuserWithoutPwd {
@@ -317,6 +318,14 @@ pub mod for_read {
         pub title: String,
         pub created_time: DateTime<Utc>,
         pub section_title: String,      // left join from section
+        pub author_name: String,        // left join from ruser
+    }
+
+    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
+    pub struct BlogArticleForList {
+        pub id: Uuid,
+        pub title: String,
+        pub created_time: DateTime<Utc>,
         pub author_name: String,        // left join from ruser
     }
 

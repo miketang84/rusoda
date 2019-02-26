@@ -1,7 +1,8 @@
 use sapper::Request;
+use sapper_std::*;
 use crate::AppUser;
 
-pub permission_need_login(req: &mut Request) -> Result<bool, String> {
+pub fn permission_need_login(req: &mut Request) -> Result<bool, String> {
     let (path, _) = req.uri();
     if path.starts_with("/s/") || path.starts_with("/p/")
     {
@@ -17,7 +18,7 @@ pub permission_need_login(req: &mut Request) -> Result<bool, String> {
     }
 }
 
-pub permission_need_be_admin(req: &mut Request) -> Result<bool, String> {
+pub fn permission_need_be_admin(req: &mut Request) -> Result<bool, String> {
     let (path, _) = req.uri();
     if path.starts_with("/s/") || path.starts_with("/p/")
     {
