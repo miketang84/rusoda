@@ -171,7 +171,7 @@ impl Section {
         let articles = db_select!(em, "", "from article", &clause, ArticleForList);
 
         // add view times for each article
-        let article_vec: Vec<ArticleWithStats> = vec![];
+        let mut article_vec: Vec<ArticleWithStats> = vec![];
         for article in articles {
             let viewtimes = Article::get_viewtimes(article.id);
             let comment_count = Article::get_comments_count_belong_to_this(article.id);

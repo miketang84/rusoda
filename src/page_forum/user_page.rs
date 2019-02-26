@@ -32,13 +32,13 @@ pub struct UserPage;
 impl UserPage {
 
     pub fn page_login_with3rd(req: &mut Request) -> SapperResult<Response> {
-        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
 
         res_html!("forum/login_with3rd.html", web)
     }
 
     pub fn page_login_with_admin(req: &mut Request) -> SapperResult<Response> {
-        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
 
         res_html!("forum/login_with_admin.html", web)
     }
@@ -119,9 +119,9 @@ impl UserPage {
                 password = random_string(8);
                 // register it
                 let user_signup = UserSignUp {
-                    account,
-                    password,
-                    nickname: account,
+                    account: account.clone(),
+                    password: password.clone(),
+                    nickname: account.clone(),
                 };
                 // TODO: check the result
                 let _ = user_signup.sign_up(Some(github_user_info.github_address));

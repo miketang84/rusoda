@@ -21,7 +21,7 @@ pub struct IndexPage;
 impl IndexPage {
 
     pub fn index(req: &mut Request) -> SapperResult<Response> {
-        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
         let db_conn = db::get_db();
         let redis_conn = db::get_redis();
 

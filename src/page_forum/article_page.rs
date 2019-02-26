@@ -40,7 +40,7 @@ pub struct ArticlePage;
 impl ArticlePage {
 
     pub fn article_create_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
         let params = get_query_params!(req);
 
         let section_id = t_param_parse_default!(params, "section_id", Uuid, Uuid::default());
@@ -54,7 +54,7 @@ impl ArticlePage {
     }
 
     pub fn article_edit_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
         let params = get_query_params!(req);
         let id = t_param_parse!(params, "id", Uuid);
 
@@ -73,7 +73,7 @@ impl ArticlePage {
     }
     
     pub fn article_detail_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
 
         let params = get_query_params!(req);
         let id = t_param_parse!(params, "id", Uuid);
@@ -93,7 +93,7 @@ impl ArticlePage {
         let mut is_author = false;
         let mut is_admin = false;
         let mut is_login = false;
-        match reqext_entity!(req, AppUser) {
+        match ext_type!(req, AppUser) {
             Some(user) => {
                 if article.author_id == user.id {
                     is_author = true;
@@ -139,7 +139,7 @@ impl ArticlePage {
         let stype = t_param_parse_default!(params, "stype", i32, 0);
 
         let content = markdown_render(raw_content);
-        let user = reqext_entity!(req, AppUser).unwrap();
+        let user = ext_type!(req, AppUser).unwrap();
 
         let raw_content = raw_content.to_owned();
         let article_create = ArticleCreate {
@@ -197,7 +197,7 @@ impl ArticlePage {
 
     // Blog Area
     pub fn blog_article_create_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
         let params = get_query_params!(req);
 
         let is_in_blog = true;
@@ -207,7 +207,7 @@ impl ArticlePage {
     }
 
     pub fn blog_article_edit_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
         let params = get_query_params!(req);
         let id = t_param_parse!(params, "id", Uuid);
 
@@ -232,7 +232,7 @@ impl ArticlePage {
         let tags = t_param!(params, "tags").to_owned();
         let raw_content = t_param!(params, "raw_content");
         let stype = t_param_parse_default!(params, "stype", i32, 1);
-        let user = reqext_entity!(req, AppUser).unwrap();
+        let user = ext_type!(req, AppUser).unwrap();
         let section_id = Section::get_by_suser(user.id).unwrap().id;
 
         let content = markdown_render(raw_content);
@@ -265,7 +265,7 @@ impl ArticlePage {
         let title = t_param!(params, "title").to_owned();
         let tags = t_param!(params, "tags").to_owned();
         let raw_content = t_param!(params, "raw_content");
-        let user = reqext_entity!(req, AppUser).unwrap();
+        let user = ext_type!(req, AppUser).unwrap();
         let section_id = Section::get_by_suser(user.id).unwrap().id;
 
         let content = markdown_render(raw_content);

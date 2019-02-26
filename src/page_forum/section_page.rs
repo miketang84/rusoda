@@ -33,13 +33,13 @@ pub struct SectionPage;
 impl SectionPage {
 
     pub fn section_create_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
 
         res_html!("forum/new_section.html", web)
     }
 
     pub fn section_edit_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
         let params = get_query_params!(req);
         let section_id = t_param_parse!(params, "id", Uuid);
 
@@ -51,7 +51,7 @@ impl SectionPage {
     }
     
     pub fn section_detail_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
 
         let params = get_form_params!(req);
         let section_id = t_param_parse!(params, "id", Uuid);
@@ -70,7 +70,7 @@ impl SectionPage {
         let mut is_myown_blog = false;
         let mut is_admin = false;
         let mut is_login = false;
-        match reqext_entity!(req, AppUser) {
+        match ext_type!(req, AppUser) {
             Some(user) => {
                 if section.suser == Some(user.id) {
                     is_myown_blog = true;
@@ -147,7 +147,7 @@ impl SectionPage {
     }
 
     pub fn section_rearrange_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
 
         let sections = Section::forum_sections();
 
@@ -158,7 +158,7 @@ impl SectionPage {
 
 
     pub fn section_rearrange(req: &mut Request) -> SapperResult<Response> {
-        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
         let params = get_query_params!(req);
         let order = t_param!(params, "order");
 

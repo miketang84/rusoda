@@ -33,7 +33,7 @@ pub struct CommentPage;
 impl CommentPage {
 
     pub fn comment_new_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
         let params = get_query_params!(req);
         let article_id = t_param_parse!(params, "article_id", Uuid);
 
@@ -49,7 +49,7 @@ impl CommentPage {
     }
 
     pub fn comment_edit_page(req: &mut Request) -> SapperResult<Response> {
-        let mut web = reqext_entity!(req, AppWebContext).unwrap();
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
         let params = get_query_params!(req);
         let article_id = t_param_parse!(params, "article_id", Uuid);
         let comment_id = t_param_parse!(params, "comment_id", Uuid);
@@ -83,7 +83,7 @@ impl CommentPage {
         let content = markdown_render(raw_content);
         let raw_content = raw_content.to_owned();
 
-        let user = reqext_entity!(req, AppUser).unwrap();
+        let user = ext_type!(req, AppUser).unwrap();
         let author_id = user.id;
 
         let comment_create = CommentCreate {
