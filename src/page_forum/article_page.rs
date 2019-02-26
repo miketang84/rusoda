@@ -77,7 +77,7 @@ impl ArticlePage {
 
         let params = get_query_params!(req);
         let id = t_param_parse!(params, "id", Uuid);
-        let current_page = t_param_parse_default!(params, "current_page", i32, 1);
+        let current_page = t_param_parse_default!(params, "current_page", i64, 1);
 
         let article_r = Article::get_by_id(id);
         if article_r.is_err() {
@@ -85,7 +85,7 @@ impl ArticlePage {
         }
         let article = article_r.unwrap();
 
-        let mut author = Ruser::get_by_id(article.author_id);
+        let mut author = Ruser::get_user_by_id(article.author_id);
         if author.is_err() {
             return res_400!(format!("no this author: {}", article.author_id));
         }
@@ -111,7 +111,7 @@ impl ArticlePage {
 
         // retrieve comments belongs to this article, and calculate its paginator
         let total_item = Article::get_comments_count_belong_to_this(id);
-        let total_page = (total_item / NUMBER_COMMENT_PER_PAGE) as usize + 1;
+        let total_page = (total_item / NUMBER_COMMENT_PER_PAGE) as i64 + 1;
         let comments = Article::get_comments_paging_belong_to_this(id, current_page);
 
         let viewtimes = Article::get_viewtimes(article.id);
@@ -133,14 +133,15 @@ impl ArticlePage {
     pub fn article_create(req: &mut Request) -> SapperResult<Response> {
         let params = get_form_params!(req);
         let section_id = t_param_parse_default!(params, "section_id", Uuid, Uuid::default());
-        let title = t_param!(params, "title");
-        let tags = t_param!(params, "tags");
+        let title = t_param!(params, "title").to_owned();
+        let tags = t_param!(params, "tags").to_owned();
         let raw_content = t_param!(params, "raw_content");
         let stype = t_param_parse_default!(params, "stype", i32, 0);
 
         let content = markdown_render(raw_content);
         let user = reqext_entity!(req, AppUser).unwrap();
 
+        let raw_content = raw_content.to_owned();
         let article_create = ArticleCreate {
             title,
             tags,
@@ -166,11 +167,12 @@ impl ArticlePage {
         let params = get_form_params!(req);
         let id = t_param_parse!(params, "id", Uuid);
         let section_id = t_param_parse!(params, "section_id", Uuid);
-        let title = t_param!(params, "title");
-        let tags = t_param!(params, "tags");
+        let title = t_param!(params, "title").to_owned();
+        let tags = t_param!(params, "tags").to_owned();
         let raw_content = t_param!(params, "raw_content");
 
         let content = markdown_render(raw_content);
+        let raw_content = raw_content.to_owned();
 
         let article_edit = ArticleEdit {
             id,
@@ -226,14 +228,15 @@ impl ArticlePage {
     pub fn blog_article_create(req: &mut Request) -> SapperResult<Response> {
         let params = get_form_params!(req);
 
-        let title = t_param!(params, "title");
-        let tags = t_param!(params, "tags");
+        let title = t_param!(params, "title").to_owned();
+        let tags = t_param!(params, "tags").to_owned();
         let raw_content = t_param!(params, "raw_content");
-        let stype = t_param_parse_default!(params, "stype", isize, 1);
+        let stype = t_param_parse_default!(params, "stype", i32, 1);
         let user = reqext_entity!(req, AppUser).unwrap();
         let section_id = Section::get_by_suser(user.id).unwrap().id;
 
         let content = markdown_render(raw_content);
+        let raw_content = raw_content.to_owned();
         let article_create = ArticleCreate {
             title,
             tags,
@@ -259,13 +262,14 @@ impl ArticlePage {
 
         let params = get_form_params!(req);
         let id = t_param_parse!(params, "id", Uuid);
-        let title = t_param!(params, "title");
-        let tags = t_param!(params, "tags");
+        let title = t_param!(params, "title").to_owned();
+        let tags = t_param!(params, "tags").to_owned();
         let raw_content = t_param!(params, "raw_content");
         let user = reqext_entity!(req, AppUser).unwrap();
         let section_id = Section::get_by_suser(user.id).unwrap().id;
 
         let content = markdown_render(raw_content);
+        let raw_content = raw_content.to_owned();
 
         let article_edit = ArticleEdit {
             id,
@@ -296,7 +300,7 @@ impl SapperModule for ArticlePage {
                 // pass, nothing need to do here
             },
             Err(info) => {
-                return res_400!(info)
+                return Err(SapperError::Custom("no permission".to_string()));
             }
         }
 

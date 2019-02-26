@@ -1,6 +1,7 @@
 use crate::db;
 use uuid::Uuid;
 use crate::model::{for_write, for_read};
+use redis::Commands;
 
 pub use crate::model::Article;
 pub use crate::model::for_write::{
@@ -14,10 +15,14 @@ use crate::constants::NUMBER_ARTICLE_PER_PAGE;
 pub use crate::model::for_read::{
     ArticleForList,
     BlogArticleForList,
-    CommentWithAuthorName
+    CommentWithAuthorName,
+    ArticleCount
 };
 
-use crate::dataservice::comment::Comment;
+use crate::dataservice::comment::{
+    Comment,
+    CommentCount
+};
 
 
 // here, we impl some methods for for_insert::Section
@@ -121,7 +126,7 @@ impl Article {
         blog_articles
     }
 
-    pub fn get_comments_paging_belong_to_this(article_id: Uuid, current_page: usize) -> Vec<CommentWithAuthorName> {
+    pub fn get_comments_paging_belong_to_this(article_id: Uuid, current_page: i64) -> Vec<CommentWithAuthorName> {
         let em = db::get_db();
 
         let offset = NUMBER_ARTICLE_PER_PAGE * (current_page - 1);
@@ -133,12 +138,12 @@ impl Article {
         comments
     }
 
-    pub fn get_comments_count_belong_to_this(article_id: Uuid) -> usize {
+    pub fn get_comments_count_belong_to_this(article_id: Uuid) -> i64 {
         let em = db::get_db();
         let clause = format!("where article_id={}", article_id);
-        let count = db_find!(em, "count(*)", "", &clause, Comment);
+        let count_r = db_find!(em, "count(*)", "from comment", &clause, CommentCount);
 
-        count
+        count_r.unwrap().count
     }
 
     pub fn increase_viewtimes(article_id: Uuid) {
@@ -147,7 +152,7 @@ impl Article {
 
     }
 
-    pub fn get_viewtimes(article_id: Uuid) -> usize {
+    pub fn get_viewtimes(article_id: Uuid) -> i64 {
         let redis = db::get_redis();
         redis.hget("article_stats", article_id.to_string()).unwrap_or(0)
     }

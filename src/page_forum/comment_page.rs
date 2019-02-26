@@ -81,6 +81,7 @@ impl CommentPage {
         let raw_content = t_param!(params, "raw_content");
 
         let content = markdown_render(raw_content);
+        let raw_content = raw_content.to_owned();
 
         let user = reqext_entity!(req, AppUser).unwrap();
         let author_id = user.id;
@@ -110,6 +111,7 @@ impl CommentPage {
         let raw_content = t_param!(params, "raw_content");
 
         let content = markdown_render(raw_content);
+        let raw_content = raw_content.to_owned();
 
         let comment_edit = CommentEdit {
             id,
@@ -138,7 +140,7 @@ impl SapperModule for CommentPage {
                 // pass, nothing need to do here
             },
             Err(info) => {
-                return res_400!(info)
+                return Err(SapperError::Custom("no permission".to_string()));
             }
         }
 

@@ -11,6 +11,10 @@ pub use crate::model::for_write::{
     CommentDelete
 };
 
+pub use crate::model::for_read::{
+    CommentCount
+};
+
 
 // here, we impl some methods for for_insert::Section
 impl CommentCreate {

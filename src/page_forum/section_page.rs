@@ -55,7 +55,7 @@ impl SectionPage {
 
         let params = get_form_params!(req);
         let section_id = t_param_parse!(params, "id", Uuid);
-        let current_page = t_param_parse_default!(params, "current_page", i32, 1);
+        let current_page = t_param_parse_default!(params, "current_page", i64, 1);
 
         let section_result = Section::get_by_id(section_id);
         if section_result.is_err() {
@@ -87,7 +87,7 @@ impl SectionPage {
         }
 
         let total_item = Section::get_articles_count_belong_to_this(section.id);
-        let total_page = (total_item / NUMBER_ARTICLE_PER_PAGE) as usize + 1;
+        let total_page = (total_item / NUMBER_ARTICLE_PER_PAGE) as i64 + 1;
 
         let articles = Section::get_articles_paging_belong_to_this(section.id, current_page);
 
@@ -106,8 +106,8 @@ impl SectionPage {
 
     pub fn section_create(req: &mut Request) -> SapperResult<Response> {
         let params = get_form_params!(req);
-        let title = t_param!(params, "title");
-        let description = t_param!(params, "description");
+        let title = t_param!(params, "title").to_owned();
+        let description = t_param!(params, "description").to_owned();
 
         let section_new = SectionNew {
             title,
@@ -127,8 +127,8 @@ impl SectionPage {
     pub fn section_edit(req: &mut Request) -> SapperResult<Response> {
         let params = get_form_params!(req);
         let id = t_param_parse!(params, "id", Uuid);
-        let title = t_param!(params, "title");
-        let description = t_param!(params, "description");
+        let title = t_param!(params, "title").to_owned();
+        let description = t_param!(params, "description").to_owned();
 
         let section_edit = SectionEdit {
             id,
@@ -167,7 +167,7 @@ impl SectionPage {
         // only for test
         let order_arr = vec![];
         let sections = Section::forum_sections();
-        for (i, section) in sections.enumerate() {
+        for (i, section) in sections.iter().enumerate() {
             let update_section_weight = UpdateSectionWeight {
                 id: section.id,
                 weight: order_arr[i]
@@ -188,7 +188,7 @@ impl SapperModule for SectionPage {
                 // pass, nothing need to do here
             },
             Err(info) => {
-                return res_400!(info)
+                return Err(SapperError::Custom("No permission.".to_string()));
             }
         }
         

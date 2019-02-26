@@ -13,13 +13,14 @@ pub struct SectionNew {
 
 use crate::dataservice::article::{
     Article,
-    ArticleForList
+    ArticleForList,
+    ArticleCount
 };
 
 pub struct ArticleWithStats {
     pub article: ArticleForList,
-    pub viewtimes: usize,
-    pub comment_count: usize
+    pub viewtimes: i64,
+    pub comment_count: i64
 }
 
 pub use crate::model::for_write::{
@@ -161,7 +162,7 @@ impl Section {
         sections
     }
 
-    pub fn get_articles_paging_belong_to_this(section_id: Uuid, current_page: usize) -> Vec<ArticleWithStats> {
+    pub fn get_articles_paging_belong_to_this(section_id: Uuid, current_page: i64) -> Vec<ArticleWithStats> {
         let em = db::get_db();
 
         let offset = NUMBER_ARTICLE_PER_PAGE * (current_page - 1);
@@ -186,12 +187,12 @@ impl Section {
         article_vec
     }
 
-    pub fn get_articles_count_belong_to_this(section_id: Uuid) -> i32 {
+    pub fn get_articles_count_belong_to_this(section_id: Uuid) -> i64 {
         let em = db::get_db();
         let clause = format!("where section_id={}", section_id);
-        let count = db_find!(em, "count(*)", "", &clause, Article);
-
-        count
+        // count here is Option
+        let count = db_find!(em, "count(*)", "from article", &clause, ArticleCount);
+        count.unwrap().count
     }
 
 }

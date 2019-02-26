@@ -12,9 +12,12 @@ pub fn permission_need_login(req: &mut Request) -> Result<bool, String> {
                 return Ok(true);
             },
             None => {
-                return Err("No permissions: need login.");
+                return Err("No permissions: need login.".to_string());
             }
         }
+    }
+    else {
+        Ok(true)
     }
 }
 
@@ -30,13 +33,16 @@ pub fn permission_need_be_admin(req: &mut Request) -> Result<bool, String> {
 
                 }
                 else {
-                    return Err("No permissions: need be admin.");
+                    return Err("No permissions: need be admin.".to_string());
                 }
             },
             None => {
-                return Err("No permissions: need login.");
+                return Err("No permissions: need login.".to_string());
             }
         }
+    }
+    else {
+        Ok(true)
     }
 }
 

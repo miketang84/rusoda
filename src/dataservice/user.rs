@@ -5,6 +5,7 @@ use redis::Commands;
 use chrono::{DateTime, Utc};
 
 use log::info;
+use uuid::Uuid;
 
 pub use crate::model::Ruser;
 
@@ -29,8 +30,8 @@ pub struct UserSignUp {
 }
 
 pub struct UserLogin {
-    account: String,
-    password: String,
+    pub account: String,
+    pub password: String,
 }
 
 pub struct UserChangePassword {
@@ -38,6 +39,7 @@ pub struct UserChangePassword {
     pub new_password: String,
 }
 
+#[derive(Debug)]
 pub struct GithubUserInfo {
     pub account: String,
     pub github_address: String,
@@ -89,7 +91,7 @@ impl UserSignUp {
                         };
                         section.insert();
 
-                        Ok("register success.")
+                        Ok("register success.".to_string())
                         //let ttl = 60*24*3600;
                         // set user cookies to redis to keep login session
                         //set_session(&user.account, ttl)
@@ -162,7 +164,8 @@ impl Ruser {
     pub fn get_user_by_cookie(cookie: &str) -> Result<Ruser, String> {
         let em = db::get_db();
         let redis = db::get_redis();
-        match redis.hget(cookie, "account") {
+        let account_r: Result<String, _> = redis.hget(cookie, "account");
+        match account_r {
             Ok(account) => {
                 let clause = format!("where account={}", account);
                 match db_find!(em, "", "", &clause, Ruser) {
@@ -177,6 +180,28 @@ impl Ruser {
             }
         }
        
+    }
+
+    pub fn get_user_by_account(account: &str) -> Result<Ruser, String> {
+        let em = db::get_db();
+        let clause = format!("where account={}", account);
+        match db_find!(em, "", "", &clause, Ruser) {
+            Some(user) => {
+                Ok(user)
+            },
+                None => Err("no this user".to_string())
+        }
+    }
+
+    pub fn get_user_by_id(id: Uuid) -> Result<Ruser, String> {
+        let em = db::get_db();
+        let clause = format!("where id={}", id);
+        match db_find!(em, "", "", &clause, Ruser) {
+            Some(user) => {
+                Ok(user)
+            },
+                None => Err("no this user".to_string())
+        }
     }
 
     pub fn sign_out(cookie: &str) -> Result<(), String> {

@@ -4,6 +4,7 @@
 //! =============================================================
 use uuid::Uuid;
 use chrono::{DateTime, Utc};
+use serde_derive::{Serialize, Deserialize};
 
 use rustorm_dao::{
     ToColumnNames,
@@ -26,7 +27,7 @@ use rustorm_codegen::{
 /// Db table: ruser
 ///
 
-#[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
+#[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
 pub struct Ruser {
 
     pub id: Uuid,
@@ -62,7 +63,7 @@ pub struct Ruser {
 /// Model: Section
 /// DB table: section
 ///
-#[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
+#[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
 pub struct Section {
 
     pub id: Uuid,
@@ -92,7 +93,7 @@ pub struct Section {
 /// DB table: article
 ///
 
-#[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
+#[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
 pub struct Article {
 
     pub id: Uuid,
@@ -125,7 +126,7 @@ pub struct Article {
 /// DB table: comment
 ///
 
-#[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
+#[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
 pub struct Comment {
 
     pub id: Uuid,
@@ -298,7 +299,7 @@ pub mod for_write {
 pub mod for_read {
     use super::*;
 
-    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
+    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
     pub struct RuserWithoutPwd {
         pub id: Uuid,
         pub account: String,
@@ -312,7 +313,7 @@ pub mod for_read {
         pub github: Option<String>,
     }
 
-    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
+    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
     pub struct ArticleForList {
         pub id: Uuid,
         pub title: String,
@@ -321,7 +322,7 @@ pub mod for_read {
         pub author_name: String,        // left join from ruser
     }
 
-    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
+    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
     pub struct BlogArticleForList {
         pub id: Uuid,
         pub title: String,
@@ -329,7 +330,12 @@ pub mod for_read {
         pub author_name: String,        // left join from ruser
     }
 
-    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName)]
+    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
+    pub struct ArticleCount {
+        pub count: i64
+    }
+
+    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
     pub struct CommentWithAuthorName {
         pub id: Uuid,
         pub content: String,
@@ -338,6 +344,10 @@ pub mod for_read {
         pub author_name: String,        // left join from ruser
     }
 
+    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
+    pub struct CommentCount {
+        pub count: i64
+    }
 
 }
 

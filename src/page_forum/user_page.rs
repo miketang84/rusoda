@@ -46,9 +46,9 @@ impl UserPage {
     pub fn user_register(req: &mut Request) -> SapperResult<Response> {
 
         let params = get_form_params!(req);
-        let account = t_param!(params, "account");
-        let password = t_param!(params, "password");
-        let nickname = t_param!(params, "nickname");
+        let account = t_param!(params, "account").to_owned();
+        let password = t_param!(params, "password").to_owned();
+        let nickname = t_param!(params, "nickname").to_owned();
 
         let user_signup = UserSignUp {
             account,
@@ -66,8 +66,8 @@ impl UserPage {
     pub fn user_login(req: &mut Request) -> SapperResult<Response> {
 
         let params = get_form_params!(req);
-        let account = t_param!(params, "account");
-        let password = t_param!(params, "password");
+        let account = t_param!(params, "account").to_owned();
+        let password = t_param!(params, "password").to_owned();
 
         let user_login = UserLogin {
             account,
@@ -110,12 +110,12 @@ impl UserPage {
         let account = github_user_info.account;
         let password;
 
-        match Ruser::get_by_account(&account) {
-            Some(user) => {
+        match Ruser::get_user_by_account(&account) {
+            Ok(user) => {
                 // already exists
                 password = user.password;
             },
-            None => {
+            Err(_) => {
                 password = random_string(8);
                 // register it
                 let user_signup = UserSignUp {

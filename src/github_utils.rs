@@ -116,7 +116,7 @@ pub fn get_github_user_info(raw_token: &str) -> Result<GithubUserInfo, SapperErr
         tx.send(ret).unwrap();
     });
 
-    let received: Result<(String, String), SapperError> = rx.recv().unwrap();
+    let received: Result<GithubUserInfo, SapperError> = rx.recv().unwrap();
     println!("Got: {:?}", received);
 
     received
