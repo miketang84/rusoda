@@ -12,19 +12,17 @@
     <title>{% block title %}{% endblock title %}</title>
     <!--    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>-->
     <script src="/js/jquery.min.js"></script>
-
-    <style>
-    </style>
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
 </head>
 <body>
 <div id="header">
-    {% include "header.html" %}
+    {% include "forum/header.html" %}
 </div>
 <div id="content">
     {% block content %}{% endblock content %}
 </div>
 <div id="footer">
-    {% include "footer.html" %}
+    {% include "forum/footer.html" %}
 </div>
 {% block script %}{% endblock script %}
 </body>

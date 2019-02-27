@@ -43,7 +43,7 @@ impl ArticleCreate {
 impl ArticleEdit {
     pub fn update(&self) -> Result<Article, String>{
         let em = db::get_db();
-        let clause = format!("where id={}", self.id);
+        let clause = format!("where id='{}'", self.id);
         // here, will overide the id field, that's for tidy code yet
         match db_update!(em, self, &clause, Article) {
             Some(art) => {
@@ -59,7 +59,7 @@ impl ArticleEdit {
 impl ArticleDelete    {
     pub fn delete(&self) -> Result<Article, String>{
         let em = db::get_db();
-        let clause = format!("where id={}", self.id);
+        let clause = format!("where id='{}'", self.id);
         match db_delete!(em, &clause, Article) {
             Some(art) => {
                 Ok(art.to_owned())
@@ -77,7 +77,7 @@ impl Article {
     // NOTICE: no self here
     pub fn get_by_id(id: Uuid) -> Result<Article, String> {
         let em = db::get_db();
-        let clause = format!("where id={}", id);
+        let clause = format!("where id='{}'", id);
         match db_find!(em, "", "", &clause, Article) {
             Some(art) => {
                 Ok(art.to_owned())
@@ -98,7 +98,7 @@ impl Article {
 
     pub fn paging_by_section(section_id: Uuid, page: usize, page_size: usize) -> Vec<Article> {
         let em = db::get_db();
-        let clause = format!("where section_id={} order by created_time desc limit {} offset {}", section_id, page_size, page_size*page);
+        let clause = format!("where section_id='{}' order by created_time desc limit {} offset {}", section_id, page_size, page_size*page);
         let articles = db_select!(em, "", "", &clause, Article);
 
         articles
@@ -107,7 +107,7 @@ impl Article {
     pub fn get_latest_articles(size: usize) -> Vec<ArticleForList> {
         let em = db::get_db();
         // need to alias names
-        let head_clause = "article.id, article.title, article.created_time, section.title as section_title, ruser.nickname as author_name";
+        let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
         let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id";
         let rest_clause = format!("WHERE article.stype = 0 ORDER BY created_time DESC LIMIT {}", size);
         let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList);
@@ -130,17 +130,19 @@ impl Article {
         let em = db::get_db();
 
         let offset = NUMBER_ARTICLE_PER_PAGE * (current_page - 1);
-        let head_clause = "comment.id, comment.title, comment.author_id, comment.created_time, ruser.nickname";
+        let head_clause = "comment.id, comment.content, comment.author_id, comment.created_time, ruser.nickname";
         let from_clause = "FROM comment LEFT JOIN ruser ON comment.author_id = ruser.id";
-        let clause = format!("where article_id={} order by created_time desc limit {} offset {}", article_id, NUMBER_ARTICLE_PER_PAGE, offset);
+        let clause = format!("where article_id='{}' order by created_time desc limit {} offset {}", article_id, NUMBER_ARTICLE_PER_PAGE, offset);
         let comments = db_select!(em, head_clause, from_clause, &clause, CommentWithAuthorName);
+
+        println!("{:?}", comments);
 
         comments
     }
 
     pub fn get_comments_count_belong_to_this(article_id: Uuid) -> i64 {
         let em = db::get_db();
-        let clause = format!("where article_id={}", article_id);
+        let clause = format!("where article_id='{}'", article_id);
         let count_r = db_find!(em, "count(*)", "from comment", &clause, CommentCount);
 
         count_r.unwrap().count

@@ -141,7 +141,7 @@ impl UserEdit {
         let account: String = redis.hget(cookie, "account").unwrap();
 
         // update new info by account
-        let clause = format!("WHERE account={}", account);
+        let clause = format!("WHERE account='{}'", account);
         match db_update!(em, self, &clause, Ruser) {
             Some(user) => {
                 Ok(user.to_owned())
@@ -167,7 +167,7 @@ impl Ruser {
         let account_r: Result<String, _> = redis.hget(cookie, "account");
         match account_r {
             Ok(account) => {
-                let clause = format!("where account={}", account);
+                let clause = format!("where account='{}'", account);
                 match db_find!(em, "", "", &clause, Ruser) {
                     Some(user) => {
                         Ok(user)
@@ -184,7 +184,7 @@ impl Ruser {
 
     pub fn get_user_by_account(account: &str) -> Result<Ruser, String> {
         let em = db::get_db();
-        let clause = format!("where account={}", account);
+        let clause = format!("where account='{}'", account);
         match db_find!(em, "", "", &clause, Ruser) {
             Some(user) => {
                 Ok(user)
@@ -195,7 +195,7 @@ impl Ruser {
 
     pub fn get_user_by_id(id: Uuid) -> Result<Ruser, String> {
         let em = db::get_db();
-        let clause = format!("where id={}", id);
+        let clause = format!("where id='{}'", id);
         match db_find!(em, "", "", &clause, Ruser) {
             Some(user) => {
                 Ok(user)

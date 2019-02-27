@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "forum/base.html" %}
 
 {% block title %}
     版块排序 - Rust语言中文社区
@@ -15,9 +15,9 @@
         {{section.title}} 
         <input class="input" type="text" name="order" value="{{section.weight}}">
         <br>
-        {% endif %}
+        {% endfor %}
          
-        <input type="submit" name="submit">提交</input>
+        <input type="submit" value="提交">
     </form>
 </div>
 {% endblock content %}

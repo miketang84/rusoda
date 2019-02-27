@@ -59,10 +59,11 @@ impl ArticlePage {
         let id = t_param_parse!(params, "id", Uuid);
 
         // get article object
-        let article = Article::get_by_id(id);
-        if article.is_err() {
+        let article_r = Article::get_by_id(id);
+        if article_r.is_err() {
             return res_400!(format!("no this artile: {}", id));
         }
+        let article = article_r.unwrap();
 
         let sections = Section::forum_sections();
 
@@ -85,10 +86,11 @@ impl ArticlePage {
         }
         let article = article_r.unwrap();
 
-        let mut author = Ruser::get_user_by_id(article.author_id);
-        if author.is_err() {
+        let author_r = Ruser::get_user_by_id(article.author_id);
+        if author_r.is_err() {
             return res_400!(format!("no this author: {}", article.author_id));
         }
+        let author = author_r.unwrap();
 
         let mut is_author = false;
         let mut is_admin = false;

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "forum/base.html" %}
 
 {% block title %}
     Rust语言中文社区-首页
@@ -7,8 +7,8 @@
 {% block content %}
 <div class="body-content">
     <div class="action_area">
-        <a class="right new-article" href="/p/blogarticle/create">发表新博客</a>
         <a class="right new-article" href="/p/article/create">发表新帖子</a>
+        <a class="right new-article" href="/p/blogarticle/create">发表新博客</a>
         <div style="clear:both;"></div>
     </div>
     
@@ -23,11 +23,11 @@
             <ul>
             {% for article in articles %}
                 <li>
-                    <a href="/article/{{ article.id }}">
-                        [{{article.section_title}}]: 
+                    <a href="/article?id={{ article.id }}" class="title">
+                        [{{article.section_title}}]：
                         {{ article.title }}
                     </a>
-                    <span>{{article.created_time}}</span>
+                    <span class="timestamp right">{{article.created_time | date(format="%Y-%m-%d %H:%M")}}</span>
                 </li>
             {% endfor %}
             </ul>
@@ -41,14 +41,15 @@
         <div class="planet-space-head head">
             <span>博客星球</span>
         </div>
-        {% if blogs | length == 0 %}
+        {% if blog_articles | length == 0 %}
         <p>这里还没有内容哦……</p>
         {% else %}
         <div class="planet-space-container container">
             <ul>
-            {% for blog in blogs %}
+            {% for blog in blog_articles %}
                 <li>
-                    <a href="/blog/{{ blog.id }}">{{ blog.author_name }}：{{ blog.title }}</a>
+                    <a href="/article?id={{ blog.id }}" class="title">{{ blog.author_name }}：{{ blog.title }}</a>
+                    <span class="timestamp right">{{blog.created_time | date(format="%Y-%m-%d %H:%M")}}</span>
                 </li>
             {% endfor %}
             </ul>
@@ -58,20 +59,21 @@
     </div>
 
     <div class="category-list-section">
-        {% if categories | length  == 0 %}
+        {% if sections | length  == 0 %}
         <p>这里还没有内容哦……</p>
         {% else %}
         <div class="category-list-container container">
             <ul>
-            {% for cate in categories %}
+            {% for sec in sections %}
                 <li>
-                    <a href="/section?id={{ cate.id }}">{{ cate.title }}</a>
+                    <a href="/section?id={{ sec.id }}">{{ sec.title }}</a>
                 </li>
             {% endfor %}
             </ul>
+            <div style="clear:both;"></div>
         </div>
         {% endif %}
-        <div style="clear:both;"></div>
+        
 
     </div>
 </div>

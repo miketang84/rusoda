@@ -85,7 +85,7 @@ pub struct Section {
     pub status: i16,
     // for order, if smaller than zero, doesn't display it
     // for blog section, it defaults -1.0
-    pub weight: f32
+    pub weight: f64
 }
 
 ///
@@ -226,7 +226,7 @@ pub mod for_write {
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct UpdateSectionWeight {
         pub id: Uuid,
-        pub weight: f32
+        pub weight: f64
     }
 
 
@@ -318,6 +318,7 @@ pub mod for_read {
         pub id: Uuid,
         pub title: String,
         pub created_time: DateTime<Utc>,
+        pub tags: String,
         pub section_title: String,      // left join from section
         pub author_name: String,        // left join from ruser
     }
@@ -341,7 +342,7 @@ pub mod for_read {
         pub content: String,
         pub author_id: Uuid,
         pub created_time: DateTime<Utc>,
-        pub author_name: String,        // left join from ruser
+        pub nickname: String,        // left join from ruser
     }
 
     #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]

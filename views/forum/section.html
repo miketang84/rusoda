@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "forum/base.html" %}
 
 {% block title %}
     {{ section.title }} - Rust语言中文社区
@@ -31,7 +31,7 @@
             <ul class="nodot items">
                 {% for article_with_stats in articles %}
                     <li class="item {% if not loop.last %} underline {% else %} last {% endif %}">
-                        <a href="/p/article?id={{ article_with_stats.article.id }}">{{ article_with_stats.article.title }}</a>
+                        <a href="/article?id={{ article_with_stats.article.id }}">{{ article_with_stats.article.title }}</a>
                         <span class="show-count">({{ article_with_stats.viewtimes }},{{ article_with_stats.comment_count }})</span>
                         <span class="right">
                             <span class="tags">{{ article_with_stats.article.tags }}</span>
@@ -51,7 +51,7 @@
 
     <div class="paginator right">
         {% for _ in range(end=total_page) %}
-        <a href="/p/section?id={{section.id}}&page={{loop.index}}"
+        <a href="/section?id={{section.id}}&current_page={{loop.index}}"
             {% if loop.index==current_page %} class="current_page" {% endif %}>
             {{ loop.index }}
         </a>

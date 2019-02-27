@@ -76,7 +76,6 @@ impl CommentPage {
 
     pub fn comment_new(req: &mut Request) -> SapperResult<Response> {
         let params = get_form_params!(req);
-        let id = t_param_parse!(params, "id", Uuid);
         let article_id = t_param_parse!(params, "article_id", Uuid);
         let raw_content = t_param!(params, "raw_content");
 
@@ -96,7 +95,7 @@ impl CommentPage {
 
         match comment_create.insert() {
             Ok(comment) => {
-                res_redirect!(format!("/p/article?id={}", article_id))
+                res_redirect!(format!("/article?id={}", article_id))
             },
             Err(_) => {
                 res_500!("comment create error.")
@@ -121,7 +120,7 @@ impl CommentPage {
 
         match comment_edit.update() {
             Ok(comment) => {
-                res_redirect!(format!("/p/article?id={}", article_id))
+                res_redirect!(format!("/article?id={}", article_id))
             },
             Err(_) => {
                 res_500!("comment edit error.")

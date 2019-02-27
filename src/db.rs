@@ -14,7 +14,7 @@ pub fn get_db() -> EntityManager {
 }
 
 pub fn get_redis() -> RedisConnection {
-    let client = redis_client::open("redis://127.0.0.1/1").unwrap();
+    let client = redis_client::open("redis://127.0.0.1/0").unwrap();
     let conn = client.get_connection().unwrap();
 
     conn

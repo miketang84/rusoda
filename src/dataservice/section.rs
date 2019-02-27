@@ -1,6 +1,6 @@
 use crate::db;
 use crate::util::{random_string, sha3_256_encode};
-
+use serde_derive::{Serialize, Deserialize};
 use uuid::Uuid;
 
 pub use crate::model::Section;
@@ -17,6 +17,7 @@ use crate::dataservice::article::{
     ArticleCount
 };
 
+#[derive(Serialize, Deserialize)]
 pub struct ArticleWithStats {
     pub article: ArticleForList,
     pub viewtimes: i64,
@@ -65,7 +66,7 @@ impl SectionCreate {
 impl SectionEdit {
     pub fn update(&self) -> Result<Section, String>{
         let em = db::get_db();
-        let clause = format!("where id={}", self.id);
+        let clause = format!("where id='{}'", self.id);
         // here, will overide the id field, that's for tidy code yet
         match db_update!(em, self, &clause, Section) {
             Some(sec) => {
@@ -81,7 +82,7 @@ impl SectionEdit {
 impl SectionDelete    {
     pub fn delete(&self) -> Result<Section, String>{
         let em = db::get_db();
-        let clause = format!("where id={}", self.id);
+        let clause = format!("where id='{}'", self.id);
         match db_delete!(em, &clause, Section) {
             Some(sec) => {
                 Ok(sec.to_owned())
@@ -97,7 +98,7 @@ impl SectionDelete    {
 impl UpdateSectionWeight {
     pub fn update(&self) -> Result<Section, String>{
         let em = db::get_db();
-        let clause = format!("where id={}", self.id);
+        let clause = format!("where id='{}'", self.id);
         match db_update!(em, self, &clause, Section) {
             Some(sec) => {
                 Ok(sec.to_owned())
@@ -166,9 +167,10 @@ impl Section {
         let em = db::get_db();
 
         let offset = NUMBER_ARTICLE_PER_PAGE * (current_page - 1);
-
-        let clause = format!("where section_id={} order by created_time desc limit {} offset {}", section_id, NUMBER_ARTICLE_PER_PAGE, offset);
-        let articles = db_select!(em, "", "from article", &clause, ArticleForList);
+        let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
+        let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id";
+        let rest_clause = format!("where section_id='{}' order by created_time desc limit {} offset {}", section_id, NUMBER_ARTICLE_PER_PAGE, offset);
+        let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList);
 
         // add view times for each article
         let mut article_vec: Vec<ArticleWithStats> = vec![];
@@ -189,7 +191,7 @@ impl Section {
 
     pub fn get_articles_count_belong_to_this(section_id: Uuid) -> i64 {
         let em = db::get_db();
-        let clause = format!("where section_id={}", section_id);
+        let clause = format!("where section_id='{}'", section_id);
         // count here is Option
         let count = db_find!(em, "count(*)", "from article", &clause, ArticleCount);
         count.unwrap().count

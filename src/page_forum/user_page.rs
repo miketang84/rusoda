@@ -153,6 +153,19 @@ impl UserPage {
 
         Ok(response)
     }
+
+
+    pub fn user_signout(req: &mut Request) -> SapperResult<Response> {
+        match ext_type!(req, SessionVal) {
+            Some(cookie) => {
+                let _ = Ruser::sign_out(cookie);
+            },
+            None => {}
+        }
+
+        res_redirect!("/")
+    }
+    
 }
 
 
@@ -165,11 +178,13 @@ impl SapperModule for UserPage {
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {
         router.get("/login_with3rd", Self::page_login_with3rd);
         router.get("/login_with_admin", Self::page_login_with_admin);
+        router.get("/signout", Self::user_signout);
 
         router.post("/s/user/register", Self::user_register);
         router.post("/s/user/login", Self::user_login);
         // this url will be called by remote github oauth2 server
         router.post("/s/user/login_with_github", Self::user_login_with_github);
+        
 
         Ok(())
     }

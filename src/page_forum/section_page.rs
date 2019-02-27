@@ -53,7 +53,7 @@ impl SectionPage {
     pub fn section_detail_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = ext_type_owned!(req, AppWebContext).unwrap();
 
-        let params = get_form_params!(req);
+        let params = get_query_params!(req);
         let section_id = t_param_parse!(params, "id", Uuid);
         let current_page = t_param_parse_default!(params, "current_page", i64, 1);
 
@@ -95,9 +95,10 @@ impl SectionPage {
         web.add("is_a_blog", &is_a_blog);
         web.add("is_myown_blog", &is_myown_blog);
         web.add("is_admin", &is_admin);
-        web.add("total_item", &section);
-        web.add("total_page", &section);
+        web.add("total_item", &total_item);
+        web.add("total_page", &total_page);
         web.add("current_page", &current_page);
+        web.add("articles", &articles);
 
         res_html!("forum/section.html", web)
     }
@@ -116,7 +117,7 @@ impl SectionPage {
 
         match section_new.create() {
             Ok(section) => {
-                res_redirect!(format!("/p/section?id={}", section.id))
+                res_redirect!(format!("/section?id={}", section.id))
             },
             Err(_) => {
                 res_500!("section create error.")
@@ -138,7 +139,7 @@ impl SectionPage {
 
         match section_edit.update() {
             Ok(section) => {
-                res_redirect!(format!("/p/section?id={}", section.id))
+                res_redirect!(format!("/section?id={}", section.id))
             },
             Err(_) => {
                 res_500!("section edit error.")
@@ -159,18 +160,17 @@ impl SectionPage {
 
     pub fn section_rearrange(req: &mut Request) -> SapperResult<Response> {
         let mut web = ext_type_owned!(req, AppWebContext).unwrap();
-        let params = get_query_params!(req);
-        let order = t_param!(params, "order");
+        let params = get_form_params!(req);
+        println!("{:?}", params);
+        let order = t_arr_param!(params, "order");
 
         // print order
         println!("==> order {:?}", order);
-        // only for test
-        let order_arr = vec![];
         let sections = Section::forum_sections();
         for (i, section) in sections.iter().enumerate() {
             let update_section_weight = UpdateSectionWeight {
                 id: section.id,
-                weight: order_arr[i]
+                weight: order[i].parse::<f64>().unwrap()
             };
             update_section_weight.update().unwrap();
         }

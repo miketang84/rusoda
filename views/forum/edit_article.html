@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "forum/base.html" %}
 
 {% block title %}
     编辑帖子 - Rust语言中文社区
@@ -14,8 +14,8 @@
     {% else %}
     <form class="" action="/s/article/edit" method="post">
     版块：<select name="section_id">
-        {% for section in sections do %}
-        {% if article.section_id == section.id do %}
+        {% for section in sections %}
+        {% if article.section_id == section.id %}
         <option value ="{{section.id}}" selected>{{section.title}}</option>
         {% else %}
         <option value ="{{section.id}}">{{section.title}}</option>

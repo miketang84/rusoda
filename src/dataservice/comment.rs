@@ -34,7 +34,7 @@ impl CommentCreate {
 impl CommentEdit {
     pub fn update(&self) -> Result<Comment, String>{
         let em = db::get_db();
-        let clause = format!("where id={}", self.id);
+        let clause = format!("where id='{}'", self.id);
         // here, will overide the id field, that's for tidy code yet
         match db_update!(em, self, &clause, Comment) {
             Some(com) => {
@@ -50,7 +50,7 @@ impl CommentEdit {
 impl CommentDelete    {
     pub fn delete(&self) -> Result<Comment, String>{
         let em = db::get_db();
-        let clause = format!("where id={}", self.id);
+        let clause = format!("where id='{}'", self.id);
         match db_delete!(em, &clause, Comment) {
             Some(com) => {
                 Ok(com.to_owned())
@@ -68,7 +68,7 @@ impl Comment {
 
     pub fn get_by_id(id: Uuid) -> Result<Comment, String> {
         let em = db::get_db();
-        let clause = format!("where id={}", id);
+        let clause = format!("where id='{}'", id);
         match db_find!(em, "", "", &clause, Comment) {
             Some(comment) => {
                 Ok(comment.to_owned())
