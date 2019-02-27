@@ -38,6 +38,7 @@ pre {
 
 pre code {
 	border-radius: 4px;
+	font-size: 14px;
 }
 
 div code,
@@ -68,6 +69,10 @@ ul code {
 
 .header .logo img {
 	width: 40px;
+}
+
+.signpart {
+	font-size: 14px;
 }
 
 .footer {
@@ -111,6 +116,16 @@ ul code {
 	color: #228;
 }
 
+.detail-body {
+	font-size: 16px;
+	padding: 20px 0px;
+}
+
+.detail-body p {
+	line-height: 24px;
+}
+
+
 .detail-body img {
 	max-width: 100%;
 }
@@ -133,34 +148,29 @@ ul code {
 	list-style-type: disc;
 }
 
-.comment-title {
-	font-size: 14px;
-	background-color: #e8e8e8;
-}
 
 .vice-title {
 	font-size: 14px;
-}
-
-.created-time {
-	color: #555;
-	font-size: 13px;
+	line-height: 20px;
 }
 
 .action_area {
 	padding: 10px 0 10px 0;
 }
 
-.new-article {
+.new-article, .new-comment {
 	display: inline-block;
 	margin-right: 10px;
 }
 
+.new-comment {
+	padding-top: 20px;
+}
 
 .article-list {
 	margin-top: 10px;
 	margin-bottom: 24px;
-	font-size: 18px;
+	font-size: 16px;
 }
 
 .article-list li {
@@ -182,7 +192,7 @@ ul code {
 .article-list-head span, .planet-space-head span {
 	display: inline-block;
 	border-bottom: 1px solid #666;
-	font-size: 16px;
+	font-size: 15px;
 	line-height: 20px;
 	color: #666;
 }
@@ -236,4 +246,43 @@ ul code {
     min-height: 400px;
 	font-size: 15px;
 	padding-left: 4px;
+}
+
+.article_detail_head {
+	margin-top: 10px;
+}
+
+.article_detail_head .title {
+	margin-top: 15px;
+}
+
+.article_detail_head h3 {
+	font-size: 22px;
+}
+
+.comments .item {
+	line-height: 32px;
+
+	
+}
+
+.comments .item .comment-title {
+	font-size: 14px;
+	padding: 4px 10px;
+	border-bottom: 1px solid #eee;
+	
+}
+
+.comments .item .comment-content {
+	font-size: 16px;
+	padding: 4px 10px;
+}
+
+.new-reply {
+	line-height: 32px;
+	padding-bottom: 10px;
+}
+
+.new-reply .article-title {
+	font-weight: bold;
 }

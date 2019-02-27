@@ -9,7 +9,7 @@
 
     <div class="signpart right">
         {% if user %}
-        <a href="/blog?author_id={{user.id}}">{{user.nickname}}</a>
+        <a href="/blog_with_author?author_id={{user.id}}">{{user.nickname}}</a>
         <a href="/signout">登出</a>
         {% else %}
         <a href="/login_with3rd">登录</a>

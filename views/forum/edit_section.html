@@ -5,8 +5,8 @@
 {% endblock title %}
 
 {% block content %}
-<div id="edit-section" class="">
-    <b>编辑版块</b>
+<div class="body-content">
+    <h3>编辑版块</h3>
     <br>
     <form action="/s/section/edit" method="post">
         <input type="hidden" name="id" value="{{section.id}}">
@@ -15,7 +15,7 @@
         <br>
         <input type="text" size="20" placeholder="版块描述" name="description" value="{{section.description}}">
         <br>
-        <input type="submit" id="submit" value="提交"/>
+        <input type="submit" value="提交"/>
     </form>
 </div>
 {% endblock content %}

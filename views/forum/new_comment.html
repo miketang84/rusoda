@@ -10,14 +10,14 @@
 	<h3>
 		新评论
 	</h3>
-	<p>你正在对对下面文章进行回复：<br>
-		<span>{{article.title}}</span>
+	<p class="new-reply">你正在对对下面文章进行回复：<br>
+		<span class="article-title">《{{article.title}}》</span>
 	</p>
 	<form class="" action="/s/comment/new" method="post">
 		<input type="hidden" name="article_id" value="{{article.id}}">
 		<textarea name="raw_content" placeholder="支持 Markdown 哦，快来试试吧" autofocus></textarea>
 		<br> 
-		<input type="submit" name="submit">Biu！发送！</input>
+		<input type="submit" value="Biu！发送！"></input>
 	</form>
 </div>
 

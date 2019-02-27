@@ -9,14 +9,16 @@
     <h3>
         编辑评论
     </h3>
-    <p>帖子：<span>{{article.title}}</span></p>
+    <p class="new-reply">帖子：
+        <span class="article-title">{{article.title}}</span>
+    </p>
     <form class="" action="/s/comment/edit" method="post">
         <input type="hidden" name="article_id" value="{{article.id}}">
         <input type="hidden" name="id" value="{{comment.id}}">
         <br> 
         <textarea name="raw_content" placeholder="支持 Markdown 哦，快来试试吧" autofocus>{{comment.raw_content}}</textarea>
         <br> 
-        <input type="submit" name="submit">Biu！发送！</input>
+        <input type="submit" value="Biu！发送！"></input>
     </form>
 </div>
 {% endblock content %}

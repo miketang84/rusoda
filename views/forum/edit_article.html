@@ -6,31 +6,38 @@
 
 {% block content %}
 <div class="body-content">
+    {% if is_in_blog %}
+    <h3>
+        编辑博客
+    </h3>
+    {% else %}
     <h3>
         编辑帖子
     </h3>
+    {% endif %}
     {% if is_in_blog %}
     <form class="" action="/s/blogarticle/edit" method="post">
     {% else %}
     <form class="" action="/s/article/edit" method="post">
-    版块：<select name="section_id">
-        {% for section in sections %}
-        {% if article.section_id == section.id %}
-        <option value ="{{section.id}}" selected>{{section.title}}</option>
-        {% else %}
-        <option value ="{{section.id}}">{{section.title}}</option>
-        {% endif %}
-        {% endfor %}
-    </select>
+        <select name="section_id">
+            {% for section in sections %}
+            {% if article.section_id == section.id %}
+            <option value ="{{section.id}}" selected>{{section.title}}</option>
+            {% else %}
+            <option value ="{{section.id}}">{{section.title}}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        <br>
     {% endif %}
-    <input type="hidden" name="id" value="{{article.id}}">
-    <input class="input" type="text" name="title" placeholder="这里输入标题" value="{{article.title}}">
-    <br> 
-    <input class="input" type="text" name="tags" placeholder="这里输入标签 以英文逗号分隔" value="{{article.tags}}">
-    <br> 
-    <textarea name="raw_content" placeholder="支持 Markdown 哦，快来试试吧" autofocus>{{article.raw_content}}</textarea>
-    <br> 
-    <input type="submit" name="submit">Biu！发送！</input>
+        <input type="hidden" name="id" value="{{article.id}}">
+        <input class="input" type="text" name="title" placeholder="这里输入标题" value="{{article.title}}">
+        <br> 
+        <input class="input" type="text" name="tags" placeholder="这里输入标签 以英文逗号分隔" value="{{article.tags}}">
+        <br> 
+        <textarea name="raw_content" placeholder="支持 Markdown 哦，快来试试吧" autofocus>{{article.raw_content}}</textarea>
+        <br> 
+        <input type="submit" value="Biu！发送！">
     </form>
 </div>
 {% endblock content %}

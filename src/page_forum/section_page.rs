@@ -52,9 +52,22 @@ impl SectionPage {
     
     pub fn section_detail_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = ext_type_owned!(req, AppWebContext).unwrap();
-
         let params = get_query_params!(req);
-        let section_id = t_param_parse!(params, "id", Uuid);
+        
+        let (path, _) = req.uri();
+        let section_id = if path == "/blog_with_author" {
+            let author_id = t_param_parse!(params, "author_id", Uuid);
+            let section = Section::get_by_suser(author_id);
+            if section.is_err() {
+                return res_400!("no this section");
+            }
+            let section = section.unwrap();
+            section.id
+        }
+        else {
+            t_param_parse!(params, "id", Uuid)
+        };
+
         let current_page = t_param_parse_default!(params, "current_page", i64, 1);
 
         let section_result = Section::get_by_id(section_id);
@@ -198,6 +211,7 @@ impl SapperModule for SectionPage {
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {
         router.get("/section", Self::section_detail_page);
         router.get("/blog", Self::section_detail_page);
+        router.get("/blog_with_author", Self::section_detail_page);
 
         router.get("/p/section/create", Self::section_create_page);
         router.get("/p/section/edit", Self::section_edit_page);

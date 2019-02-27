@@ -221,6 +221,7 @@ impl ArticlePage {
         if article.is_err() {
             return res_400!(format!("no this artile: {}", id));
         }
+        let article = article.unwrap();
 
         web.add("article", &article);
 

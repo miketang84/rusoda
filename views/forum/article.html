@@ -6,23 +6,23 @@
 
 {% block content %}
 <!--<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/default.min.css">-->
-<!-- <link rel="stylesheet" href="/css/gruvbox-light.css"> -->
+<link rel="stylesheet" href="/css/gruvbox-light.css">
 <script src="/js/highlight.pack.js"></script>
 
-<div class="article_detail detail">
-    <div class="">
+<div class="body-content article_detail detail">
+    <div class="article_detail_head">
         {% if article.stype == 0 %}
             <a href="/section?id={{ article.section_id }}" class="return">&lt; 返回版块</a>
         {% else %}
-            <a href="/blog?id={{ article.section_id }}" class="return">&lt; 返回博客</a>
+            <a href="/blog_with_author?author_id={{ author.id }}" class="return">&lt; 返回博客</a>
         {% endif %}
-        <div>
+        <div class="title">
             <h3><a href="/article?id={{article.id}}">{{ article.title }}</a></h3>
         </div>
         <p class="vice-title">
-            <a href="/blog?id={{ article.section_id }}">{{ author.nickname }}</a>
+            <a href="/blog_with_author?author_id={{ author.id }}">{{ author.nickname }}</a>
 
-            发表于 <span class="article_created_time">xxx</span>
+            发表于 <span class="article_created_time">{{article.created_time | date(format="%Y-%m-%d %H:%M")}}</span>
 
             {% if is_author or is_admin %}
             {% if article.stype == 0 %}
@@ -34,7 +34,7 @@
         </p>
         <p>
             {% if article.tags %}
-            <small>标签：{{ article.tags }}</small>
+            <small>Tags：{{ article.tags }}</small>
             {% endif %}
         </p>
     </div>
@@ -45,9 +45,9 @@
 
     <div class="comments">
         <div class="">
-            <h3>评论区
-                <a class="right new-comment" href="/p/comment/new?article_id={{article.id}}">发表新评论</a>
-            </h3>
+            <h3 class="left">评论区</h3>
+            <a class="right new-comment" href="/p/comment/new?article_id={{article.id}}">发表新评论</a>
+            <div style="clear:both;"></div>
         </div>
 
         {% if comments | length == 0 %}
@@ -62,7 +62,7 @@
                     <a class="author-name" href="/blog?id={{ article.section_id }}">
                         {{ comment.nickname }}
                     </a>
-                    <span class="created-time">{{ comment.created_time }}</span>
+                    <span class="created-time">{{ comment.created_time | date(format="%Y-%m-%d %H:%M")}}</span>
                     {% if is_login and user.id == comment.author_id %}
                     <a class="delete" href="/p/comment/delete?id={{comment.id}}">删除</a>
                     {% endif %}
@@ -88,6 +88,7 @@
             {% endfor %}
             共 {{ total_item }} 条评论, 共 {{ total_page }} 页
         </div>
+        <div style="clear:both;"></div>
     </div>
 </div>
 
