@@ -6,15 +6,20 @@
 
 {% block content %}
 <div class="body-content">
+    {% if is_in_blog %}
+    <h3>
+        发表博客
+    </h3>
+    {% else %}
     <h3>
         新建帖子
     </h3>
+    {% endif %}
     {% if is_in_blog %}
     <form class="" action="/s/blogarticle/create" method="post">
         <input type="hidden" name="stype" value="1">
     {% else %}
     <form class="" action="/s/article/create" method="post">
-        版块：
         <select name="section_id">
             {% for section in sections %}
             {% if section_id == section.id %}
@@ -25,6 +30,7 @@
             {% endfor %}
         </select>
         <input type="hidden" name="stype" value="0">
+        <br>
     {% endif %}
         <input type="hidden" name="from" value="form">
         <input type="text" name="title" placeholder="这里输入标题">
@@ -33,7 +39,7 @@
         <br> 
         <textarea name="raw_content" placeholder="支持 Markdown 哦，快来试试吧" autofocus></textarea>
         <br> 
-        <input type="submit" name="submit">Biu！发送！</input>
+        <input type="submit" value="Biu！发送！">
     </form>
 </div>
 {% endblock content %}

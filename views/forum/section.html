@@ -24,19 +24,21 @@
         {% endif %}
     </div>
 
-    <div class="detail-body">
+    <div class="section-body article-list">
         {% if articles | length == 0 %}
             <p class="">这里还没有内容哦...</p>
         {% else %}
-            <ul class="nodot items">
+            <ul>
                 {% for article_with_stats in articles %}
-                    <li class="item {% if not loop.last %} underline {% else %} last {% endif %}">
-                        <a href="/article?id={{ article_with_stats.article.id }}">{{ article_with_stats.article.title }}</a>
-                        <span class="show-count">({{ article_with_stats.viewtimes }},{{ article_with_stats.comment_count }})</span>
-                        <span class="right">
+                    <li>
+                        <span class="left title">
+                            <a href="/article?id={{ article_with_stats.article.id }}">{{ article_with_stats.article.title }}</a>
+                            <span class="show-count">({{ article_with_stats.viewtimes }},{{ article_with_stats.comment_count }})</span>
+                        </span>
+                        <span class="right info">
                             <span class="tags">{{ article_with_stats.article.tags }}</span>
                             <span class="author">{{ article_with_stats.article.author_name }}</span> 
-                            <span class="createdTime">{{ article_with_stats.article.created_time }}</span>
+                            <span class="timestamp">{{ article_with_stats.article.created_time | date(format="%Y-%m-%d %H:%M") }}</span>
                             {% if is_admin %}
                             <span class="delete">删除</span>
                             <span class="edit">编辑</span>
@@ -58,5 +60,6 @@
         {% endfor %}
         共 {{ total_item }} 篇, 共 {{ total_page }} 页
     </div>
+    <div style="clear:both;"></div>
 </div>
 {% endblock content %}

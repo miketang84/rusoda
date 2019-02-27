@@ -1,6 +1,6 @@
 body {
 	color: #222;
-	max-width: 960px;
+	max-width: 800px;
 	margin: auto;
 	padding: 0;
 }
@@ -26,7 +26,7 @@ ul li {
 
 a {
 	text-decoration: none;
-	/* color: #222; */
+	color: #222;
 }
 
 pre {
@@ -67,7 +67,7 @@ ul code {
 }
 
 .header .logo img {
-		width: 40px;
+	width: 40px;
 }
 
 .footer {
@@ -80,36 +80,6 @@ ul code {
 .body-content {
 	padding: 10px;
 	font-size: 14px;
-}
-
-.body-content .planet-space {
-	border: gray 1px solid;
-	padding-bottom: 4px;
-	height: 108px;
-	text-align: center;
-	margin-top: 15px;
-}
-
-.body-content .category-section {
-	margin-top: 15px;
-	margin-right: -15px;
-}
-
-.one-section {
-	width: calc(31% - 15px);
-	margin-right: 15px;
-	margin-bottom: 15px;
-	padding: 10px;
-	border: gray 1px solid;
-	height: 104px;
-	float: left;
-	min-width: 276px;
-}
-
-@media screen and (max-width: 960px) {
-	.one-section {
-			width: calc(100% - 50px);
-	}
 }
 
 .content-area {
@@ -186,39 +156,35 @@ ul code {
 	margin-right: 10px;
 }
 
-.article-list-section, .planet-space-section {
+
+.article-list {
+	margin-top: 10px;
 	margin-bottom: 24px;
 	font-size: 18px;
 }
 
-.article-list-section li, .planet-space-section li {
-	margin: 2px 0 0 2px;
+.article-list li {
+	margin-bottom: 4px;
 }
 
-.article-list-section li .title, .planet-space-section li .title {
-	width: 80%;
+.article-list li .title {
+	max-width: 80%;
     display: inline-block;
     text-overflow: ellipsis;
     overflow: hidden;
 }
 
-ul .timestamp {
+.article-list li .timestamp {
 	font-size: 14px;
 	color: #888;
 }
 
 .article-list-head span, .planet-space-head span {
 	display: inline-block;
-	border-bottom: 1px solid gray;
+	border-bottom: 1px solid #666;
 	font-size: 16px;
 	line-height: 20px;
-	margin-left: 2px;
 	color: #666;
-	/* width: 25%; */
-}
-
-.article-list-container, .planet-space-container {
-	margin-top: 16px;
 }
 
 .category-list-section {
@@ -228,4 +194,46 @@ ul .timestamp {
 .category-list-section ul li {
 	float: left;
 	padding-right: 8px;
+}
+
+.article-list li span.title {
+	max-width: 50%;
+}
+
+.article-list li .show-count {
+	font-size: 14px;
+	color: #888;
+}
+
+.article-list li .info {
+	font-size: 14px;
+	color: #888;
+}
+
+.detail-head {
+	margin-bottom: 24px;
+}
+
+.body-content form {
+	line-height: 40px;
+}
+
+/* .body-content form select {
+    height: 20px;
+} */
+
+.body-content form input[type=text] {
+	min-width: 240px;
+    height: 26px;
+    font-size: 16px;
+	width: 60%;
+	padding-left: 4px;
+}
+
+.body-content form textarea {
+	width: 90%;
+    min-width: 280px;
+    min-height: 400px;
+	font-size: 15px;
+	padding-left: 4px;
 }
