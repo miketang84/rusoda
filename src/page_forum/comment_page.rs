@@ -40,11 +40,11 @@ impl CommentPage {
             let reply_comment_id = t_param_parse!(params, "reply_comment_id", Uuid);
             match Comment::get_by_id(reply_comment_id) {
                 Ok(comment) => {
-                    web.add("reply_comment", &comment);
+                    web.insert("reply_comment", &comment);
 
                     match Article::get_by_id(article_id) {
                         Ok(article) => {
-                            web.add("article", &article);
+                            web.insert("article", &article);
                             return res_html!("forum/new_comment.html", web);
                         },
                         Err(_) => {
@@ -60,7 +60,7 @@ impl CommentPage {
         else {
             match Article::get_by_id(article_id) {
                 Ok(article) => {
-                    web.add("article", &article);
+                    web.insert("article", &article);
                     return res_html!("forum/new_comment.html", web);
                 },
                 Err(_) => {
@@ -80,8 +80,8 @@ impl CommentPage {
             Ok(article) => {
                 match Comment::get_by_id(comment_id) {
                     Ok(comment) => {
-                        web.add("article", &article);
-                        web.add("comment", &comment);
+                        web.insert("article", &article);
+                        web.insert("comment", &comment);
                         return res_html!("forum/edit_comment.html", web);
                     },
                     Err(_) => {
@@ -102,7 +102,7 @@ impl CommentPage {
 
         match Comment::get_by_id(comment_id) {
             Ok(comment) => {
-                web.add("comment", &comment);
+                web.insert("comment", &comment);
                 return res_html!("forum/delete_comment.html", web);
             },
             Err(_) => {

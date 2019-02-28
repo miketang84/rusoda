@@ -31,9 +31,10 @@
             <ul>
                 {% for article_with_stats in articles %}
                     <li>
-                        <span class="left title">
-                            <a href="/article?id={{ article_with_stats.article.id }}">{{ article_with_stats.article.title }}</a>
-                            <span class="show-count">({{ article_with_stats.viewtimes }},{{ article_with_stats.comment_count }})</span>
+                        <span class="left">
+                            <a href="/article?id={{ article_with_stats.article.id }}" class="title left">{{ article_with_stats.article.title }}</a>
+                            <span class="show-count left">({{ article_with_stats.viewtimes }},{{ article_with_stats.comment_count }})</span>
+                            <div style="clear:both;"></div>
                         </span>
                         <span class="right info">
                             <span class="tags">{{ article_with_stats.article.tags }}</span>

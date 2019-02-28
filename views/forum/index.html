@@ -24,10 +24,13 @@
             {% for article in articles %}
                 <li>
                     <a href="/article?id={{ article.id }}" class="title">
-                        [{{article.section_title}}]：
+                        [{{article.section_title}}] 
                         {{ article.title }}
                     </a>
-                    <span class="timestamp right">{{article.created_time | date(format="%Y-%m-%d %H:%M")}}</span>
+                    <span class="right">
+                        <span class="author">{{ article.author_name }}</span> 
+                        <span class="timestamp ">{{article.created_time | date(format="%Y-%m-%d %H:%M")}}</span>
+                    </span>
                 </li>
             {% endfor %}
             </ul>
@@ -46,10 +49,13 @@
         {% else %}
         <div class="planet-space-container container article-list">
             <ul>
-            {% for blog in blog_articles %}
+            {% for blog_article in blog_articles %}
                 <li>
-                    <a href="/article?id={{ blog.id }}" class="title">{{ blog.author_name }}：{{ blog.title }}</a>
-                    <span class="timestamp right">{{blog.created_time | date(format="%Y-%m-%d %H:%M")}}</span>
+                    <a href="/article?id={{ blog_article.id }}" class="title">{{ blog_article.author_name }}：{{ blog_article.title }}</a>
+                    <span class="right">
+                        <span class="author">{{ blog_article.author_name }}</span> 
+                        <span class="timestamp">{{blog_article.created_time | date(format="%Y-%m-%d %H:%M")}}</span>
+                    </span>
                 </li>
             {% endfor %}
             </ul>

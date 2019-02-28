@@ -55,7 +55,7 @@ impl SapperSmock for PageForum {
                 // using this cookie to retreive user instance
                 match Ruser::get_user_by_cookie(&cookie) {
                     Ok(user) => {
-                        web.add("user", &user);
+                        web.insert("user", &user);
                         req.ext_mut().insert::<AppUser>(user);
                     },
                     Err(_) => {}

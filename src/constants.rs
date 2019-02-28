@@ -1,4 +1,6 @@
 
-pub const NUMBER_ARTICLE_PER_PAGE: i64 = 30;
-pub const NUMBER_COMMENT_PER_PAGE: i64 = 50;
+// pub const NUMBER_ARTICLE_PER_PAGE: i64 = 30;
+pub const NUMBER_ARTICLE_PER_PAGE: i64 = 5;
+// pub const NUMBER_COMMENT_PER_PAGE: i64 = 50;
+pub const NUMBER_COMMENT_PER_PAGE: i64 = 5;
 

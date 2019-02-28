@@ -59,7 +59,7 @@
                     {% if comment.author_id == author.id %}
                         作者
                     {% endif %}
-                    <a class="author-name" href="/blog?id={{ article.section_id }}">
+                    <a class="author-name" href="/blog_with_author?author_id={{ comment.author_id }}">
                         {{ comment.nickname }}
                     </a>
                     <span class="created-time">{{ comment.created_time | date(format="%Y-%m-%d %H:%M")}}</span>

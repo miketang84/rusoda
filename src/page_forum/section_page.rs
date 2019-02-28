@@ -45,7 +45,7 @@ impl SectionPage {
 
         let section = Section::get_by_id(section_id).unwrap();
 
-        web.add("section", &section);
+        web.insert("section", &section);
 
         res_html!("forum/edit_section.html", web)
     }
@@ -93,25 +93,25 @@ impl SectionPage {
                 }
 
                 is_login = true;
-                web.add("is_login", &is_login);
-                web.add("user", &user);
+                web.insert("is_login", &is_login);
+                web.insert("user", &user);
             },
             None => {}
         }
 
         let total_item = Section::get_articles_count_belong_to_this(section.id);
-        let total_page = (total_item / NUMBER_ARTICLE_PER_PAGE) as i64 + 1;
+        let total_page = ((total_item - 1) / NUMBER_ARTICLE_PER_PAGE) as i64 + 1;
 
         let articles = Section::get_articles_paging_belong_to_this(section.id, current_page);
 
-        web.add("section", &section);
-        web.add("is_a_blog", &is_a_blog);
-        web.add("is_myown_blog", &is_myown_blog);
-        web.add("is_admin", &is_admin);
-        web.add("total_item", &total_item);
-        web.add("total_page", &total_page);
-        web.add("current_page", &current_page);
-        web.add("articles", &articles);
+        web.insert("section", &section);
+        web.insert("is_a_blog", &is_a_blog);
+        web.insert("is_myown_blog", &is_myown_blog);
+        web.insert("is_admin", &is_admin);
+        web.insert("total_item", &total_item);
+        web.insert("total_page", &total_page);
+        web.insert("current_page", &current_page);
+        web.insert("articles", &articles);
 
         res_html!("forum/section.html", web)
     }
@@ -165,7 +165,7 @@ impl SectionPage {
 
         let sections = Section::forum_sections();
 
-        web.add("sections", &sections);
+        web.insert("sections", &sections);
 
         res_html!("forum/arrange_sections.html", web)
     }
@@ -174,11 +174,9 @@ impl SectionPage {
     pub fn section_rearrange(req: &mut Request) -> SapperResult<Response> {
         let mut web = ext_type_owned!(req, AppWebContext).unwrap();
         let params = get_form_params!(req);
-        println!("{:?}", params);
         let order = t_arr_param!(params, "order");
 
         // print order
-        println!("==> order {:?}", order);
         let sections = Section::forum_sections();
         for (i, section) in sections.iter().enumerate() {
             let update_section_weight = UpdateSectionWeight {

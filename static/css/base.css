@@ -175,13 +175,13 @@ ul code {
 }
 
 .article-list li .title {
-	max-width: 80%;
+	max-width: 75%;
     display: inline-block;
     text-overflow: ellipsis;
     overflow: hidden;
 }
 
-.article-list li .timestamp {
+.article-list li .right {
 	font-size: 14px;
 	color: #666;
 }
@@ -203,8 +203,9 @@ ul code {
 	padding-right: 8px;
 }
 
-.article-list li span.title {
-	max-width: 50%;
+.article-list li span .title {
+	max-width: 400px;
+	display: inline-block;
 }
 
 .article-list li .show-count {
@@ -289,3 +290,6 @@ ul code {
 	font-weight: bold;
 }
 
+.current_page {
+	text-decoration-line: underline;
+}

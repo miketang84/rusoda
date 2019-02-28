@@ -12,7 +12,7 @@ CREATE TABLE ruser (
   wx_openid VARCHAR,
   say VARCHAR,
   signup_time timestamp not null default current_timestamp,
-  role smallint not null default 2,
+  role smallint not null default 0,
   status smallint not null default 0,
   github varchar unique
 );

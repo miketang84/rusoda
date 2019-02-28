@@ -15,11 +15,16 @@
 	</p>
 	<form class="" action="/s/comment/new" method="post">
 		<input type="hidden" name="article_id" value="{{article.id}}">
+		{% if reply_comment %}
 		<input type="hidden" name="reply_comment_id" value="{{reply_comment.id}}">
+		{% endif %}
 		<textarea name="raw_content" placeholder="支持 Markdown 哦，快来试试吧" autofocus>
+{% if reply_comment %}
 对内容
-{% if reply_comment %}<pre>{{reply_comment.raw_content}}</pre>{% endif %}
-的回复：</textarea>
+<pre>{{reply_comment.raw_content}}</pre>
+的回复：
+{% endif %}
+</textarea>
 		<br> 
 		<input type="submit" value="Biu！发送！"></input>
 	</form>

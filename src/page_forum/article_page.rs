@@ -46,8 +46,8 @@ impl ArticlePage {
         let section_id = t_param_parse_default!(params, "section_id", Uuid, Uuid::default());
         let sections = Section::forum_sections();
 
-        web.add("section_id", &section_id);
-        web.add("sections", &sections);
+        web.insert("section_id", &section_id);
+        web.insert("sections", &sections);
 
 
         res_html!("forum/new_article.html", web)
@@ -67,8 +67,8 @@ impl ArticlePage {
 
         let sections = Section::forum_sections();
 
-        web.add("sections", &sections);
-        web.add("article", &article);
+        web.insert("sections", &sections);
+        web.insert("article", &article);
 
         res_html!("forum/edit_article.html", web)
     }
@@ -85,7 +85,7 @@ impl ArticlePage {
         }
         let article = article_r.unwrap();
 
-        web.add("article", &article);
+        web.insert("article", &article);
 
         res_html!("forum/delete_article.html", web)
     }
@@ -122,29 +122,29 @@ impl ArticlePage {
                 }
 
                 is_login = true;
-                web.add("is_login", &is_login);
-                web.add("user", &user);
+                web.insert("is_login", &is_login);
+                web.insert("user", &user);
             },
             None => {}
         }
 
         // retrieve comments belongs to this article, and calculate its paginator
         let total_item = Article::get_comments_count_belong_to_this(id);
-        let total_page = (total_item / NUMBER_COMMENT_PER_PAGE) as i64 + 1;
+        let total_page = ((total_item -1) / NUMBER_COMMENT_PER_PAGE) as i64 + 1;
         let comments = Article::get_comments_paging_belong_to_this(id, current_page);
 
         let viewtimes = Article::get_viewtimes(article.id);
         Article::increase_viewtimes(article.id);
 
-        web.add("article", &article);
-        web.add("author", &author);
-        web.add("comments", &comments);
-        web.add("current_page", &current_page);
-        web.add("total_item", &total_item);
-        web.add("total_page", &total_page);
-        web.add("is_author", &is_author);
-        web.add("is_admin", &is_admin);
-        web.add("viewtimes", &viewtimes);
+        web.insert("article", &article);
+        web.insert("author", &author);
+        web.insert("comments", &comments);
+        web.insert("current_page", &current_page);
+        web.insert("total_item", &total_item);
+        web.insert("total_page", &total_page);
+        web.insert("is_author", &is_author);
+        web.insert("is_admin", &is_admin);
+        web.insert("viewtimes", &viewtimes);
 
         res_html!("forum/article.html", web)
     }
@@ -234,7 +234,7 @@ impl ArticlePage {
         let params = get_query_params!(req);
 
         let is_in_blog = true;
-        web.add("is_in_blog", &is_in_blog);
+        web.insert("is_in_blog", &is_in_blog);
 
         res_html!("forum/new_article.html", web)
     }
@@ -245,7 +245,7 @@ impl ArticlePage {
         let id = t_param_parse!(params, "id", Uuid);
 
         let is_in_blog = true;
-        web.add("is_in_blog", &is_in_blog);
+        web.insert("is_in_blog", &is_in_blog);
 
         // get article object
         let article = Article::get_by_id(id);
@@ -254,7 +254,7 @@ impl ArticlePage {
         }
         let article = article.unwrap();
 
-        web.add("article", &article);
+        web.insert("article", &article);
 
         res_html!("forum/edit_article.html", web)
     }

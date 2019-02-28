@@ -109,7 +109,7 @@ impl Article {
         articles
     }
 
-    pub fn paging_by_section(section_id: Uuid, page: usize, page_size: usize) -> Vec<Article> {
+    pub fn paging_by_section(section_id: Uuid, page: i64, page_size: i64) -> Vec<Article> {
         let em = db::get_db();
         let clause = format!("where section_id='{}' order by created_time desc limit {} offset {}", section_id, page_size, page_size*page);
         let articles = db_select!(em, "", "", &clause, Article);
@@ -117,7 +117,7 @@ impl Article {
         articles
     }
 
-    pub fn get_latest_articles(size: usize) -> Vec<ArticleForList> {
+    pub fn get_latest_articles(size: i64) -> Vec<ArticleForList> {
         let em = db::get_db();
         // need to alias names
         let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
@@ -128,7 +128,7 @@ impl Article {
         articles
     }
 
-    pub fn get_latest_blog_articles(size: usize) -> Vec<BlogArticleForList> {
+    pub fn get_latest_blog_articles(size: i64) -> Vec<BlogArticleForList> {
         let em = db::get_db();
         // need to alias names
         let head_clause = "article.id, article.title, article.created_time, ruser.nickname as author_name";
@@ -147,8 +147,6 @@ impl Article {
         let from_clause = "FROM comment LEFT JOIN ruser ON comment.author_id = ruser.id";
         let clause = format!("where article_id='{}' order by created_time desc limit {} offset {}", article_id, NUMBER_ARTICLE_PER_PAGE, offset);
         let comments = db_select!(em, head_clause, from_clause, &clause, CommentWithAuthorName);
-
-        println!("{:?}", comments);
 
         comments
     }
