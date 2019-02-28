@@ -36,14 +36,36 @@ impl CommentPage {
         let mut web = ext_type_owned!(req, AppWebContext).unwrap();
         let params = get_query_params!(req);
         let article_id = t_param_parse!(params, "article_id", Uuid);
+        if has_param!(params, "reply_comment_id") {
+            let reply_comment_id = t_param_parse!(params, "reply_comment_id", Uuid);
+            match Comment::get_by_id(reply_comment_id) {
+                Ok(comment) => {
+                    web.add("reply_comment", &comment);
 
-        match Article::get_by_id(article_id) {
-            Ok(article) => {
-                web.add("article", &article);
-                return res_html!("forum/new_comment.html", web);
-            },
-            Err(_) => {
-                return res_500!("no this article.");
+                    match Article::get_by_id(article_id) {
+                        Ok(article) => {
+                            web.add("article", &article);
+                            return res_html!("forum/new_comment.html", web);
+                        },
+                        Err(_) => {
+                            return res_500!("no this article.");
+                        }
+                    }
+                },
+                Err(_) => {
+                    return res_500!("no this reply comment.");
+                }
+            }
+        }
+        else {
+            match Article::get_by_id(article_id) {
+                Ok(article) => {
+                    web.add("article", &article);
+                    return res_html!("forum/new_comment.html", web);
+                },
+                Err(_) => {
+                    return res_500!("no this article.");
+                }
             }
         }
     }
@@ -73,6 +95,21 @@ impl CommentPage {
         }
     }
 
+    pub fn comment_delete_page(req: &mut Request) -> SapperResult<Response> {
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
+        let params = get_query_params!(req);
+        let comment_id = t_param_parse!(params, "id", Uuid);
+
+        match Comment::get_by_id(comment_id) {
+            Ok(comment) => {
+                web.add("comment", &comment);
+                return res_html!("forum/delete_comment.html", web);
+            },
+            Err(_) => {
+                return res_500!("no this comment.");
+            }
+        }
+    }
 
     pub fn comment_new(req: &mut Request) -> SapperResult<Response> {
         let params = get_form_params!(req);
@@ -128,6 +165,21 @@ impl CommentPage {
         } 
     }
 
+    pub fn comment_delete(req: &mut Request) -> SapperResult<Response> {
+        let params = get_form_params!(req);
+        let article_id = t_param_parse!(params, "article_id", Uuid);
+        let comment_id = t_param_parse!(params, "comment_id", Uuid);
+
+        match Comment::delete_by_id(comment_id) {
+            Ok(comment) => {
+                res_redirect!(format!("/article?id={}", article_id))
+            },
+            Err(_) => {
+                res_500!("comment delete error.")
+            }
+        } 
+    }
+
 
 }
 
@@ -149,8 +201,10 @@ impl SapperModule for CommentPage {
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {
         router.get("/p/comment/new", Self::comment_new_page);
         router.get("/p/comment/edit", Self::comment_edit_page);
+        router.get("/p/comment/delete", Self::comment_delete_page);
         router.post("/s/comment/new", Self::comment_new);
         router.post("/s/comment/edit", Self::comment_edit);
+        router.post("/s/comment/delete", Self::comment_delete);
         
         Ok(())
     }

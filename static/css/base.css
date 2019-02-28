@@ -32,19 +32,16 @@ a {
 pre {
 	background: #eee;
 	padding: 0;
-	border-radius: 6px;
 	font-family: "Source Code Pro", Menlo, Monaco, Consolas, "DejaVu Sans Mono", Inconsolata, monospace;
 }
 
 pre code {
-	border-radius: 4px;
 	font-size: 14px;
 }
 
 div code,
 p code,
 ul code {
-	border-radius: 4px;
 	background: pink;
 }
 
@@ -186,7 +183,7 @@ ul code {
 
 .article-list li .timestamp {
 	font-size: 14px;
-	color: #888;
+	color: #666;
 }
 
 .article-list-head span, .planet-space-head span {
@@ -212,12 +209,12 @@ ul code {
 
 .article-list li .show-count {
 	font-size: 14px;
-	color: #888;
+	color: #666;
 }
 
 .article-list li .info {
 	font-size: 14px;
-	color: #888;
+	color: #666;
 }
 
 .detail-head {
@@ -262,8 +259,7 @@ ul code {
 
 .comments .item {
 	line-height: 32px;
-
-	
+	padding: 5px 0;
 }
 
 .comments .item .comment-title {
@@ -278,6 +274,12 @@ ul code {
 	padding: 4px 10px;
 }
 
+.comments .item .comment-content pre {
+	font-size: 12px;
+	line-height: 22px;
+	margin: 0;
+}
+
 .new-reply {
 	line-height: 32px;
 	padding-bottom: 10px;
@@ -286,3 +288,4 @@ ul code {
 .new-reply .article-title {
 	font-weight: bold;
 }
+

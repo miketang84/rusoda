@@ -10,12 +10,16 @@
 	<h3>
 		新评论
 	</h3>
-	<p class="new-reply">你正在对对下面文章进行回复：<br>
+	<p class="new-reply"> 对如下文章进行回复：<br>
 		<span class="article-title">《{{article.title}}》</span>
 	</p>
 	<form class="" action="/s/comment/new" method="post">
 		<input type="hidden" name="article_id" value="{{article.id}}">
-		<textarea name="raw_content" placeholder="支持 Markdown 哦，快来试试吧" autofocus></textarea>
+		<input type="hidden" name="reply_comment_id" value="{{reply_comment.id}}">
+		<textarea name="raw_content" placeholder="支持 Markdown 哦，快来试试吧" autofocus>
+对内容
+{% if reply_comment %}<pre>{{reply_comment.raw_content}}</pre>{% endif %}
+的回复：</textarea>
 		<br> 
 		<input type="submit" value="Biu！发送！"></input>
 	</form>

@@ -1,0 +1,27 @@
+{% extends "forum/base.html" %}
+
+{% block title %}
+    删除文章 - Rust语言中文社区
+{% endblock title %}
+
+{% block content %}
+<div class="body-content">
+    <h3>
+            删除文章
+    </h3>
+    <p class="new-reply">你正准备删除这篇文章：
+        <br>
+        <span>《<b>{{article.title}}</b>》</span>
+        <br>
+        确定或取消？
+    </p>
+
+    <form class="delete_form" action="/s/article/delete" method="post">
+        <input type="hidden" name="article_id" value="{{article.id}}">
+        <br> 
+        <input type="submit" value="确定"> &nbsp; <a href="#" onclick="window.history.back();">取消</a>
+    </form>
+
+    
+</div>
+{% endblock content %}

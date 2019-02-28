@@ -88,6 +88,19 @@ impl Article {
         }
     }
 
+    pub fn delete_by_id(id: Uuid) -> Result<Article, String> {
+        let em = db::get_db();
+        let clause = format!("where id='{}'", id);
+        match db_delete!(em, &clause, Article) {
+            Some(art) => {
+                Ok(art.to_owned())
+            },
+            None => {
+                Err("delete article error.".to_string())
+            }
+        }
+    }
+
     pub fn paging(page: usize, page_size: usize) -> Vec<Article> {
         let em = db::get_db();
         let clause = format!("order by created_time desc limit {} offset {}", page_size, page_size*page);

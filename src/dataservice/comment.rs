@@ -78,6 +78,19 @@ impl Comment {
             }
         }
     }
+
+    pub fn delete_by_id(id: Uuid) -> Result<Comment, String> {
+        let em = db::get_db();
+        let clause = format!("where id='{}'", id);
+        match db_delete!(em, &clause, Comment) {
+            Some(comment) => {
+                Ok(comment.to_owned())
+            },
+            None => {
+                Err("delete comment error.".to_string())
+            }
+        }
+    }
 }
 
 

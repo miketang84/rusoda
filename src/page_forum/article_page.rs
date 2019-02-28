@@ -72,6 +72,23 @@ impl ArticlePage {
 
         res_html!("forum/edit_article.html", web)
     }
+
+    pub fn article_delete_page(req: &mut Request) -> SapperResult<Response> {
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
+        let params = get_query_params!(req);
+        let id = t_param_parse!(params, "id", Uuid);
+
+        // get article object
+        let article_r = Article::get_by_id(id);
+        if article_r.is_err() {
+            return res_400!(format!("no this artile: {}", id));
+        }
+        let article = article_r.unwrap();
+
+        web.add("article", &article);
+
+        res_html!("forum/delete_article.html", web)
+    }
     
     pub fn article_detail_page(req: &mut Request) -> SapperResult<Response> {
         let mut web = ext_type_owned!(req, AppWebContext).unwrap();
@@ -191,6 +208,20 @@ impl ArticlePage {
             },
             Err(_) => {
                 res_500!("article edit error.")
+            }
+        }  
+    }
+
+    pub fn article_delete(req: &mut Request) -> SapperResult<Response> {
+        let params = get_form_params!(req);
+        let article_id = t_param_parse!(params, "article_id", Uuid);
+
+        match Article::delete_by_id(article_id) {
+            Ok(article) => {
+                res_redirect!(format!("/section?id={}", article.section_id))
+            },
+            Err(_) => {
+                res_500!("article delete error.")
             }
         }  
     }
@@ -315,8 +346,10 @@ impl SapperModule for ArticlePage {
 
         router.get("/p/article/create", Self::article_create_page);
         router.get("/p/article/edit", Self::article_edit_page);
+        router.get("/p/article/delete", Self::article_delete_page);
         router.post("/s/article/create", Self::article_create);
         router.post("/s/article/edit", Self::article_edit);
+        router.post("/s/article/delete", Self::article_delete);
 
         router.get("/p/blogarticle/create", Self::blog_article_create_page);
         router.get("/p/blogarticle/edit", Self::blog_article_edit_page);

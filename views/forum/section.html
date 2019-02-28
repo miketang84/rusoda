@@ -40,8 +40,8 @@
                             <span class="author">{{ article_with_stats.article.author_name }}</span> 
                             <span class="timestamp">{{ article_with_stats.article.created_time | date(format="%Y-%m-%d %H:%M") }}</span>
                             {% if is_admin %}
-                            <span class="delete">删除</span>
-                            <span class="edit">编辑</span>
+                            <a class="delete" href="/p/article/delete?id={{article_with_stats.article.id}}">删除</a>
+                            <a class="edit" href="/p/article/edit?id={{article_with_stats.article.id}}">编辑</a>
                             {% endif %}
                         </span>
                         <div style="clear:both;"></div>
