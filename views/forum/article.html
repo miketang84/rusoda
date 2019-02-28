@@ -22,7 +22,7 @@
         <p class="vice-title">
             <a href="/blog_with_author?author_id={{ author.id }}">{{ author.nickname }}</a>
 
-            发表于 <span class="article_created_time">{{article.created_time | date(format="%Y-%m-%d %H:%M")}}</span>
+            发表于 <span class="article_created_time">{{article.created_time | zone8 }}</span>
 
             {% if is_author or is_admin %}
             {% if article.stype == 0 %}
@@ -62,7 +62,7 @@
                     <a class="author-name" href="/blog_with_author?author_id={{ comment.author_id }}">
                         {{ comment.nickname }}
                     </a>
-                    <span class="created-time">{{ comment.created_time | date(format="%Y-%m-%d %H:%M")}}</span>
+                    <span class="created-time">{{ comment.created_time | zone8 }}</span>
                     {% if is_login and user.id == comment.author_id %}
                     <a class="delete" href="/p/comment/delete?id={{comment.id}}">删除</a>
                     {% endif %}

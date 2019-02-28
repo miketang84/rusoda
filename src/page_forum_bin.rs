@@ -21,7 +21,7 @@ mod dataservice;
 mod util;
 mod middleware;
 mod github_utils;
-
+mod web_filters;
 
 // include page modules
 mod page_forum;
@@ -77,6 +77,9 @@ impl SapperSmock for PageForum {
 }
 
 fn main () {
+    //
+    web_filters::register_web_filters();
+
     let addr = "127.0.0.1";
     let port = 8081;
     let mut app = SapperApp::new();

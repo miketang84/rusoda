@@ -29,7 +29,7 @@
                     </a>
                     <span class="right">
                         <span class="author">{{ article.author_name }}</span> 
-                        <span class="timestamp ">{{article.created_time | date(format="%Y-%m-%d %H:%M")}}</span>
+                        <span class="timestamp ">{{article.created_time | zone8}}</span>
                     </span>
                 </li>
             {% endfor %}
@@ -54,7 +54,7 @@
                     <a href="/article?id={{ blog_article.id }}" class="title">{{ blog_article.author_name }}：{{ blog_article.title }}</a>
                     <span class="right">
                         <span class="author">{{ blog_article.author_name }}</span> 
-                        <span class="timestamp">{{blog_article.created_time | date(format="%Y-%m-%d %H:%M")}}</span>
+                        <span class="timestamp">{{blog_article.created_time | zone8}}</span>
                     </span>
                 </li>
             {% endfor %}

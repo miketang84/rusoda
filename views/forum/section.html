@@ -39,7 +39,7 @@
                         <span class="right info">
                             <span class="tags">{{ article_with_stats.article.tags }}</span>
                             <span class="author">{{ article_with_stats.article.author_name }}</span> 
-                            <span class="timestamp">{{ article_with_stats.article.created_time | date(format="%Y-%m-%d %H:%M") }}</span>
+                            <span class="timestamp">{{ article_with_stats.article.created_time | zone8 }}</span>
                             {% if is_admin %}
                             <a class="delete" href="/p/article/delete?id={{article_with_stats.article.id}}">删除</a>
                             <a class="edit" href="/p/article/edit?id={{article_with_stats.article.id}}">编辑</a>
