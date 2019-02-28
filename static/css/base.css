@@ -158,10 +158,12 @@ ul code {
 .new-article, .new-comment {
 	display: inline-block;
 	margin-right: 10px;
+	border: 1px solid #666;
+	padding: 2px 4px;
 }
 
 .new-comment {
-	padding-top: 20px;
+	margin-top: 20px;
 }
 
 .article-list {
