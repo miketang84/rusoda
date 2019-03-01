@@ -1,3 +1,6 @@
+use std::env;
+use dotenv::dotenv;
+
 //#[macro_use] extern crate sapper_std;
 use sapper::{
     App as SapperApp,
@@ -21,12 +24,14 @@ mod dataservice;
 mod util;
 mod middleware;
 mod github_utils;
+mod i18n;
 mod web_filters;
 
 // include page modules
 mod page_forum;
 
 use self::dataservice::user::Ruser;
+
 
 pub struct AppWebContext;
 impl Key for AppWebContext { 
@@ -77,13 +82,15 @@ impl SapperSmock for PageForum {
 }
 
 fn main () {
+    // env_logger::init();
+    dotenv().ok();
     //
     web_filters::register_web_filters();
 
-    let addr = "127.0.0.1";
-    let port = 8081;
+    let addr = env::var("BINDADDR").expect("DBURL must be set");
+    let port = env::var("BINDPORT").expect("REDISURL must be set").parse::<u32>().unwrap();
     let mut app = SapperApp::new();
-    app.address(addr)
+    app.address(&addr)
         .port(port)
         .with_smock(Box::new(PageForum))
         .add_module(Box::new(page_forum::index_page::IndexPage))

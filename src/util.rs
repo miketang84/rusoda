@@ -5,6 +5,7 @@ use tiny_keccak::Keccak;
 use ammonia::clean;
 use comrak::{markdown_to_html, ComrakOptions};
 
+
 #[inline]
 pub fn random_string(limit: usize) -> String {
     thread_rng().gen_ascii_chars().take(limit).collect()
@@ -35,3 +36,5 @@ pub fn markdown_render(md: &str) -> String {
     };
     clean(&markdown_to_html(md, &option))
 }
+
+
