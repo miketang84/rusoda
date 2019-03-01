@@ -111,7 +111,7 @@ en = "You'r deleting this article:"
 cn = "确定或取消"
 en = "Sure or Cancel"
 
-[yes]
+[sure]
 cn = "确定"
 en = "Sure"
 

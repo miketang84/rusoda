@@ -1,7 +1,7 @@
 {% extends "forum/base.html" %}
 
 {% block title %}
-    {{ section.title }} - Rust语言中文社区
+{{ section.title }} - {{"title"|i18n}}
 {% endblock title %}
 
 {% block content %}
@@ -10,9 +10,9 @@
         <div>
             <h3>{{ section.title }}</h3>
             {% if is_myown_blog %}
-            <a class="right new-article" href="/p/blogarticle/create">写博客</a>
+	    <a class="right new-article" href="/p/blogarticle/create">{{"write_blog"|i18n}}</a>
             {% else %}
-            <a class="right new-article" href="/p/article/create?section_id={{section.id}}">发帖子</a>
+	    <a class="right new-article" href="/p/article/create?section_id={{section.id}}">{{"post_article"|i18n}}</a>
             {% endif %}
         </div>
         <p>
@@ -26,7 +26,7 @@
 
     <div class="section-body article-list">
         {% if articles | length == 0 %}
-            <p class="">这里还没有内容哦...</p>
+	<p class="">{{"no_content"|i18n}}</p>
         {% else %}
             <ul>
                 {% for article_with_stats in articles %}
@@ -41,8 +41,8 @@
                             <span class="author">{{ article_with_stats.article.author_name }}</span> 
                             <span class="timestamp">{{ article_with_stats.article.created_time | zone8 }}</span>
                             {% if is_admin %}
-                            <a class="delete" href="/p/article/delete?id={{article_with_stats.article.id}}">删除</a>
-                            <a class="edit" href="/p/article/edit?id={{article_with_stats.article.id}}">编辑</a>
+			    <a class="delete" href="/p/article/delete?id={{article_with_stats.article.id}}">{{"delete"|i18n}}</a>
+			    <a class="edit" href="/p/article/edit?id={{article_with_stats.article.id}}">{{"edit"|i18n}}</a>
                             {% endif %}
                         </span>
                         <div style="clear:both;"></div>
@@ -59,7 +59,7 @@
             {{ loop.index }}
         </a>
         {% endfor %}
-        共 {{ total_item }} 篇, 共 {{ total_page }} 页
+	{{"totally"|i18n}} {{ total_item }} {{"articles"|i18n}}, {{ total_page }} {{"page"|i18n}}
     </div>
     <div style="clear:both;"></div>
 </div>

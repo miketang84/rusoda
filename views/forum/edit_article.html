@@ -1,18 +1,18 @@
 {% extends "forum/base.html" %}
 
 {% block title %}
-    编辑帖子 - Rust语言中文社区
+{{"edit_article"|i18n}} - {{"title"|i18n}}
 {% endblock title %}
 
 {% block content %}
 <div class="body-content">
     {% if is_in_blog %}
     <h3>
-        编辑博客
+    {{"edit_blog_article"|i18n}}
     </h3>
     {% else %}
     <h3>
-        编辑帖子
+    {{"edit_article"|i18n}}
     </h3>
     {% endif %}
     {% if is_in_blog %}
@@ -31,13 +31,13 @@
         <br>
     {% endif %}
         <input type="hidden" name="id" value="{{article.id}}">
-        <input class="input" type="text" name="title" placeholder="这里输入标题" value="{{article.title}}">
+	<input class="input" type="text" name="title" placeholder="{{"input_title_prompt"|i18n}}" value="{{article.title}}">
         <br> 
-        <input class="input" type="text" name="tags" placeholder="这里输入标签 以英文逗号分隔" value="{{article.tags}}">
+	<input class="input" type="text" name="tags" placeholder="{{"input_tag_prompt"|i18n}}" value="{{article.tags}}">
         <br> 
-        <textarea name="raw_content" placeholder="支持 Markdown 哦，快来试试吧" autofocus>{{article.raw_content}}</textarea>
+	<textarea name="raw_content" placeholder="{{"input_content_prompt"|i18n}}" autofocus>{{article.raw_content}}</textarea>
         <br> 
-        <input type="submit" value="Biu！发送！">
+	<input type="submit" value="{{"biu"|i18n}}">
     </form>
 </div>
 {% endblock content %}

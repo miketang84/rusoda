@@ -1,7 +1,7 @@
 {% extends "forum/base.html" %}
 
 {% block title %}
-登录 - Rust语言中文社区
+{{"login"|i18n}} - {{"title"|i18n}}
 {% endblock title %}
 
 {% block script %}
@@ -9,7 +9,7 @@
 
 {% block content %}
 <div class="content-area">
-    <h4>登录</h4>
+	<h4>{{"login"|i18n}}</h4>
 
     <a class="icon"
         href="https://github.com/login/oauth/authorize?scope=user:email&client_id=3160b870124b1fcfc4cb">

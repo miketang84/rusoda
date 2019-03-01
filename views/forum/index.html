@@ -1,23 +1,23 @@
 {% extends "forum/base.html" %}
 
 {% block title %}
-    Rust语言中文社区-首页
+{{"title"|i18n}}-{{"index"|i18n}}
 {% endblock title %}
 
 {% block content %}
 <div class="body-content">
     <div class="action_area">
-        <a class="right new-article" href="/p/blogarticle/create">写博客</a>
-        <a class="right new-article" href="/p/article/create">发帖子</a>
+	    <a class="right new-article" href="/p/blogarticle/create">{{"write_blog"|i18n}}</a>
+	    <a class="right new-article" href="/p/article/create">{{"post_article"|i18n}}</a>
         <div style="clear:both;"></div>
     </div>
     
     <div class="article-list-section">
         <div class="article-list-head head">
-            <span>最新帖子</span>
+		<span>{{"latest_articles"|i18n}}</span>
         </div>
         {% if articles | length  == 0 %}
-        <p>这里还没有内容哦……</p>
+	<p>{{"no_content"|i18n}}</p>
         {% else %}
         <div class="article-list-container container article-list">
             <ul>
@@ -42,10 +42,10 @@
     <!-- Member Blog Planet Space -->
     <div class="planet-space-section">
         <div class="planet-space-head head">
-            <span>博客星球</span>
+		<span>{{"blog_planet"|i18n}}</span>
         </div>
         {% if blog_articles | length == 0 %}
-        <p>这里还没有内容哦……</p>
+	<p>{{"no_content"|i18n}}</p>
         {% else %}
         <div class="planet-space-container container article-list">
             <ul>
@@ -66,7 +66,7 @@
 
     <div class="category-list-section">
         {% if sections | length  == 0 %}
-        <p>这里还没有内容哦……</p>
+	<p>{{"no_content"|i18n}}</p>
         {% else %}
         <div class="category-list-container container">
             <ul>
@@ -79,8 +79,6 @@
             <div style="clear:both;"></div>
         </div>
         {% endif %}
-        
-
     </div>
 </div>
 {% endblock content %}
