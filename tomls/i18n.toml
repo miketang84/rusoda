@@ -1,4 +1,47 @@
 
+[title]
+cn = "Rust语言中文社区"
+en = "Rust Language Community"
+
+[logout]
+cn = "登出"
+en = "logout"
+
+[login]
+cn = "登录"
+en = "login"
+
+[copyright]
+cn = "版权所有"
+en = "Copyright Reserved"
+
+[index]
+cn = "首页"
+en = "Index"
+
+[write_blog]
+cn = "写博客"
+en = "Write Blog"
+
+[post_article]
+cn = "发帖子"
+en = "Post Article"
+
+[latest_articles]
+cn = "最新帖子"
+en = "Latest Articles"
+
+[no_content]
+cn = "这里还没有内容哦……"
+en = "There is no content..."
+
+[blog_planet]
+cn = "博客星球"
+en = "Blog Planet"
+
+
+
+
 [test]
 cn="测试它"
 en="test it"
