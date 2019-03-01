@@ -36,7 +36,7 @@ impl CommentPage {
         let mut web = ext_type_owned!(req, AppWebContext).unwrap();
         let params = get_query_params!(req);
         let article_id = t_param_parse!(params, "article_id", Uuid);
-        if has_param!(params, "reply_comment_id") {
+        if t_has_param!(params, "reply_comment_id") {
             let reply_comment_id = t_param_parse!(params, "reply_comment_id", Uuid);
             match Comment::get_by_id(reply_comment_id) {
                 Ok(comment) => {
