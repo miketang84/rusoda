@@ -1,7 +1,7 @@
 {% extends "forum/base.html" %}
 
 {% block title %}
-    {{ article.title }} - Rust语言中文社区
+{{ article.title }} - {{"title"|i18n}}
 {% endblock title %}
 
 {% block content %}
@@ -12,9 +12,9 @@
 <div class="body-content article_detail detail">
     <div class="article_detail_head">
         {% if article.stype == 0 %}
-            <a href="/section?id={{ article.section_id }}" class="return">&lt; 返回版块</a>
+            <a href="/section?id={{ article.section_id }}" class="return">&lt; {{"return_section"|i18n}}</a>
         {% else %}
-            <a href="/blog_with_author?author_id={{ author.id }}" class="return">&lt; 返回博客</a>
+            <a href="/blog_with_author?author_id={{ author.id }}" class="return">&lt; {{"return_blog"|i18n}}</a>
         {% endif %}
         <div class="title">
             <h3><a href="/article?id={{article.id}}">{{ article.title }}</a></h3>
@@ -22,13 +22,13 @@
         <p class="vice-title">
             <a href="/blog_with_author?author_id={{ author.id }}">{{ author.nickname }}</a>
 
-            发表于 <span class="article_created_time">{{article.created_time | zone8 }}</span>
+            {{"posted_at"|i18n}} <span class="article_created_time">{{article.created_time | zone8 }}</span>
 
             {% if is_author or is_admin %}
             {% if article.stype == 0 %}
-            <a class="edit" href="/p/article/edit?id={{article.id}}">编辑</a>
+            <a class="edit" href="/p/article/edit?id={{article.id}}">{{"edit"|i18n}}</a>
             {% else %}
-            <a class="edit" href="/p/blogarticle/edit?id={{article.id}}">编辑</a>
+            <a class="edit" href="/p/blogarticle/edit?id={{article.id}}">{{"edit"|i18n}}</a>
             {% endif %}
             {% endif %}
         </p>
@@ -45,29 +45,29 @@
 
     <div class="comments">
         <div class="">
-            <h3 class="left">评论区</h3>
-            <a class="right new-comment" href="/p/comment/new?article_id={{article.id}}">写评论</a>
+            <h3 class="left">{{"comment_area"|i18n}}</h3>
+            <a class="right new-comment" href="/p/comment/new?article_id={{article.id}}">{{"write_comment"|i18n}}</a>
             <div style="clear:both;"></div>
         </div>
 
         {% if comments | length == 0 %}
-            <p class="useless">还没有评论</p>
+            <p class="useless">{{"no_comment"|i18n}}</p>
         {% else %}
             {% for comment in comments %}
             <div class="item">
                 <div class="comment-title">
                     {% if comment.author_id == author.id %}
-                        作者
+                    {{"author"|i18n}}
                     {% endif %}
                     <a class="author-name" href="/blog_with_author?author_id={{ comment.author_id }}">
                         {{ comment.nickname }}
                     </a>
                     <span class="created-time">{{ comment.created_time | zone8 }}</span>
                     {% if is_login and user.id == comment.author_id %}
-                    <a class="delete" href="/p/comment/delete?id={{comment.id}}">删除</a>
+                    <a class="delete" href="/p/comment/delete?id={{comment.id}}">{{"delete"|i18n}}</a>
                     {% endif %}
                     {% if is_login %}
-                    <a class="reply" href="/p/comment/new?reply_comment_id={{comment.id}}&article_id={{article.id}}">回复</a>
+                    <a class="reply" href="/p/comment/new?reply_comment_id={{comment.id}}&article_id={{article.id}}">{{"reply"|i18n}}</a>
                     {% endif %}
                 </div>
                 <div class="comment-content">
@@ -86,7 +86,7 @@
                 {{ loop.index }}
             </a>
             {% endfor %}
-            共 {{ total_item }} 条评论, 共 {{ total_page }} 页
+            {{"totally"|i18n}} {{ total_item }} {{"num_comments"|i18n}}, {{ total_page }} {{"page"|i18n}}
         </div>
         <div style="clear:both;"></div>
     </div>
