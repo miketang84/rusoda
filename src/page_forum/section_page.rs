@@ -206,6 +206,23 @@ impl SapperModule for SectionPage {
         Ok(())
     }
 
+    fn after(&self, req: &Request, res: &mut Response) -> SapperResult<()> {
+        let res_status = res.status();
+        if res_status == status::Ok || res_status == status::Found {
+            let (path, _) = req.uri();
+            if &path == "/s/section/create" 
+                || &path == "/s/section/edit" 
+                || &path == "/s/section/rearrange" {
+            
+                cache::cache_set_invalid("index", "index");
+            }
+
+            // check other url
+        }
+
+        Ok(())
+    }
+
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {
         router.get("/section", Self::section_detail_page);
         router.get("/blog", Self::section_detail_page);

@@ -1,4 +1,5 @@
 use sapper::{
+    status,
     Request, 
     Response, 
     Result as SapperResult, 
@@ -10,6 +11,7 @@ use serde_json;
 use uuid::Uuid;
 
 use crate::db;
+use crate::cache;
 // introduce macros
 use sapper_std::res_html;
 use crate::{
@@ -336,6 +338,25 @@ impl SapperModule for ArticlePage {
             Err(info) => {
                 return Err(SapperError::Custom("no permission".to_string()));
             }
+        }
+
+        Ok(())
+    }
+
+    fn after(&self, req: &Request, res: &mut Response) -> SapperResult<()> {
+        let res_status = res.status();
+        if res_status == status::Ok || res_status == status::Found {
+            let (path, _) = req.uri();
+            if &path == "/s/article/create" 
+                || &path == "/s/article/edit" 
+                || &path == "/s/article/delete" 
+                || &path == "/s/blogarticle/create" 
+                || &path == "/s/blogarticle/edit" {
+            
+                cache::cache_set_invalid("index", "index");
+            }
+
+            // check other url
         }
 
         Ok(())

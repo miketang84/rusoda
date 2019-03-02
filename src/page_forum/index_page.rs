@@ -12,6 +12,7 @@ use crate::db;
 // introduce macros
 use sapper_std::res_html;
 use crate::AppWebContext;
+use crate::cache;
 
 use crate::constants::NUMBER_ARTICLE_PER_PAGE;
 use crate::dataservice::article::Article;
@@ -46,9 +47,29 @@ impl IndexPage {
 
 impl SapperModule for IndexPage {
     fn before(&self, req: &mut Request) -> SapperResult<()> {
+        let (path, _) = req.uri();
+        if &path == "/" {
+            if cache::cache_is_valid("index", "index") {
+                let cache_content = cache::cache_get("index", "index");
+                return res_html_before!(cache_content);
+            }
+        }
         
         Ok(())
     }
+
+    fn after(&self, req: &Request, res: &mut Response) -> SapperResult<()> {
+        let (path, _) = req.uri();
+        if &path == "/" {
+            if !cache::cache_is_valid("index", "index") {
+                let body_content = String::from_utf8_lossy(res.body().to_owned().unwrap().as_slice()).to_string();
+                cache::cache_set("index", "index", &body_content);
+            }
+        }
+
+        Ok(())
+    }
+
 
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {
         router.get("/", Self::index);

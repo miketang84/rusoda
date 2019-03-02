@@ -8,7 +8,14 @@
     </div>
 
     <div class="signpart right">
-        <a href="/account">{{"account"|i18n}}</a>
+        {% if user %}
+        <a href="/blog_with_author?author_id={{user.id}}">{{user.nickname}}</a>
+	    <a href="/signout">{{"logout"|i18n}}</a>
+        {% else %}
+	    <a href="/login_with3rd">{{"login"|i18n}}</a>
+        {% endif %}
+		
+		<div style="clear:both;"></div>
 	</div>
 	<div style="clear:both;"></div>
 </div>

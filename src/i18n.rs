@@ -15,7 +15,14 @@ pub fn read_i18n_data() -> String {
 
 
 pub fn parse_toml_str(i18n_data: String) -> Value {
-    i18n_data.parse::<Value>().unwrap()
+    match i18n_data.parse::<Value>() {
+        Ok(value) => {
+            value
+        },
+        Err(err) => {
+            panic!("{:?}", err)
+        }
+    }
 }
 
 
@@ -23,7 +30,17 @@ pub fn read_i18n_item(item_str: &str, lang: &str) -> String {
     let path = item_str.to_string() + "." + lang;
     let ret = I18NDATA.read(&path);
 
-    match ret.unwrap().unwrap() {
+    if ret.is_err() {
+        panic!("Reading i18n path err: {}", path);
+    }
+    let ret = ret.unwrap();
+    if ret.is_none() {
+        println!("Reading i18n path, none result: {}", path);
+        return "".to_string();
+    }
+    let ret = ret.unwrap();
+
+    match ret {
         Value::String(s) => {
             s.to_string()
         }

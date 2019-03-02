@@ -17,7 +17,10 @@ use crate::github_utils::{
 use crate::util::random_string;
 
 // introduce macros
-use crate::AppWebContext;
+use crate::{
+    AppWebContext,
+    AppUser
+};
 
 use crate::dataservice::user::{
     Ruser,
@@ -32,15 +35,28 @@ pub struct UserPage;
 impl UserPage {
 
     pub fn page_login_with3rd(req: &mut Request) -> SapperResult<Response> {
-        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
+        let web = ext_type_owned!(req, AppWebContext).unwrap();
 
         res_html!("forum/login_with3rd.html", web)
     }
 
     pub fn page_login_with_admin(req: &mut Request) -> SapperResult<Response> {
-        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
+        let web = ext_type_owned!(req, AppWebContext).unwrap();
 
         res_html!("forum/login_with_admin.html", web)
+    }
+
+    pub fn account(req: &mut Request) -> SapperResult<Response> {
+        let mut web = ext_type_owned!(req, AppWebContext).unwrap();
+        match ext_type!(req, AppUser) {
+            Some(user) => {
+                web.add("user", &user);
+                return res_html!("forum/account.html", web);
+            },
+            None => {
+                return res_html!("forum/login_with3rd.html", web);
+            }
+        }
     }
 
     pub fn user_register(req: &mut Request) -> SapperResult<Response> {
@@ -178,6 +194,7 @@ impl SapperModule for UserPage {
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {
         router.get("/login_with3rd", Self::page_login_with3rd);
         router.get("/login_with_admin", Self::page_login_with_admin);
+        router.get("/account", Self::account);
         router.get("/signout", Self::user_signout);
 
         router.post("/s/user/register", Self::user_register);

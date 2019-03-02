@@ -3,6 +3,19 @@
 cn = "Rust语言中文社区"
 en = "Rust Language Community"
 
+[account]
+cn = "帐户"
+en = "Account"
+
+[account_info]
+cn = "帐户信息"
+en = "Account Info"
+
+[account_info_prompt]
+cn = "你现在以此帐户登录："
+en = "You'r logined with this accout:"
+
+
 [logout]
 cn = "登出"
 en = "logout"
