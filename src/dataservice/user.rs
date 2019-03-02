@@ -162,24 +162,24 @@ impl UserChangePassword {
 
 impl Ruser {
     pub fn get_user_by_cookie(cookie: &str) -> Result<Ruser, String> {
-        let em = db::get_db();
         let redis = db::get_redis();
         let account_r: Result<String, _> = redis.hget(cookie, "account");
         match account_r {
             Ok(account) => {
                 let clause = format!("where account='{}'", account);
+                let em = db::get_db();
                 match db_find!(em, "", "", &clause, Ruser) {
                     Some(user) => {
                         Ok(user)
                     },
                     None => Err("no this user".to_string())
                 }
+            
             },
             Err(_) => {
                 Err("no cookie cached".to_string())
             }
         }
-       
     }
 
     pub fn get_user_by_account(account: &str) -> Result<Ruser, String> {

@@ -1,4 +1,5 @@
 use sapper::{
+    status,
     Request, 
     Response, 
     Result as SapperResult, 
@@ -51,6 +52,8 @@ impl SapperModule for IndexPage {
         if &path == "/" {
             if cache::cache_is_valid("index", "index") {
                 let cache_content = cache::cache_get("index", "index");
+                
+                log(req, status::Ok);
                 return res_html_before!(cache_content);
             }
         }
@@ -59,6 +62,8 @@ impl SapperModule for IndexPage {
     }
 
     fn after(&self, req: &Request, res: &mut Response) -> SapperResult<()> {
+        println!("  4 {}", time::precise_time_ns()/1000000);
+
         let (path, _) = req.uri();
         if &path == "/" {
             if !cache::cache_is_valid("index", "index") {

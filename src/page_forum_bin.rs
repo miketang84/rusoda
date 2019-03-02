@@ -1,5 +1,8 @@
 use std::env;
+use env_logger;
 use dotenv::dotenv;
+use time;
+
 
 //#[macro_use] extern crate sapper_std;
 use sapper::{
@@ -55,7 +58,6 @@ impl SapperSmock for PageForum {
         // init web instance state
         let mut web = WebContext::new();
         // we can add something to web
-
         match req.ext().get::<SessionVal>() {
             Some(cookie) => {
                 // using this cookie to retreive user instance
@@ -83,7 +85,7 @@ impl SapperSmock for PageForum {
 }
 
 fn main () {
-    // env_logger::init();
+    env_logger::init();
     dotenv().ok();
     //
     web_filters::register_web_filters();
