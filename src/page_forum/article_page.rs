@@ -332,6 +332,19 @@ impl ArticlePage {
 
 impl SapperModule for ArticlePage {
     fn before(&self, req: &mut Request) -> SapperResult<()> {
+
+        let (path, _) = req.uri();
+        if &path == "/article" {
+            let params = get_query_params!(req);
+            let article_id = t_param!(params, "id");
+            let current_page = t_param_parse_default!(params, "current_page", i64, 1);
+            let part_key = article_id.to_string() + ":" + &current_page.to_string();
+            if cache::cache_is_valid("article", &part_key) {
+                let cache_content = cache::cache_get("article", &part_key);
+                return res_html_before!(cache_content);
+            }
+        }
+
         match permission_need_login(req) {
             Ok(_) => {
                 // pass, nothing need to do here
@@ -375,8 +388,24 @@ impl SapperModule for ArticlePage {
 
                 cache::cache_set_invalid("section", &section_id.to_string());
             }
-                    
 
+            if &path == "/article" {
+                let params = get_query_params!(req);
+                let article_id = t_param!(params, "id");
+                let current_page = t_param_parse_default!(params, "current_page", i64, 1);
+                let part_key = article_id.to_string() + ":" + &current_page.to_string();
+                if !cache::cache_is_valid("article", &part_key) {
+                    cache::cache_set("article", &part_key, res.body());
+                }
+            }
+
+            if &path == "/s/article/edit" 
+                || &path == "/s/blogarticle/edit"  {
+                let params = get_form_params!(req);
+                let article_id = t_param!(params, "id");
+
+                cache::cache_set_invalid("article", article_id);
+            }
 
         }
 

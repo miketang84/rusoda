@@ -1,4 +1,5 @@
 use sapper::{
+    status,
     Request, 
     Response, 
     Result as SapperResult, 
@@ -10,6 +11,7 @@ use uuid::Uuid;
 
 use crate::serde_json;
 use crate::db;
+use crate::cache;
 // introduce macros
 use sapper_std::res_html;
 use crate::{
@@ -192,6 +194,24 @@ impl SapperModule for CommentPage {
             },
             Err(info) => {
                 return Err(SapperError::Custom("no permission".to_string()));
+            }
+        }
+
+        Ok(())
+    }
+
+    fn after(&self, req: &Request, res: &mut Response) -> SapperResult<()> {
+        let res_status = res.status();
+        if res_status == status::Ok || res_status == status::Found {
+            let (path, _) = req.uri();
+            if &path == "/s/comment/new"
+                || &path == "/s/comment/edit"
+                || &path == "/s/comment/delete" {
+                
+                let params = get_form_params!(req);
+                let article_id = t_param!(params, "article_id");
+
+                cache::cache_set_invalid("article", article_id);
             }
         }
 
