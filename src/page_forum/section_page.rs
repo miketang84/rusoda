@@ -1,4 +1,5 @@
 use sapper::{
+    status,
     Request, 
     Response, 
     Result as SapperResult, 
@@ -10,6 +11,7 @@ use uuid::Uuid;
 use crate::serde_json;
 
 use crate::db;
+use crate::cache;
 // introduce macros
 use sapper_std::res_html;
 use crate::{
@@ -72,7 +74,7 @@ impl SectionPage {
 
         let section_result = Section::get_by_id(section_id);
         if section_result.is_err() {
-            return res_404!("Not Found");
+            return res_400!("no this section");
         }
         
         let section = section_result.unwrap();
@@ -194,6 +196,18 @@ impl SectionPage {
 
 impl SapperModule for SectionPage {
     fn before(&self, req: &mut Request) -> SapperResult<()> {
+        // check cache
+        let (path, _) = req.uri();
+        if &path == "/section" {
+            let params = get_query_params!(req);
+            let section_id = t_param!(params, "id");
+            if cache::cache_is_valid("section", section_id) {
+                let cache_content = cache::cache_get("section", section_id);
+                return res_html_before!(cache_content);
+            }
+        }
+
+        // cache permission
         match permission_need_be_admin(req) {
             Ok(_) => {
                 // pass, nothing need to do here
@@ -218,6 +232,21 @@ impl SapperModule for SectionPage {
             }
 
             // check other url
+            if &path == "/section" {
+                let params = get_query_params!(req);
+                let section_id = t_param!(params, "id");
+                if !cache::cache_is_valid("section", section_id) {
+                    cache::cache_set("section", section_id, res.body());
+                }
+            }
+            
+            if &path == "/s/section/edit" {
+                let params = get_form_params!(req);
+                let section_id = t_param!(params, "id");
+                cache::cache_set_invalid("section", section_id);
+            }
+
+
         }
 
         Ok(())

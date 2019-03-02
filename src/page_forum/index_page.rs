@@ -62,8 +62,7 @@ impl SapperModule for IndexPage {
         let (path, _) = req.uri();
         if &path == "/" {
             if !cache::cache_is_valid("index", "index") {
-                let body_content = String::from_utf8_lossy(res.body().to_owned().unwrap().as_slice()).to_string();
-                cache::cache_set("index", "index", &body_content);
+                cache::cache_set("index", "index", res.body());
             }
         }
 

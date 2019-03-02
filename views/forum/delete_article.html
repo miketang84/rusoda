@@ -18,6 +18,7 @@
 
     <form class="delete_form" action="/s/article/delete" method="post">
         <input type="hidden" name="article_id" value="{{article.id}}">
+        <input type="hidden" name="section_id" value="{{article.section_id}}">
         <br> 
         <input type="submit" value="{{"sure"|i18n}}"> &nbsp; <a href="#" onclick="window.history.back();">{{"cancel"|i18n}}</a>
     </form>

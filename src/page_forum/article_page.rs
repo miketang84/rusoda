@@ -217,10 +217,11 @@ impl ArticlePage {
     pub fn article_delete(req: &mut Request) -> SapperResult<Response> {
         let params = get_form_params!(req);
         let article_id = t_param_parse!(params, "article_id", Uuid);
+        let section_id = t_param_parse!(params, "section_id", Uuid);
 
         match Article::delete_by_id(article_id) {
             Ok(article) => {
-                res_redirect!(format!("/section?id={}", article.section_id))
+                res_redirect!(format!("/section?id={}", section_id))
             },
             Err(_) => {
                 res_500!("article delete error.")
@@ -356,7 +357,27 @@ impl SapperModule for ArticlePage {
                 cache::cache_set_invalid("index", "index");
             }
 
-            // check other url
+            // check other urls
+            if &path == "/s/article/create" 
+                || &path == "/s/article/edit"
+                || &path == "/s/article/delete" {
+                
+                let params = get_form_params!(req);
+                let section_id = t_param!(params, "section_id");
+
+                cache::cache_set_invalid("section", section_id);
+            }
+
+            if &path == "/s/blogarticle/create" 
+                || &path == "/s/blogarticle/edit" {
+                let user = ext_type!(req, AppUser).unwrap();
+                let section_id = Section::get_by_suser(user.id).unwrap().id;
+
+                cache::cache_set_invalid("section", &section_id.to_string());
+            }
+                    
+
+
         }
 
         Ok(())
