@@ -14,6 +14,7 @@ use crate::db;
 use sapper_std::res_html;
 use crate::AppWebContext;
 use crate::cache;
+use crate::rss;
 
 use crate::constants::NUMBER_ARTICLE_PER_PAGE;
 use crate::dataservice::article::Article;
@@ -43,6 +44,12 @@ impl IndexPage {
         res_html!("forum/index.html", web)
     }
 
+    pub fn rss_xml(req: &mut Request) -> SapperResult<Response> {
+        let rss_string = rss::make_rss_feed();
+
+        res_xml_string!(rss_string)
+    }
+
 }
 
 
@@ -62,8 +69,6 @@ impl SapperModule for IndexPage {
     }
 
     fn after(&self, req: &Request, res: &mut Response) -> SapperResult<()> {
-        println!("  4 {}", time::precise_time_ns()/1000000);
-
         let (path, _) = req.uri();
         if &path == "/" {
             if !cache::cache_is_valid("index", "index") {
@@ -77,6 +82,7 @@ impl SapperModule for IndexPage {
 
     fn router(&self, router: &mut SapperRouter) -> SapperResult<()> {
         router.get("/", Self::index);
+        router.get("/rss", Self::rss_xml);
 
         Ok(())
     }

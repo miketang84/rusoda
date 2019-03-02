@@ -128,6 +128,17 @@ impl Article {
         articles
     }
 
+    pub fn get_latest_full_articles(size: i64) -> Vec<Article> {
+        let em = db::get_db();
+        // need to alias names
+        let head_clause = "";
+        let from_clause = "";
+        let rest_clause = format!("WHERE article.stype = 0 ORDER BY created_time DESC LIMIT {}", size);
+        let articles = db_select!(em, head_clause, from_clause, &rest_clause, Article);
+
+        articles
+    }
+
     pub fn get_latest_blog_articles(size: i64) -> Vec<BlogArticleForList> {
         let em = db::get_db();
         // need to alias names
@@ -137,6 +148,17 @@ impl Article {
         let blog_articles = db_select!(em, head_clause, from_clause, &rest_clause, BlogArticleForList);
 
         blog_articles
+    }
+
+    pub fn get_latest_full_blog_articles(size: i64) -> Vec<Article> {
+        let em = db::get_db();
+        // need to alias names
+        let head_clause = "";
+        let from_clause = "";
+        let rest_clause = format!("WHERE article.stype = 1 ORDER BY created_time DESC LIMIT {}", size);
+        let articles = db_select!(em, head_clause, from_clause, &rest_clause, Article);
+
+        articles
     }
 
     pub fn get_comments_paging_belong_to_this(article_id: Uuid, current_page: i64) -> Vec<CommentWithAuthorName> {

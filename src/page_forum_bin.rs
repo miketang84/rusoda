@@ -1,8 +1,6 @@
 use std::env;
 use env_logger;
 use dotenv::dotenv;
-use time;
-
 
 //#[macro_use] extern crate sapper_std;
 use sapper::{
@@ -30,6 +28,7 @@ mod middleware;
 mod github_utils;
 mod i18n;
 mod web_filters;
+mod rss;
 
 // include page modules
 mod page_forum;
