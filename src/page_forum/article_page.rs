@@ -30,7 +30,10 @@ use crate::dataservice::user::Ruser;
 use crate::util::markdown_render;
 use crate::middleware::permission_need_login;
 
-use crate::constants::NUMBER_COMMENT_PER_PAGE;
+use crate::constants::{
+    NUMBER_ARTICLE_PER_PAGE,
+    NUMBER_COMMENT_PER_PAGE
+};
 struct CommentPaginator {
     total_comments: i32,
     total_page: i32,
@@ -376,9 +379,15 @@ impl SapperModule for ArticlePage {
                 || &path == "/s/article/delete" {
                 
                 let params = get_form_params!(req);
-                let section_id = t_param!(params, "section_id");
+                let section_id = t_param_parse!(params, "section_id", Uuid);
 
-                cache::cache_set_invalid("section", section_id);
+                let n = Section::get_articles_count_belong_to_this(section_id);
+                let total_page = ((n -1) / NUMBER_ARTICLE_PER_PAGE) as i64 + 1;
+
+                for i in 1..=total_page {
+                    let part_key = section_id.to_string() + ":" + &i.to_string();
+                    cache::cache_set_invalid("section", &part_key);
+                }
             }
 
             if &path == "/s/blogarticle/create" 
@@ -386,7 +395,13 @@ impl SapperModule for ArticlePage {
                 let user = ext_type!(req, AppUser).unwrap();
                 let section_id = Section::get_by_suser(user.id).unwrap().id;
 
-                cache::cache_set_invalid("section", &section_id.to_string());
+                let n = Section::get_articles_count_belong_to_this(section_id);
+                let total_page = ((n -1) / NUMBER_ARTICLE_PER_PAGE) as i64 + 1;
+
+                for i in 1..=total_page {
+                    let part_key = section_id.to_string() + ":" + &i.to_string();
+                    cache::cache_set_invalid("section", &part_key);
+                }
             }
 
             if &path == "/article" {
