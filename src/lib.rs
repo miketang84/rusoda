@@ -1,3 +1,4 @@
+// You can use rusoda as a library
 
 #[macro_use] pub mod helper_macros;
 pub mod envconfig;
