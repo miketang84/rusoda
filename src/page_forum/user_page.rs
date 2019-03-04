@@ -50,7 +50,7 @@ impl UserPage {
         let mut web = ext_type_owned!(req, AppWebContext).unwrap();
         match ext_type!(req, AppUser) {
             Some(user) => {
-                web.add("user", &user);
+                web.insert("user", &user);
                 return res_html!("forum/account.html", web);
             },
             None => {

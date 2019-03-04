@@ -60,7 +60,7 @@ impl SapperModule for IndexPage {
             if cache::cache_is_valid("index", "index") {
                 let cache_content = cache::cache_get("index", "index");
                 
-                log(req, status::Ok);
+                splog(req, status::Ok).unwrap();
                 return res_html_before!(cache_content);
             }
         }

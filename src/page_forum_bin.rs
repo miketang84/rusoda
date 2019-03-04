@@ -1,3 +1,4 @@
+#[macro_use] extern crate log;
 use std::env;
 use env_logger;
 use dotenv::dotenv;

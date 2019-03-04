@@ -89,7 +89,7 @@ impl UserSignUp {
                             stype: 1,
                             suser: Some(user.id.to_owned()),
                         };
-                        section.insert();
+                        section.insert().unwrap();
 
                         Ok("register success.".to_string())
                         //let ttl = 60*24*3600;
