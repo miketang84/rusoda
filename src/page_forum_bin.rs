@@ -19,7 +19,7 @@ use serde_json;
 
 
 #[macro_use] mod helper_macros;
-mod constants;
+mod envconfig;
 mod db;
 mod cache;
 mod model;

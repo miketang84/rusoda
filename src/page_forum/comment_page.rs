@@ -28,7 +28,7 @@ use crate::dataservice::comment::{
 
 use crate::util::markdown_render;
 use crate::middleware::permission_need_login;
-use crate::constants::NUMBER_COMMENT_PER_PAGE;
+use crate::envconfig;
 
 
 pub struct CommentPage;
@@ -212,8 +212,9 @@ impl SapperModule for CommentPage {
                 let params = get_form_params!(req);
                 let article_id = t_param_parse!(params, "article_id", Uuid);
 
+                let ncpp = envconfig::get_int_item("NUMBER_COMMENT_PER_PAGE");
                 let n = Article::get_comments_count_belong_to_this(article_id);
-                let total_page = ((n -1) / NUMBER_COMMENT_PER_PAGE) as i64 + 1;
+                let total_page = ((n -1) / ncpp) as i64 + 1;
 
                 for i in 1..=total_page {
                     let part_key = article_id.to_string() + ":" + &i.to_string();

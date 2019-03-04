@@ -4,7 +4,6 @@ use serde_derive::{Serialize, Deserialize};
 use uuid::Uuid;
 
 pub use crate::model::Section;
-use crate::constants::NUMBER_ARTICLE_PER_PAGE;
 
 pub struct SectionNew {
     pub title: String,
@@ -30,6 +29,8 @@ pub use crate::model::for_write::{
     SectionDelete,
     UpdateSectionWeight,
 };
+
+use crate::envconfig;
 
 
 // impl some methods on request params structure
@@ -165,11 +166,12 @@ impl Section {
 
     pub fn get_articles_paging_belong_to_this(section_id: Uuid, current_page: i64) -> Vec<ArticleWithStats> {
         let em = db::get_db();
-
-        let offset = NUMBER_ARTICLE_PER_PAGE * (current_page - 1);
+        
+        let napp = envconfig::get_int_item("NUMBER_ARTICLE_PER_PAGE");
+        let offset = napp * (current_page - 1);
         let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
         let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id";
-        let rest_clause = format!("where section_id='{}' order by created_time desc limit {} offset {}", section_id, NUMBER_ARTICLE_PER_PAGE, offset);
+        let rest_clause = format!("where section_id='{}' order by created_time desc limit {} offset {}", section_id, napp, offset);
         let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList);
 
         // add view times for each article

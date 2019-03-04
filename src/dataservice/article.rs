@@ -10,8 +10,6 @@ pub use crate::model::for_write::{
     ArticleDelete,
 };
 
-use crate::constants::NUMBER_ARTICLE_PER_PAGE;
-
 pub use crate::model::for_read::{
     ArticleForList,
     BlogArticleForList,
@@ -23,6 +21,7 @@ use crate::dataservice::comment::{
     Comment,
     CommentCount
 };
+use crate::envconfig;
 
 
 // here, we impl some methods for for_insert::Section
@@ -164,10 +163,11 @@ impl Article {
     pub fn get_comments_paging_belong_to_this(article_id: Uuid, current_page: i64) -> Vec<CommentWithAuthorName> {
         let em = db::get_db();
 
-        let offset = NUMBER_ARTICLE_PER_PAGE * (current_page - 1);
+        let ncpp = envconfig::get_int_item("NUMBER_COMMENT_PER_PAGE");
+        let offset = ncpp * (current_page - 1);
         let head_clause = "comment.id, comment.content, comment.author_id, comment.created_time, ruser.nickname";
         let from_clause = "FROM comment LEFT JOIN ruser ON comment.author_id = ruser.id";
-        let clause = format!("where article_id='{}' order by created_time desc limit {} offset {}", article_id, NUMBER_ARTICLE_PER_PAGE, offset);
+        let clause = format!("where article_id='{}' order by created_time desc limit {} offset {}", article_id, ncpp, offset);
         let comments = db_select!(em, head_clause, from_clause, &clause, CommentWithAuthorName);
 
         comments

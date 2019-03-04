@@ -25,9 +25,9 @@ use crate::dataservice::section::{
     SectionEdit,
     UpdateSectionWeight
 };
-use crate::constants::NUMBER_ARTICLE_PER_PAGE;
 
 use crate::middleware::permission_need_be_admin;
+use crate::envconfig;
 
 
 pub struct SectionPage;
@@ -101,8 +101,9 @@ impl SectionPage {
             None => {}
         }
 
+        let napp = envconfig::get_int_item("NUMBER_ARTICLE_PER_PAGE");
         let total_item = Section::get_articles_count_belong_to_this(section.id);
-        let total_page = ((total_item - 1) / NUMBER_ARTICLE_PER_PAGE) as i64 + 1;
+        let total_page = ((total_item - 1) / napp) as i64 + 1;
 
         let articles = Section::get_articles_paging_belong_to_this(section.id, current_page);
 

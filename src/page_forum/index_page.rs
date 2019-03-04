@@ -16,9 +16,10 @@ use crate::AppWebContext;
 use crate::cache;
 use crate::rss;
 
-use crate::constants::NUMBER_ARTICLE_PER_PAGE;
+use crate::envconfig;
 use crate::dataservice::article::Article;
 use crate::dataservice::section::Section;
+
 
 pub struct IndexPage;
 
@@ -29,9 +30,10 @@ impl IndexPage {
         let db_conn = db::get_db();
         let redis_conn = db::get_redis();
 
-        let articles = Article::get_latest_articles(NUMBER_ARTICLE_PER_PAGE);
+        let napp = envconfig::get_int_item("NUMBER_ARTICLE_PER_PAGE");
+        let articles = Article::get_latest_articles(napp);
 
-        let blog_articles = Article::get_latest_blog_articles(NUMBER_ARTICLE_PER_PAGE);
+        let blog_articles = Article::get_latest_blog_articles(napp);
 
         // get all configured index displaying sections
         // and latest commented three articles 

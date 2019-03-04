@@ -19,7 +19,7 @@ pub fn zone8_view(date: DateTime<Utc>) -> NaiveDateTime {
     NaiveDateTime::from_timestamp(date.timestamp() + 8*3600, 0)
 }
 
-pub fn zone8(value: TeraValue, mut args: HashMap<String, TeraValue>) -> TeraResult<TeraValue> {
+pub fn zone8(value: TeraValue, args: HashMap<String, TeraValue>) -> TeraResult<TeraValue> {
     let output = match value {
         TeraValue::String(s) => {
             match s.parse::<DateTime<Utc>>() {
@@ -38,7 +38,7 @@ pub fn zone8(value: TeraValue, mut args: HashMap<String, TeraValue>) -> TeraResu
 }
 
 
-pub fn i18n(value: TeraValue, mut args: HashMap<String, TeraValue>) -> TeraResult<TeraValue> {
+pub fn i18n(value: TeraValue, args: HashMap<String, TeraValue>) -> TeraResult<TeraValue> {
     let lang = env::var("RUSODA_LANG").expect("RUSODA_LANG must be set");
     let output = match value {
         TeraValue::String(ref s) => {

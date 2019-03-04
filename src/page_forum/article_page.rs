@@ -12,6 +12,7 @@ use uuid::Uuid;
 
 use crate::db;
 use crate::cache;
+use crate::envconfig;
 // introduce macros
 use sapper_std::res_html;
 use crate::{
@@ -30,10 +31,6 @@ use crate::dataservice::user::Ruser;
 use crate::util::markdown_render;
 use crate::middleware::permission_need_login;
 
-use crate::constants::{
-    NUMBER_ARTICLE_PER_PAGE,
-    NUMBER_COMMENT_PER_PAGE
-};
 struct CommentPaginator {
     total_comments: i32,
     total_page: i32,
@@ -133,9 +130,10 @@ impl ArticlePage {
             None => {}
         }
 
+        let ncpp = envconfig::get_int_item("NUMBER_COMMENT_PER_PAGE");
         // retrieve comments belongs to this article, and calculate its paginator
         let total_item = Article::get_comments_count_belong_to_this(id);
-        let total_page = ((total_item -1) / NUMBER_COMMENT_PER_PAGE) as i64 + 1;
+        let total_page = ((total_item -1) / ncpp) as i64 + 1;
         let comments = Article::get_comments_paging_belong_to_this(id, current_page);
 
         let viewtimes = Article::get_viewtimes(article.id);
@@ -381,8 +379,9 @@ impl SapperModule for ArticlePage {
                 let params = get_form_params!(req);
                 let section_id = t_param_parse!(params, "section_id", Uuid);
 
+                let napp = envconfig::get_int_item("NUMBER_ARTICLE_PER_PAGE");
                 let n = Section::get_articles_count_belong_to_this(section_id);
-                let total_page = ((n -1) / NUMBER_ARTICLE_PER_PAGE) as i64 + 1;
+                let total_page = ((n -1) / napp) as i64 + 1;
 
                 for i in 1..=total_page {
                     let part_key = section_id.to_string() + ":" + &i.to_string();
@@ -395,8 +394,9 @@ impl SapperModule for ArticlePage {
                 let user = ext_type!(req, AppUser).unwrap();
                 let section_id = Section::get_by_suser(user.id).unwrap().id;
 
+                let napp = envconfig::get_int_item("NUMBER_ARTICLE_PER_PAGE");
                 let n = Section::get_articles_count_belong_to_this(section_id);
-                let total_page = ((n -1) / NUMBER_ARTICLE_PER_PAGE) as i64 + 1;
+                let total_page = ((n -1) / napp) as i64 + 1;
 
                 for i in 1..=total_page {
                     let part_key = section_id.to_string() + ":" + &i.to_string();

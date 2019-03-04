@@ -1,7 +1,2 @@
 /target
 **/*.rs.bk
-page_portal/
-page_portal.rs
-page_portal_bin.rs
-views/portal/
-
