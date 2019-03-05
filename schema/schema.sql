@@ -56,3 +56,11 @@ CREATE TABLE comment (
   status smallint not null default 0
 );
 
+CREATE TABLE articleweight (
+  id uuid primary key default gen_random_uuid(),
+  section_id uuid references section (id) not null,
+  article_id uuid references article (id) not null,
+  weight double precision not null default 0.0,
+  created_time timestamp not null default current_timestamp
+);
+

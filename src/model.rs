@@ -146,6 +146,14 @@ pub struct Comment {
 
 }
 
+#[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
+pub struct ArticleWeight {
+    pub id: Uuid,
+    pub section_id: Uuid,
+    pub article_id: Uuid,
+    pub weight: f64,
+    pub created_time: DateTime<Utc>,
+}
 
 ///
 /// Model: UserNotify
@@ -260,6 +268,13 @@ pub mod for_write {
         pub id: Uuid,
     }
 
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct ArticleWeightCreate {
+        pub section_id: Uuid,
+        pub article_id: Uuid,
+        pub weight: f64,
+    }
+
     /// Comment DMO
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct CommentCreate {
@@ -348,6 +363,14 @@ pub mod for_read {
     #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
     pub struct CommentCount {
         pub count: i64
+    }
+
+    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
+    pub struct ArticleWeightView {
+        pub article_id: Uuid,
+        pub section_id: Uuid,
+        pub title: String,
+        pub weight: f64,
     }
 
 }

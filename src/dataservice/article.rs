@@ -4,17 +4,20 @@ use crate::model::{for_write, for_read};
 use redis::Commands;
 
 pub use crate::model::Article;
+pub use crate::model::ArticleWeight;
 pub use crate::model::for_write::{
     ArticleCreate,
     ArticleEdit,
     ArticleDelete,
+    ArticleWeightCreate
 };
 
 pub use crate::model::for_read::{
     ArticleForList,
     BlogArticleForList,
     CommentWithAuthorName,
-    ArticleCount
+    ArticleCount,
+    ArticleWeightView,
 };
 
 use crate::dataservice::comment::{
@@ -195,3 +198,43 @@ impl Article {
 }
 
 
+impl ArticleWeight {
+    pub fn delete_by_id(id: Uuid) -> Result<ArticleWeight, String>{
+        let em = db::get_db();
+        let clause = format!("where id='{}'", id);
+        match db_delete!(em, &clause, ArticleWeight) {
+            Some(art) => {
+                Ok(art.to_owned())
+            },
+            None => {
+                Err("delete articleweight error.".to_string())
+            }
+        }
+    }
+}
+
+impl ArticleWeightCreate {
+    pub fn insert(&self) -> Result<ArticleWeight, String>{
+        let em = db::get_db();
+        match db_insert!(em, self, ArticleWeight) {
+            Some(art) => {
+                Ok(art.to_owned())
+            },
+            None => {
+                Err("Insert articleweight error.".to_string())
+            }
+        }
+    }
+}
+
+impl ArticleWeightView {
+    pub fn get_all_weight_articles() -> Vec<ArticleWeightView> {
+        let em = db::get_db();
+        let head_clause = "article_id, section_id, article.title, weight, created_time";
+        let from_clause = "FROM articleweight LEFT JOIN article ON article.id = articleweight.article_id";
+        let rest_clause = "order by weight desc";
+        let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleWeightView);
+
+        articles
+    }
+}
