@@ -154,7 +154,15 @@ impl Section {
 
     pub fn forum_sections() -> Vec<Section> {
         let em = db::get_db();
-        let clause = "where stype=0 weight > 0 order by weight desc";
+        let clause = "where stype=0 and weight >= 0 order by weight desc";
+        let sections = db_select!(em, "", "",&clause, Section);
+
+        sections
+    }
+
+    pub fn all_forum_sections() -> Vec<Section> {
+        let em = db::get_db();
+        let clause = "where stype=0 order by weight desc";
         let sections = db_select!(em, "", "",&clause, Section);
 
         sections
@@ -162,7 +170,7 @@ impl Section {
 
     pub fn forum_sections_orderby_createdtime() -> Vec<Section> {
         let em = db::get_db();
-        let clause = "where stype=0 order by created_time desc";
+        let clause = "where stype=0 and weight >= 0 order by created_time desc";
         let sections = db_select!(em, "", "",&clause, Section);
 
         sections
@@ -205,9 +213,9 @@ impl Section {
 
     pub fn get_specified_articles(section_id: Uuid) -> Vec<ArticleWeightView> {
         let em = db::get_db();
-        let head_clause = "article_id, section_id, article.title, weight, created_time";
+        let head_clause = "article_id, articleweight.section_id, article.title, weight, article.created_time";
         let from_clause = "FROM articleweight LEFT JOIN article ON article.id = articleweight.article_id";
-        let rest_clause = format!("where section_id='{}' order by weight desc", section_id);
+        let rest_clause = format!("where articleweight.section_id='{}' order by weight desc", section_id);
         let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleWeightView);
 
         articles

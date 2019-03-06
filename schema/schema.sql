@@ -20,7 +20,7 @@ CREATE TABLE ruser (
 create index user_account on ruser (account);
 
 insert into ruser (account, password, salt, role, nickname) values
-('admin@admin.com', '325c162157dea106ce5bacc705c4929e4ec526a0290bfaba2dcbbf18103c7c2b', 'MKsiaw', 0, 'admin');
+('admin@admin.com', '325c162157dea106ce5bacc705c4929e4ec526a0290bfaba2dcbbf18103c7c2b', 'MKsiaw', 9, 'admin');
 
 CREATE TABLE section (
   id uuid primary key default gen_random_uuid(),
