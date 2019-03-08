@@ -141,6 +141,17 @@ impl Article {
         articles
     }
 
+    pub fn get_all_articles() -> Vec<Article> {
+        let em = db::get_db();
+        // need to alias names
+        let head_clause = "";
+        let from_clause = "";
+        let rest_clause = "ORDER BY created_time DESC";
+        let articles = db_select!(em, head_clause, from_clause, rest_clause, Article);
+
+        articles
+    }
+
     pub fn get_latest_blog_articles(size: i64) -> Vec<BlogArticleForList> {
         let em = db::get_db();
         // need to alias names
