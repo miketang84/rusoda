@@ -1,6 +1,6 @@
 use crate::db;
 use redis::Commands;
-
+use log::info;
 
 
 pub fn cache_set(model_name: &str, instance_id: &str, content: &Option<Vec<u8>>) {
@@ -39,6 +39,7 @@ pub fn cache_get(model_name: &str, instance_id: &str) -> String {
         return "".to_string()
     }
     else {
+        info!("cache hit: {} {}", model_name, instance_id);
         redis.hget(&key, "content").unwrap_or("".to_string())
     }
 }
