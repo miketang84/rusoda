@@ -131,6 +131,31 @@ impl UserLogin {
             }
         }
     }
+
+    pub fn verify_login_with_rawpwd(&self) -> Result<String, String> {
+        let em = db::get_db();
+
+        let rest_clause = format!("WHERE status=0 and account='{}'", self.account);
+        // check if the same name account exists already
+        match db_find!(em, "", "", &rest_clause, Ruser) {
+            Some(user) => {
+                // check calulation equality
+                if user.password == self.password {
+                    let ttl = 60*24*3600;
+
+                    // store session
+                    set_session(&self.account, ttl)
+
+                } else {
+                    Err("Wrong account or password.".into())
+                }
+
+            },
+            None => {
+                Err("User doesn't exist.".into())
+            }
+        }
+    }
 }
 
 
