@@ -48,6 +48,7 @@ pub struct GithubUserInfo {
 pub use crate::model::for_write::{
     UserCreate,
     UserEdit,
+    UpdateUserNickname,
     SectionCreate,
 };
 
@@ -178,6 +179,22 @@ impl UserEdit {
     }
 }
 
+impl UpdateUserNickname {
+    pub fn update(&self) -> Result<Ruser, String> {
+        let em = db::get_db();
+
+        // update new info by account
+        let clause = format!("WHERE id='{}'", self.id);
+        match db_update!(em, self, &clause, Ruser) {
+            Some(user) => {
+                Ok(user.to_owned())
+            },
+            None => {
+                Err("User doesn't exist.".into())
+            }
+        }
+    }
+}
 
 impl UserChangePassword {
 

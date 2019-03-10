@@ -209,6 +209,11 @@ pub mod for_write {
         pub id: Uuid
     }
 
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct UpdateUserNickname {
+        pub id: Uuid,
+        pub nickname: String,
+    }
 
     /// Section DMO
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
