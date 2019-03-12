@@ -344,6 +344,17 @@ pub mod for_read {
     }
 
     #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
+    pub struct ArticleForList2 {
+        pub id: Uuid,
+        pub title: String,
+        pub created_time: DateTime<Utc>,
+        pub tags: String,
+        pub section_title: String,      // left join from section
+        pub author_name: String,        // left join from ruser
+        pub comment_count: i64,
+    }
+
+    #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
     pub struct BlogArticleForList {
         pub id: Uuid,
         pub title: String,

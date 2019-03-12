@@ -14,6 +14,7 @@ pub use crate::model::for_write::{
 
 pub use crate::model::for_read::{
     ArticleForList,
+    ArticleForList2,
     BlogArticleForList,
     CommentWithAuthorName,
     ArticleCount,

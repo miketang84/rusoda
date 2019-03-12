@@ -13,14 +13,15 @@ pub struct SectionNew {
 use crate::dataservice::article::{
     Article,
     ArticleForList,
+    ArticleForList2,
     ArticleCount
 };
 
 #[derive(Serialize, Deserialize)]
 pub struct ArticleWithStats {
-    pub article: ArticleForList,
+    pub article: ArticleForList2,
     pub viewtimes: i64,
-    pub comment_count: i64
+    // pub comment_count: i64
 }
 
 pub use crate::model::for_write::{
@@ -181,20 +182,18 @@ impl Section {
         
         let napp = envconfig::get_int_item("NUMBER_ARTICLE_PER_PAGE");
         let offset = napp * (current_page - 1);
-        let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
+        let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name, (select count(*) from comment where article_id=article.id) as comment_count";
         let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id";
         let rest_clause = format!("where section_id='{}' order by created_time desc limit {} offset {}", section_id, napp, offset);
-        let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList);
+        let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList2);
 
         // add view times for each article
         let mut article_vec: Vec<ArticleWithStats> = vec![];
         for article in articles {
             let viewtimes = Article::get_viewtimes(article.id);
-            let comment_count = Article::get_comments_count_belong_to_this(article.id);
             let article_with_viewtimes = ArticleWithStats {
                 article,
                 viewtimes,
-                comment_count
             };
 
             article_vec.push(article_with_viewtimes);
