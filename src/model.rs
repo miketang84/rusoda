@@ -215,6 +215,12 @@ pub mod for_write {
         pub nickname: String,
     }
 
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct UserChangePassword {
+        pub id: Uuid,
+        pub password: String,
+    }
+
     /// Section DMO
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct SectionCreate {

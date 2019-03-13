@@ -38,3 +38,8 @@ pub fn markdown_render(md: &str) -> String {
 }
 
 
+#[inline]
+pub fn make_pwd_encode(raw_pwd: &str, salt: &str) -> String {
+    sha3_256_encode(&format!("{}{}", raw_pwd, salt))
+}
+

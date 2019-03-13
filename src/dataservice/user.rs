@@ -1,6 +1,6 @@
 
 use crate::db;
-use crate::util::{random_string, sha3_256_encode};
+use crate::util::{random_string, sha3_256_encode, make_pwd_encode};
 use redis::Commands;
 use chrono::{DateTime, Utc};
 
@@ -34,11 +34,6 @@ pub struct UserLogin {
     pub password: String,
 }
 
-pub struct UserChangePassword {
-    pub old_password: String,
-    pub new_password: String,
-}
-
 #[derive(Debug)]
 pub struct GithubUserInfo {
     pub account: String,
@@ -49,6 +44,7 @@ pub use crate::model::for_write::{
     UserCreate,
     UserEdit,
     UpdateUserNickname,
+    UserChangePassword,
     SectionCreate,
 };
 
@@ -66,7 +62,7 @@ impl UserSignUp {
 
         let new_user = UserCreate {
             account: self.account.to_owned(),
-            password: sha3_256_encode(&format!("{}{}", self.password, salt)),
+            password: make_pwd_encode(&self.password, &salt),
             salt: salt,
             nickname: self.nickname.to_owned(),
             github: github_home,
@@ -116,7 +112,7 @@ impl UserLogin {
         match db_find!(em, "", "", &rest_clause, Ruser) {
             Some(user) => {
                 // check calulation equality
-                if user.password == sha3_256_encode(&format!("{}{}", self.password, user.salt)) {
+                if user.password == make_pwd_encode(&self.password, &user.salt) {
                     let ttl = 60*24*3600;
 
                     // store session
@@ -197,8 +193,19 @@ impl UpdateUserNickname {
 }
 
 impl UserChangePassword {
+    pub fn change(&self) -> Result<Ruser, String> {
+        let em = db::get_db();
 
-
+        let clause = format!("WHERE id='{}'", self.id);
+        match db_update!(em, self, &clause, Ruser) {
+            Some(user) => {
+                Ok(user.to_owned())
+            },
+            None => {
+                Err("User doesn't exist.".into())
+            }
+        }
+    }
 }
 
 
