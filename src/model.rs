@@ -389,6 +389,7 @@ pub mod for_read {
 
     #[derive(Debug, Clone, FromDao, ToColumnNames, ToTableName, Serialize, Deserialize)]
     pub struct ArticleWeightView {
+        pub id: Uuid,
         pub article_id: Uuid,
         pub section_id: Uuid,
         pub title: String,
