@@ -242,7 +242,7 @@ impl ArticleWeightCreate {
 impl ArticleWeightView {
     pub fn get_all_weight_articles() -> Vec<ArticleWeightView> {
         let em = db::get_db();
-        let head_clause = "article_id, articleweight.section_id, article.title, weight, article.created_time";
+        let head_clause = "articleweight.id, article_id, articleweight.section_id, article.title, weight, article.created_time";
         let from_clause = "FROM articleweight LEFT JOIN article ON article.id = articleweight.article_id";
         let rest_clause = "order by weight desc";
         let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleWeightView);
