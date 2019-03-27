@@ -161,6 +161,14 @@ impl Section {
         sections
     }
 
+    pub fn forum_sections_orderby_createdtime() -> Vec<Section> {
+        let em = db::get_db();
+        let clause = "where stype=0 and weight >= 0 order by created_time desc";
+        let sections = db_select!(em, "", "",&clause, Section);
+
+        sections
+    }
+
     pub fn all_forum_sections() -> Vec<Section> {
         let em = db::get_db();
         let clause = "where stype=0 order by weight desc";
@@ -169,13 +177,6 @@ impl Section {
         sections
     }
 
-    pub fn forum_sections_orderby_createdtime() -> Vec<Section> {
-        let em = db::get_db();
-        let clause = "where stype=0 and weight >= 0 order by created_time desc";
-        let sections = db_select!(em, "", "",&clause, Section);
-
-        sections
-    }
 
     pub fn get_articles_paging_belong_to_this(section_id: Uuid, current_page: i64) -> Vec<ArticleWithStats> {
         let em = db::get_db();
