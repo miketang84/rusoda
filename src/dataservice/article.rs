@@ -9,6 +9,7 @@ pub use crate::model::for_write::{
     ArticleCreate,
     ArticleCreateWithDateTime,
     ArticleEdit,
+    ArticleEditWithDateTime,
     ArticleDelete,
     ArticleWeightCreate
 };
@@ -59,6 +60,22 @@ impl ArticleCreateWithDateTime {
 }
 
 impl ArticleEdit {
+    pub fn update(&self) -> Result<Article, String>{
+        let em = db::get_db();
+        let clause = format!("where id='{}'", self.id);
+        // here, will overide the id field, that's for tidy code yet
+        match db_update!(em, self, &clause, Article) {
+            Some(art) => {
+                Ok(art.to_owned())
+            },
+            None => {
+                Err("Update article error.".to_string())
+            }
+        }
+    }
+}
+
+impl ArticleEditWithDateTime {
     pub fn update(&self) -> Result<Article, String>{
         let em = db::get_db();
         let clause = format!("where id='{}'", self.id);

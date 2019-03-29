@@ -288,6 +288,17 @@ pub mod for_write {
     }
 
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct ArticleEditWithDateTime {
+        pub id: Uuid,
+        pub section_id: Uuid,
+        pub title: String,
+        pub raw_content: String,
+        pub content: String,
+        pub tags: String,
+        pub created_time: DateTime<Utc>,
+    }
+
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct ArticleDelete {
         pub id: Uuid,
     }
