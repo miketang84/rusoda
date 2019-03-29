@@ -7,6 +7,7 @@ pub use crate::model::Article;
 pub use crate::model::ArticleWeight;
 pub use crate::model::for_write::{
     ArticleCreate,
+    ArticleCreateWithDateTime,
     ArticleEdit,
     ArticleDelete,
     ArticleWeightCreate
@@ -30,6 +31,20 @@ use crate::envconfig;
 
 // here, we impl some methods for for_insert::Section
 impl ArticleCreate {
+    pub fn insert(&self) -> Result<Article, String>{
+        let em = db::get_db();
+        match db_insert!(em, self, Article) {
+            Some(art) => {
+                Ok(art.to_owned())
+            },
+            None => {
+                Err("Insert article error.".to_string())
+            }
+        }
+    }
+}
+
+impl ArticleCreateWithDateTime {
     pub fn insert(&self) -> Result<Article, String>{
         let em = db::get_db();
         match db_insert!(em, self, Article) {

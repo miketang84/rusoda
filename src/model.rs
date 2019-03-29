@@ -265,6 +265,19 @@ pub mod for_write {
     }
 
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct ArticleCreateWithDateTime {
+        pub title: String,
+        pub raw_content: String,
+        pub content: String,
+        pub section_id: Uuid,
+        pub author_id: Uuid,
+        pub tags: String,
+        pub stype: i32,
+        pub created_time: DateTime<Utc>,
+        pub status: i16,
+    }
+
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct ArticleEdit {
         pub id: Uuid,
         pub section_id: Uuid,
