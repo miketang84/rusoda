@@ -44,7 +44,7 @@ CREATE TABLE article (
   stype INTEGER NOT NULL,
   created_time timestamp not null default current_timestamp,
   status smallint not null default 0,
-  updated_time timestamp
+  updated_time timestamp default now()::timestamp + '-1 year'
 );
 
 CREATE TABLE comment (
