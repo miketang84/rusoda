@@ -117,6 +117,8 @@ pub struct Article {
 
     // 0 normal, 1 frozen, 2 deleted
     pub status: i16,
+    
+    pub updated_time: Option<DateTime<Utc>>,
 
 }
 
@@ -298,6 +300,12 @@ pub mod for_write {
         pub created_time: DateTime<Utc>,
     }
 
+    #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
+    pub struct UpdateArticleUpdatedTime {
+        pub id: Uuid,
+        pub updated_time: DateTime<Utc>,
+    }
+    
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
     pub struct ArticleDelete {
         pub id: Uuid,

@@ -10,6 +10,7 @@ pub use crate::model::for_write::{
     ArticleCreateWithDateTime,
     ArticleEdit,
     ArticleEditWithDateTime,
+    UpdateArticleUpdatedTime,
     ArticleDelete,
     ArticleWeightCreate
 };
@@ -91,6 +92,23 @@ impl ArticleEditWithDateTime {
     }
 }
 
+impl UpdateArticleUpdatedTime {
+    pub fn update(&self) -> Result<Article, String>{
+        let em = db::get_db();
+        let clause = format!("where id='{}'", self.id);
+        // here, will overide the id field, that's for tidy code yet
+        match db_update!(em, self, &clause, Article) {
+            Some(art) => {
+                Ok(art.to_owned())
+            },
+            None => {
+                Err("Update article updated_time error.".to_string())
+            }
+        }
+    }
+}
+
+
 impl ArticleDelete    {
     pub fn delete(&self) -> Result<Article, String>{
         let em = db::get_db();
@@ -158,6 +176,17 @@ impl Article {
         let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
         let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id";
         let rest_clause = format!("WHERE article.stype = 0 ORDER BY created_time DESC LIMIT {}", size);
+        let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList);
+
+        articles
+    }
+    
+    pub fn get_latest_reply_articles(size: i64) -> Vec<ArticleForList> {
+        let em = db::get_db();
+        // need to alias names
+        let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
+        let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id";
+        let rest_clause = format!("WHERE article.stype = 0 ORDER BY updated_time DESC LIMIT {}", size);
         let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList);
 
         articles

@@ -43,7 +43,8 @@ CREATE TABLE article (
   tags VARCHAR NOT NULL,
   stype INTEGER NOT NULL,
   created_time timestamp not null default current_timestamp,
-  status smallint not null default 0
+  status smallint not null default 0,
+  updated_time timestamp
 );
 
 CREATE TABLE comment (
