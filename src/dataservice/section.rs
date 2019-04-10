@@ -211,6 +211,31 @@ impl Section {
         count.unwrap().count
     }
 
+    pub fn get_latest_articles_paging_belong_to_this(section_id: Uuid, current_page: i64) -> Vec<ArticleWithStats> {
+        let em = db::get_db();
+        
+        let napp = envconfig::get_int_item("NUMBER_ARTICLE_PER_PAGE");
+        let offset = napp * (current_page - 1);
+        let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name, (select count(*) from comment where article_id=article.id) as comment_count";
+        let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id";
+        let rest_clause = format!("where section_id='{}' order by created_time desc limit {} offset {}", section_id, napp, offset);
+        let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList2);
+
+        // add view times for each article
+        let mut article_vec: Vec<ArticleWithStats> = vec![];
+        for article in articles {
+            let viewtimes = Article::get_viewtimes(article.id);
+            let article_with_viewtimes = ArticleWithStats {
+                article,
+                viewtimes,
+            };
+
+            article_vec.push(article_with_viewtimes);
+        }
+
+        article_vec
+    }
+
     pub fn get_specified_articles(section_id: Uuid) -> Vec<ArticleWeightView> {
         let em = db::get_db();
         let head_clause = "articleweight.id, article_id, articleweight.section_id, article.title, weight, article.created_time";

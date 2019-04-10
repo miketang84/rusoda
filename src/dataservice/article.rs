@@ -163,6 +163,28 @@ impl Article {
         articles
     }
 
+    pub fn get_latest_articles_by_section(section_id: Uuid, size: i64) -> Vec<ArticleForList> {
+        let em = db::get_db();
+        // need to alias names
+        let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
+        let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id";
+        let rest_clause = format!("WHERE section_id='{}' ORDER BY created_time DESC LIMIT {}", section_id, size);
+        let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList);
+
+        articles
+    }
+
+    pub fn get_random_articles_by_section(section_id: Uuid, size: i64) -> Vec<ArticleForList> {
+        let em = db::get_db();
+        // need to alias names
+        let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
+        let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id";
+        let rest_clause = format!("WHERE section_id='{}' ORDER BY random() LIMIT {}", section_id, size);
+        let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList);
+
+        articles
+    }
+
     pub fn get_latest_full_articles(size: i64) -> Vec<Article> {
         let em = db::get_db();
         // need to alias names
