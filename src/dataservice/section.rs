@@ -155,7 +155,7 @@ impl Section {
 
     pub fn forum_sections() -> Vec<Section> {
         let em = db::get_db();
-        let clause = "where stype=0 and weight >= 0 order by weight desc";
+        let clause = "where (stype=0 or stype=2) and weight >= 0 order by weight desc";
         let sections = db_select!(em, "", "",&clause, Section);
 
         sections
@@ -163,7 +163,7 @@ impl Section {
 
     pub fn forum_sections_orderby_createdtime() -> Vec<Section> {
         let em = db::get_db();
-        let clause = "where stype=0 and weight >= 0 order by created_time desc";
+        let clause = "where (stype=0 or stype=2) and weight >= 0 order by created_time desc";
         let sections = db_select!(em, "", "",&clause, Section);
 
         sections
@@ -171,7 +171,7 @@ impl Section {
 
     pub fn all_forum_sections() -> Vec<Section> {
         let em = db::get_db();
-        let clause = "where stype=0 order by weight desc";
+        let clause = "where (stype=0 or stype=2) order by weight desc";
         let sections = db_select!(em, "", "",&clause, Section);
 
         sections
