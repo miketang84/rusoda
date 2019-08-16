@@ -1,5 +1,5 @@
 
-use rustorm::DbError;
+use wumn::DbError;
 use crate::db;
 use crate::model::{for_write, for_read};
 use uuid::Uuid;

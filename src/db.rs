@@ -1,5 +1,5 @@
 use std::env;
-use rustorm::{DbManager, EntityManager};
+use wumn::{DbManager, EntityManager};
 
 use redis::Client as redis_client;
 use redis::Connection as RedisConnection;

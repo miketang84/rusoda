@@ -6,7 +6,7 @@ use uuid::Uuid;
 use chrono::{DateTime, Utc};
 use serde_derive::{Serialize, Deserialize};
 
-use rustorm_dao::{
+use wumn_dao::{
     ToColumnNames,
     ToTableName,
     FromDao,
@@ -14,7 +14,7 @@ use rustorm_dao::{
 };
 
 /// import procedure macros
-use rustorm_codegen::{
+use wumn_codegen::{
     ToColumnNames,
     ToTableName,
     FromDao,
@@ -109,6 +109,8 @@ pub struct Article {
     pub author_id: Uuid,
 
     pub tags: String,
+
+    pub extlink: String,
 
     // used to planet order ranking: 0 forum article, 1 user blog article
     pub stype: i32,
@@ -260,6 +262,7 @@ pub mod for_write {
         pub section_id: Uuid,
         pub author_id: Uuid,
         pub tags: String,
+        pub extlink: String,
         pub stype: i32,
         // created_time, auto created by db
         // pub created_time: DateTime<Utc>,
@@ -274,6 +277,7 @@ pub mod for_write {
         pub section_id: Uuid,
         pub author_id: Uuid,
         pub tags: String,
+        pub extlink: String,
         pub stype: i32,
         pub created_time: DateTime<Utc>,
         pub status: i16,
@@ -287,6 +291,7 @@ pub mod for_write {
         pub raw_content: String,
         pub content: String,
         pub tags: String,
+        pub extlink: String,
     }
 
     #[derive(Debug, PartialEq, ToDao, ToColumnNames, ToTableName)]
@@ -297,6 +302,7 @@ pub mod for_write {
         pub raw_content: String,
         pub content: String,
         pub tags: String,
+        pub extlink: String,
         pub created_time: DateTime<Utc>,
     }
 
