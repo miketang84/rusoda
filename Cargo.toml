@@ -12,9 +12,9 @@ rand = "^0.3.17"
 lazy_static = "1.3"
 uuid = {features = ["serde", "v4"], version = "0.5.1"}
 chrono = {features = ["serde"], version = "0.4"}
-wumn = {path = "../wumn", features = ["with-postgres"]}
-wumn_dao = {path = "../wumn/dao"}
-wumn_codegen = {path = "../wumn/codegen"}
+wumn = {git = "https://github.com/daogangtang/wumn", features = ["with-postgres"]}
+wumn_dao = {git = "https://github.com/daogangtang/wumn"}
+wumn_codegen = {git = "https://github.com/daogangtang/wumn"}
 redis = "0.9"
 serde = "1.0"
 serde_json = "1.0"
@@ -28,6 +28,6 @@ comrak = "0.6"
 toml = "0.4.10"
 toml-query = "0.8.0"
 rss = "1.6"
-sapper = {path = "../sapper/"}
-sapper_std = {path = "../sapper/library/sapper_std", features=["monitor"]}
-#sapper_std = {path = "../sapper/library/sapper_std"}
+sapper = "0.2"
+sapper_std = {version = "0.2", features=["monitor"]}
+
