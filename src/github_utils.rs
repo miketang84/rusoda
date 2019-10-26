@@ -28,8 +28,8 @@ pub fn get_github_token(code: &str, client_id: String, client_secret: String) ->
         let client = create_https_client();
 
         let params = serde_urlencoded::to_string([
-            ("client_id", client_id),
-            ("client_secret", client_secret),
+            ("client_id", &client_id[..]),
+            ("client_secret", &client_secret[..]),
             ("code", &_code[..]),
             ("accept", "json"),
         ]).unwrap();
