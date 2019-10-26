@@ -21,7 +21,7 @@ pub fn create_https_client() -> Client {
     Client::with_connector(connector)
 }
 
-pub fn get_github_token(code: &str, client_id: &str, client_secret: &str) -> Result<String, SapperError> {
+pub fn get_github_token(code: &str, client_id: String, client_secret: String) -> Result<String, SapperError> {
     let _code = code.to_owned();
     let (tx, rx) = mpsc::channel();
     thread::spawn(move || {
