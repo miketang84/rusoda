@@ -180,13 +180,46 @@ impl Article {
 
         articles
     }
-    
+
+    pub fn get_latest_articles_paging(page: usize, page_size: usize) -> Vec<ArticleForList> {
+        let em = db::get_db();
+        // need to alias names
+        let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
+        let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id";
+        let rest_clause = format!("WHERE article.stype = 0 ORDER BY created_time DESC LIMIT {} offset {}", page_size, page_size*page);
+        let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList);
+
+        articles
+    }
+
     pub fn get_latest_reply_articles(size: i64) -> Vec<ArticleForList> {
         let em = db::get_db();
         // need to alias names
         let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
         let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id";
         let rest_clause = format!("WHERE article.stype = 0 ORDER BY updated_time DESC LIMIT {}", size);
+        let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList);
+
+        articles
+    }
+
+    pub fn get_latest_reply_articles_paging(page: usize, page_size: usize) -> Vec<ArticleForList> {
+        let em = db::get_db();
+        // need to alias names
+        let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
+        let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id";
+        let rest_clause = format!("WHERE article.stype = 0 ORDER BY updated_time DESC LIMIT {} offset {}", page_size, page_size*page);
+        let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList);
+
+        articles
+    }
+
+    pub fn get_latest_articles_paging_by_author(author_id: Uuid, page: usize, page_size: usize) -> Vec<ArticleForList> {
+        let em = db::get_db();
+        // need to alias names
+        let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
+        let from_clause = "FROM article LEFT JOIN section ON article.section_id = section.id LEFT JOIN ruser ON article.author_id = ruser.id";
+        let rest_clause = format!("WHERE author_id='{}' ORDER BY created_time DESC LIMIT {} offset {}", author_id, page_size, page_size*page);
         let articles = db_select!(em, head_clause, from_clause, &rest_clause, ArticleForList);
 
         articles
@@ -247,6 +280,17 @@ impl Article {
         blog_articles
     }
 
+    pub fn get_latest_blog_articles_paging(page: usize, page_size: usize) -> Vec<BlogArticleForList> {
+        let em = db::get_db();
+        // need to alias names
+        let head_clause = "article.id, article.title, article.created_time, ruser.nickname as author_name";
+        let from_clause = "FROM article LEFT JOIN ruser ON article.author_id = ruser.id";
+        let rest_clause = format!("WHERE article.stype = 1 ORDER BY created_time DESC LIMIT {} offset {}", page_size, page*page_size);
+        let blog_articles = db_select!(em, head_clause, from_clause, &rest_clause, BlogArticleForList);
+
+        blog_articles
+    }
+
     pub fn get_latest_full_blog_articles(size: i64) -> Vec<Article> {
         let em = db::get_db();
         // need to alias names
@@ -277,6 +321,27 @@ impl Article {
         let count_r = db_find!(em, "count(*)", "from comment", &clause, CommentCount);
 
         count_r.unwrap().count
+    }
+
+    pub fn get_all_section_articles_count() -> i64 {
+        let em = db::get_db();
+        let clause = "where article.stype = 0";
+        let count = db_find!(em, "count(*)", "from article", clause, ArticleCount);
+        count.unwrap().count
+    }
+
+    pub fn get_all_blog_articles_count() -> i64 {
+        let em = db::get_db();
+        let clause = "where article.stype = 1";
+        let count = db_find!(em, "count(*)", "from article", clause, ArticleCount);
+        count.unwrap().count
+    }
+
+    pub fn get_all_articles_count_by_author(author_id: Uuid) -> i64 {
+        let em = db::get_db();
+        let clause = format!("where author_id='{}'", author_id);
+        let count = db_find!(em, "count(*)", "from article", &clause, ArticleCount);
+        count.unwrap().count
     }
 
     pub fn increase_viewtimes(article_id: Uuid) {
