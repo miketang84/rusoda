@@ -154,7 +154,7 @@ impl Article {
         }
     }
 
-    pub fn paging(page: usize, page_size: usize) -> Vec<Article> {
+    pub fn paging(page: i64, page_size: i64) -> Vec<Article> {
         let em = db::get_db();
         let clause = format!("order by created_time desc limit {} offset {}", page_size, page_size*page);
         let articles = db_select!(em, "", "", &clause, Article);
@@ -181,7 +181,7 @@ impl Article {
         articles
     }
 
-    pub fn get_latest_articles_paging(page: usize, page_size: usize) -> Vec<ArticleForList> {
+    pub fn get_latest_articles_paging(page: i64, page_size: i64) -> Vec<ArticleForList> {
         let em = db::get_db();
         // need to alias names
         let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
@@ -203,7 +203,7 @@ impl Article {
         articles
     }
 
-    pub fn get_latest_reply_articles_paging(page: usize, page_size: usize) -> Vec<ArticleForList> {
+    pub fn get_latest_reply_articles_paging(page: i64, page_size: i64) -> Vec<ArticleForList> {
         let em = db::get_db();
         // need to alias names
         let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
@@ -214,7 +214,7 @@ impl Article {
         articles
     }
 
-    pub fn get_latest_articles_paging_by_author(author_id: Uuid, page: usize, page_size: usize) -> Vec<ArticleForList> {
+    pub fn get_latest_articles_paging_by_author(author_id: Uuid, page: i64, page_size: i64) -> Vec<ArticleForList> {
         let em = db::get_db();
         // need to alias names
         let head_clause = "article.id, article.title, article.created_time, article.tags, section.title as section_title, ruser.nickname as author_name";
@@ -280,7 +280,7 @@ impl Article {
         blog_articles
     }
 
-    pub fn get_latest_blog_articles_paging(page: usize, page_size: usize) -> Vec<BlogArticleForList> {
+    pub fn get_latest_blog_articles_paging(page: i64, page_size: i64) -> Vec<BlogArticleForList> {
         let em = db::get_db();
         // need to alias names
         let head_clause = "article.id, article.title, article.created_time, ruser.nickname as author_name";
