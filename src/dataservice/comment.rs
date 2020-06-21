@@ -83,15 +83,10 @@ impl Comment {
 
         let head_clause = "comment.id, comment.raw_content as content, comment.author_id, comment.created_time, ruser.nickname";
         let from_clause = "FROM comment LEFT JOIN ruser ON comment.author_id = ruser.id";
-        let clause = format!("where id='{}'", id);
-        match db_find!(em, head_clause, from_clause, &clause, CommentWithAuthorName) {
-            Some(comment) => {
-                Ok(comment.to_owned())
-            },
-            None => {
-                Err("get comment error.".to_string())
-            }
-        }
+        let clause = format!("where comment.id='{}'", id);
+        let comment = db_find!(em, head_clause, from_clause, &clause, CommentWithAuthorName);
+
+        comment.ok_or("get comment error.".to_string())
     }
 
     pub fn delete_by_id(id: Uuid) -> Result<Comment, String> {
