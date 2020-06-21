@@ -1,4 +1,3 @@
-
 use wumn::DbError;
 use crate::db;
 use crate::model::{for_write, for_read};
@@ -12,7 +11,8 @@ pub use crate::model::for_write::{
 };
 
 pub use crate::model::for_read::{
-    CommentCount
+    CommentCount,
+    CommentWithAuthorName,
 };
 
 
@@ -65,7 +65,6 @@ impl CommentDelete    {
 
 // impl retrieving methods on this model, return various views of Section
 impl Comment {
-
     pub fn get_by_id(id: Uuid) -> Result<Comment, String> {
         let em = db::get_db();
         let clause = format!("where id='{}'", id);
@@ -77,6 +76,17 @@ impl Comment {
                 Err("get comment error.".to_string())
             }
         }
+    }
+
+    pub fn get_comment_with_author_name(id: Uuid) -> Result<CommentWithAuthorName, String> {
+        let em = db::get_db();
+
+        let head_clause = "comment.id, comment.content, comment.author_id, comment.created_time, ruser.nickname";
+        let from_clause = "FROM comment LEFT JOIN ruser ON comment.author_id = ruser.id";
+        let clause = format!("where id='{}'", id);
+        let comment = db_find!(em, head_clause, from_clause, &clause, CommentWithAuthorName);
+
+        comment.ok_or("get comment error.".to_string())
     }
 
     pub fn delete_by_id(id: Uuid) -> Result<Comment, String> {
@@ -92,5 +102,3 @@ impl Comment {
         }
     }
 }
-
-
