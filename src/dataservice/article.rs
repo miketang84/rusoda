@@ -309,7 +309,7 @@ impl Article {
         let offset = ncpp * (current_page - 1);
         let head_clause = "comment.id, comment.content, comment.author_id, comment.created_time, ruser.nickname";
         let from_clause = "FROM comment LEFT JOIN ruser ON comment.author_id = ruser.id";
-        let clause = format!("where article_id='{}' order by created_time desc limit {} offset {}", article_id, ncpp, offset);
+        let clause = format!("where article_id='{}' order by created_time asc limit {} offset {}", article_id, ncpp, offset);
         let comments = db_select!(em, head_clause, from_clause, &clause, CommentWithAuthorName);
 
         comments
